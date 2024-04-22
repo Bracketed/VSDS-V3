@@ -1,0 +1,30 @@
+{
+	"name": "VSDS-V3",
+	"tree": {
+		"$className": "DataModel",
+
+		"ServerScriptService": {
+			"Virtua_SDS": {
+				"$className": "Folder",
+				"MainModule": {
+					"$path": "src",
+					"TEAMVIRTUA_BRAND": {
+						"$className": "Part",
+						"$properties": {
+							"Material": "SmoothPlastic",
+							"Color": [26, 26, 26],
+							"Size": [3, 3, 0.2]
+						},
+						"FontFacingDecal": {
+							"$className": "Decal",
+							"$properties": {
+								"Texture": "rbxassetid://17256945909",
+								"Face": "Front"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
