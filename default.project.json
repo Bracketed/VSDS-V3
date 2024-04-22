@@ -7,7 +7,7 @@
 			"Virtua_SDS": {
 				"$className": "Folder",
 				"MainModule": {
-					"$path": "src",
+					"$path": "source",
 					"TEAMVIRTUA_BRAND": {
 						"$className": "Part",
 						"$properties": {
