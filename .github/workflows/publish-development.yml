@@ -2,7 +2,7 @@ name: Development Publish
 
 on:
         push:
-                branches: [Development]
+                branches: [development]
         workflow_dispatch:
 
 env:
