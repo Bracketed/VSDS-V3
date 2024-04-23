@@ -23,10 +23,6 @@ jobs:
                           with:
                                   luaVersion: '5.1'
 
-                        - uses: leafo/gh-actions-lua@v10
-                          with:
-                                  luaVersion: 'luajit'
-
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
