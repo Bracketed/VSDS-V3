@@ -17,8 +17,13 @@ for dir in "$source_path"/*/; do
         file_name=$(basename "$lua_file")
 
         dotnet ./Obfuscator/YolusCLI.dll $lua_file
-        echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
-        ls ./Obfuscator
+
+        if [ -f "${target_path}/${file_name%.*}-obfuscated.lua" ]; then
+            echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
+        else
+            echo ":: YOLUS :: ${file_name} could not be Obfuscated."
+            exit 125
+        fi
 
         obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
 
