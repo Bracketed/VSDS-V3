@@ -13,19 +13,22 @@ jobs:
         build:
                 name: build
                 runs-on: ubuntu-latest
+                strategy:
+                        matrix:
+                                luaInstalls: [5.1, luajit-2.0.5]
                 steps:
                         - uses: actions/checkout@v4.1.1
                         - uses: actions/setup-dotnet@v4
                           with:
-                                  dotnet-version: '7.0'
+                                  dotnet-version: 7.0
 
                         - uses: leafo/gh-actions-lua@v10
                           with:
-                                  luaVersion: 'luajit'
+                                  luaVersion: ${{ matrix.luaInstalls }}
 
-                        - uses: leafo/gh-actions-lua@v10
-                          with:
-                                  luaVersion: '5.1'
+                        - name: Rename luajit Binary
+                          working-directory: ./.lua/bin
+                          run: mv -fv luajit-2.0.5 luajit
 
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
