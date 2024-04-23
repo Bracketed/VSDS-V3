@@ -43,6 +43,7 @@ jobs:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds.rbxm
 
+                        - run: chmod +x compile-source.sh
                         - name: Test Obfuscation
                           run: ./compile-source.sh
                         #- name: Ping for new development release - Do this eventually
