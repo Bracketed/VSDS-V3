@@ -26,6 +26,8 @@ jobs:
                           with:
                                   luaVersion: ${{ matrix.luaInstalls }}
 
+                        - run: ls .lua/bin
+
                         - name: Rename luajit Binary
                           working-directory: ./.lua/bin
                           run: mv -fv luajit-2.0.5 luajit
@@ -35,9 +37,6 @@ jobs:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
                         - run: lua -v
-
-                        - run: ls /home/runner/work/VSDS-V3/VSDS-V3/.lua/bin
-                        - run: find /home/runner/work/VSDS-V3/VSDS-V3 -name luajit
 
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
