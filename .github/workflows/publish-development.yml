@@ -44,12 +44,7 @@ jobs:
                                   path: vsds.rbxm
 
                         - name: Test Obfuscation
-                          working-directory: ./Build/RuntimeTool
-                          run: dotnet YolusCLI.dll idk.lua
-
-                        - name: Echo test file
-                          working-directory: ./Build/RuntimeTool
-                          run: cat idk-obfuscated.lua
+                          run: ./compile-source.sh
                         #- name: Ping for new development release - Do this eventually
                         #  uses: tsickert/discord-webhook@v6.0.0
 
