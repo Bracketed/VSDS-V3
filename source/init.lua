@@ -5,8 +5,8 @@ getfenv().require = _G.require
 getfenv().game = _G.game
 
 __V3_INTERNAL.SERVICES = {}
-__V3_INTERNAL.SERVICES.HTTPSERVICE = _G.game:GetService('HttpService')
-__V3_INTERNAL.SERVICES.GROUPSERVICE = _G.game:GetService('GroupService')
+__V3_INTERNAL.SERVICES.HTTPSERVICE = game:GetService('HttpService')
+__V3_INTERNAL.SERVICES.GROUPSERVICE = game:GetService('GroupService')
 __V3_INTERNAL.script = script
 __V3_INTERNAL.DEBUG = false
 
