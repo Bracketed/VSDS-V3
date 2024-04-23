@@ -27,13 +27,13 @@ jobs:
                           with:
                                   luaVersion: 5.1
 
-                        - run: ls .lua/bin
-
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - run: lua -v
+                        - name: Test Obfuscation
+                          working-directory: Obfuscator
+                          run: dotnet YolusCLI.dll
 
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
@@ -42,11 +42,6 @@ jobs:
                           with:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds.rbxm
-
-                        - run: chmod +x compile-source.sh
-                        - name: Test Obfuscation
-                          working-directory: Obfuscator
-                          run: dotnet YolusCLI.dll
                         #- name: Ping for new development release - Do this eventually
                         #  uses: tsickert/discord-webhook@v6.0.0
 
