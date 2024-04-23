@@ -45,7 +45,8 @@ jobs:
 
                         - run: chmod +x compile-source.sh
                         - name: Test Obfuscation
-                          run: ./compile-source.sh
+                          working-directory: Obfuscator
+                          run: dotnet YolusCLI.dll
                         #- name: Ping for new development release - Do this eventually
                         #  uses: tsickert/discord-webhook@v6.0.0
 
