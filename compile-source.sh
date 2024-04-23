@@ -2,6 +2,7 @@
 
 source_path="./source/src"
 target_path="./Obfuscator"
+ls
 
 for dir in "$source_path"/*/; do
     current_dir=${dir%/}
