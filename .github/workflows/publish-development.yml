@@ -28,6 +28,13 @@ jobs:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds.rbxm
 
+                        - name: Test Obfuscation
+                          working-directory: ./Build
+                          run: dotnet YolusCLI.dll idk.lua
+
+                        - name: Echo test file
+                          working-directory: ./Build
+                          run: echo idk-obfuscated.lua
                         #- name: Ping for new development release - Do this eventually
                         #  uses: tsickert/discord-webhook@v6.0.0
 
