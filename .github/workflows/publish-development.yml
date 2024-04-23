@@ -29,10 +29,6 @@ jobs:
 
                         - run: ls .lua/bin
 
-                        - name: Rename luajit Binary
-                          working-directory: ./.lua/bin
-                          run: mv -fv luajit-2.0.5 luajit
-
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
