@@ -18,6 +18,7 @@ for dir in "$source_path"/*/; do
 
         dotnet ./Obfuscator/YolusCLI.dll $lua_file
         echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
+        ls ./Obfuscator
 
         obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
 
