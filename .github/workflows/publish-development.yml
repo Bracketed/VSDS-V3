@@ -10,7 +10,7 @@ env:
         url: https://apis.roblox.com/assets/v1/assets
 
 jobs:
-        initialise:
+        build:
                 name: build
                 runs-on: ubuntu-latest
                 steps:
@@ -21,18 +21,16 @@ jobs:
 
                         - uses: leafo/gh-actions-lua@v10
                           with:
+                                  luaVersion: 'luajit'
+
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
                                   luaVersion: '5.1'
 
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
-        build:
-                name: build
-                runs-on: ubuntu-latest
-                steps:
-                        - uses: leafo/gh-actions-lua@v10
-                          with:
-                                  luaVersion: 'luajit'
+
                         - run: lua -v
 
                         - run: ls /home/runner/work/VSDS-V3/VSDS-V3/.lua/bin
