@@ -32,6 +32,7 @@ jobs:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
                         - run: lua -v
+                        - run: luajit -v
 
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
