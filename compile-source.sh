@@ -21,9 +21,9 @@ for dir in "$source_path"/*/; do
 
         obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
 
-        cp "$obfuscated_file" "$current_dir/"
+        cp "${file_name%.*}-obfuscated.lua" "$current_dir/"
 
         rm "$lua_file"
-        rm "$obfuscated_file"
+        rm "${file_name%.*}-obfuscated.lua"
     done
 done
