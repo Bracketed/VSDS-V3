@@ -34,6 +34,7 @@ jobs:
                         - run: lua -v
 
                         - run: ls /home/runner/work/VSDS-V3/VSDS-V3/.lua/bin
+                        - run: find /home/runner/work/VSDS-V3/VSDS-V3 -name luajit
 
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
