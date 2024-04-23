@@ -29,6 +29,8 @@ jobs:
 
                         - run: lua -v
 
+                        - run: ls /home/runner/work/VSDS-V3/VSDS-V3/.lua/bin
+
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
 
