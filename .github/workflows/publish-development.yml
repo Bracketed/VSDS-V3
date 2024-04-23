@@ -23,7 +23,7 @@ jobs:
                           with:
                                   luaVersion: '5.1'
 
-                        - uses: xpol/setup-lua@v1
+                        - uses: xpol/setup-lua@v9.1.0
                           with:
                                   luaVersion: 'luajit-2.0.5'
 
