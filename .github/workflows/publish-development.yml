@@ -28,6 +28,7 @@ jobs:
                                   luaVersion: 5.1
 
                         - run: ls .lua/bin
+                        - run: mv .lua/bin/luajit-2.1.0-beta3 ./lua/bin/luajit
 
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
