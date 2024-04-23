@@ -15,9 +15,7 @@ for dir in "$source_path"/*/; do
     for lua_file in $lua_files; do
         file_name=$(basename "$lua_file")
 
-        cd Obfuscator
-        dotnet YolusCLI.dll $lua_file
-        cd ..
+        dotnet ./Obfuscator/YolusCLI.dll $lua_file
         echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
 
         obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
