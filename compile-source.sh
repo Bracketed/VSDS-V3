@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source_path="./source/src"
-target_path="./Build/RuntimeTool"
+target_path="./Obfuscator"
 
 for dir in "$source_path"/*/; do
     current_dir=${dir%/}
@@ -10,10 +10,12 @@ for dir in "$source_path"/*/; do
 
     lua_files=$(find "$target_path" -name "*.lua")
 
+    ls ./Obfuscator
+
     for lua_file in $lua_files; do
         file_name=$(basename "$lua_file")
 
-        dotnet ./Build/RuntimeTool/YolusCLI.dll $lua_file
+        dotnet ./Obfuscator/YolusCLI.dll $lua_file
         echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
 
         obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
