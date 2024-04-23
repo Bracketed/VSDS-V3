@@ -10,14 +10,15 @@ for folder in "${source_folders[@]}"; do
 
     # Copy all files from the current folder to the ./Obfuscator directory
     cp -r "$folder/"* "./Obfuscator/"
+    cd Obfuscator
 
     # Loop through each .lua file in the ./Obfuscator directory
-    for lua_file in ./Obfuscator/*.lua; do
+    for lua_file in *.lua; do
         # Check if it's a file
         if [ -f "$lua_file" ]; then
             # Run dotnet YolusCLI.dll on the .lua file to produce the obfuscated version
             obfuscated_file="${lua_file%.lua}-obfuscated.lua"
-            dotnet ./Obfuscator/YolusCLI.dll "$lua_file"
+            dotnet YolusCLI.dll "$lua_file"
 
             # Overwrite the original file in the source folder with the obfuscated content
             obfuscated_content=$(cat "$obfuscated_file")
@@ -28,4 +29,6 @@ for folder in "${source_folders[@]}"; do
             rm "$obfuscated_file"
         fi
     done
+
+    cd ..
 done
