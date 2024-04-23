@@ -1,34 +1,31 @@
 #!/bin/bash
 
-source_path="./source/src"
-target_path="./Obfuscator"
+# Get the list of folders in ./source/src
+source_folders=(./source/src/*)
 
-for dir in "$source_path"/*/; do
-    current_dir=${dir%/}
+# Loop through each folder in the ./source/src directory
+for folder in "${source_folders[@]}"; do
+    # Get the name of the folder without the full path
+    folder_name=$(basename "$folder")
 
-    cp -r "$current_dir/"* "$target_path/"
+    # Copy all files from the current folder to the ./Obfuscator directory
+    cp -r "$folder/"* "./Obfuscator/"
 
-    lua_files=$(find "$target_path" -name "*.lua")
+    # Loop through each .lua file in the ./Obfuscator directory
+    for lua_file in ./Obfuscator/*.lua; do
+        # Check if it's a file
+        if [ -f "$lua_file" ]; then
+            # Run dotnet YolusCLI.dll on the .lua file to produce the obfuscated version
+            obfuscated_file="${lua_file%.lua}-obfuscated.lua"
+            dotnet YolusCLI.dll "$lua_file"
 
-    ls ./Obfuscator
+            # Overwrite the original file in the source folder with the obfuscated content
+            obfuscated_content=$(cat "$obfuscated_file")
+            original_file="$folder/${lua_file##*/}"
+            echo "$obfuscated_content" >"$original_file"
 
-    for lua_file in $lua_files; do
-        file_name=$(basename "$lua_file")
-
-        dotnet ./Obfuscator/YolusCLI.dll $lua_file
-
-        if [ -f "${target_path}/${file_name%.*}-obfuscated.lua" ]; then
-            echo ":: YOLUS :: ${file_name} was Obfuscated successfully."
-        else
-            echo ":: YOLUS :: ${file_name} could not be Obfuscated."
-            exit 125
+            # Delete the obfuscated file
+            rm "$obfuscated_file"
         fi
-
-        obfuscated_file="${target_path}/${file_name%.*}-obfuscated.lua"
-
-        cp "${file_name%.*}-obfuscated.lua" "$current_dir/"
-
-        rm "$lua_file"
-        rm "${file_name%.*}-obfuscated.lua"
     done
 done
