@@ -19,8 +19,13 @@ jobs:
                           with:
                                   dotnet-version: '7.0'
 
-                        - name: Install Lua and Luajit
-                          run: apt install lua5.1 luajit -y
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
+                                  luaVersion: '5.1'
+
+                        - uses: xpol/setup-lua@v1
+                          with:
+                                  luaVersion: 'luajit-2.0.5'
 
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
@@ -28,7 +33,8 @@ jobs:
 
                         - run: lua -v
 
-                        - run: ls /usr/bin
+                        - run: ls /home/runner/work/VSDS-V3/VSDS-V3/.lua/bin
+                        - run: find /home/runner/work/VSDS-V3/VSDS-V3 -name luajit
 
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
