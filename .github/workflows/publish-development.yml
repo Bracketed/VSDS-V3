@@ -30,7 +30,10 @@ jobs:
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
+
                         - run: lua -v
+                        - run: find / -name luac*
+
                         - name: Build
                           run: rojo build -o vsds.rbxm release.project.json
 
