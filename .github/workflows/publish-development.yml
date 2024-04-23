@@ -34,7 +34,7 @@ jobs:
 
                         - name: Echo test file
                           working-directory: ./Build
-                          run: echo idk-obfuscated.lua
+                          run: cat idk-obfuscated.lua
                         #- name: Ping for new development release - Do this eventually
                         #  uses: tsickert/discord-webhook@v6.0.0
 
