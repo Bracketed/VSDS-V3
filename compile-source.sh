@@ -17,7 +17,7 @@ for folder in "${source_folders[@]}"; do
         if [ -f "$lua_file" ]; then
             # Run dotnet YolusCLI.dll on the .lua file to produce the obfuscated version
             obfuscated_file="${lua_file%.lua}-obfuscated.lua"
-            dotnet YolusCLI.dll "$lua_file"
+            dotnet ./Obfuscator/YolusCLI.dll "$lua_file"
 
             # Overwrite the original file in the source folder with the obfuscated content
             obfuscated_content=$(cat "$obfuscated_file")
