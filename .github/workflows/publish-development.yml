@@ -64,4 +64,4 @@ jobs:
                         #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
                         - name: Publish VSDS V3 Development Version to roblox.com
-                          run: rojo upload --cookie ${{ secrets.VSDS_ROBLOXSECURITYKEY }} --api_key ${{ secrets.VSDS_COMMITKEY }} --asset_id ${{env.assetId}}
+                          run: rojo upload --asset_id ${{ env.assetId }} --api_key ${{ secrets.VSDS_COMMITKEY }} --cookie ${{ secrets.VSDS_ROBLOXSECURITYKEY }}
