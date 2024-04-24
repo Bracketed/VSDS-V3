@@ -15,10 +15,12 @@ jobs:
                 runs-on: ubuntu-latest
                 steps:
                         - uses: actions/checkout@v4.1.1
-                        - uses: lots0logs/gh-action-get-changed-files@2.2.2
-                          with:
-                                  token: ${{ secrets.GITHUB_TOKEN }}
-                        - run: cat files.json
+                        - uses: jitterbit/get-changed-files@v1
+                          id: files
+                        - run: |
+                                  for changed_file in ${{ steps.files.outputs.all }}; do
+                                    echo "Do something with this ${changed_file}."
+                                  done
                         - uses: actions/setup-dotnet@v4
                           with:
                                   dotnet-version: 7.0
