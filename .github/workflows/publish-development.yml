@@ -46,8 +46,13 @@ jobs:
                           with:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds.rbxm
-                        #- name: Ping for new development release - Do this eventually
-                        #  uses: tsickert/discord-webhook@v6.0.0
+
+                        - name: Release changelog to Discord
+                          uses: kludge-cs/gitcord-release-changelogger@v3.0.0
+                          with:
+                                  release-body: ${{ github.event.release.body }}
+                                  release-name: ${{ github.ref_name }}
+                                  webhook-url: ${{ secrets.VSDS_WEBHOOKKEY }}
 
                         #- name: Publish VSDS V3 Development Version
                         #  uses: fjogeleit/http-request-action@v1.15.4
