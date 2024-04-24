@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp7.0</TargetFramework>
+        <RootNamespace>YolusCLI</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+		<NoWarn>8618,8602</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Figgle" Version="0.5.1" />
+        <PackageReference Include="Microsoft.NetCore.App" Version="2.2.8" />
+    </ItemGroup>
+
+</Project>
