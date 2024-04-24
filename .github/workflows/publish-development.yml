@@ -15,27 +15,6 @@ jobs:
                 runs-on: ubuntu-latest
                 steps:
                         - uses: actions/checkout@v4.1.1
-                        - uses: jitterbit/get-changed-files@v1
-                          id: files
-
-                        - name: Create Diff for Changelog
-                          id: changelog
-                          run: |
-                                  for added_file in ${{ steps.files.outputs.added }}; do
-                                    echo "+ ${added_file} [ADDED]"
-                                  done
-
-                                  for modified_file in ${{ steps.files.outputs.modified }}; do
-                                    echo "+ ${modified_file} [MODIFIED]"
-                                  done
-
-                                  for renamed_file in ${{ steps.files.outputs.renamed }}; do
-                                    echo "+ ${renamed_file} [RENAMED]"
-                                  done
-
-                                  for removed_file in ${{ steps.files.outputs.removed }}; do
-                                    echo "- ${removed_file} [REMOVED]"
-                                  done
                         - uses: actions/setup-dotnet@v4
                           with:
                                   dotnet-version: 7.0
