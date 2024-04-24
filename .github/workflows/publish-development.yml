@@ -55,22 +55,22 @@ jobs:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds-${{ github.ref_name }}.rbxm
 
-                        - name: Release changelog to Discord
-                          uses: tsickert/discord-webhook@v6.0.0
-                          with:
-                                  webhook-url: ${{ secrets.VSDS_WEBHOOKKEY }}
-                                  filename: vsds-${{ github.ref_name }}.rbxm
-                                  wait: true
-                                  username: '@Github'
-                                  avatar-url: https://avatars.githubusercontent.com/u/97051909
+                        #- name: Release changelog to Discord
+                        #  uses: tsickert/discord-webhook@v6.0.0
+                        #  with:
+                        #          webhook-url: ${{ secrets.VSDS_WEBHOOKKEY }}
+                        #          filename: vsds-${{ github.ref_name }}.rbxm
+                        #          wait: true
+                        #          username: '@Github'
+                        #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
-                        #- name: Publish VSDS V3 Development Version
+                        #- name: Publish VSDS V3 Development Version to roblox.com
                         #  uses: fjogeleit/http-request-action@v1.15.4
                         #  with:
                         #          url: '${{ env.url }}/${{ env.assetId }}'
-                        #          method: 'PATCH'
-                        #          contentType: 'application/x-www-form-urlencoded'
-                        #          files: '{ "file": "vsds.rbxm" }'
-                        #          customHeaders: '{ "upload-secret": "${{ secrets.PUBURL2_SECRET }}" }'
-                        #          timeout: 10000
-                        #          preventFailureOnNoResponse: 'true'
+                        #         method: 'PATCH'
+                        #         contentType: 'application/x-www-form-urlencoded'
+                        ##         files: '{ "file": "vsds.rbxm" }'
+                        #         customHeaders: '{ "upload-secret": "${{ secrets.PUBURL2_SECRET }}" }'
+                        #         timeout: 10000
+                        #         preventFailureOnNoResponse: 'true'
