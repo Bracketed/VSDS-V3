@@ -50,7 +50,7 @@ jobs:
                           run: dotnet YolusCLI.dll
 
                         - name: Build
-                          run: rojo build -o vsds-${{ github.ref_name }}.rbxm release.project.json
+                          run: rojo build -o vsds-${{ github.ref_name }}.rbxm
 
                         #- name: Release changelog to Discord
                         #  uses: tsickert/discord-webhook@v6.0.0
