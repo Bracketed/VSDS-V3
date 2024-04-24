@@ -15,6 +15,10 @@ jobs:
                 runs-on: ubuntu-latest
                 steps:
                         - uses: actions/checkout@v4.1.1
+                        - uses: lots0logs/gh-action-get-changed-files@2.2.2
+                          with:
+                                  token: ${{ secrets.GITHUB_TOKEN }}
+                        - run: cat files.json
                         - uses: actions/setup-dotnet@v4
                           with:
                                   dotnet-version: 7.0
@@ -52,6 +56,9 @@ jobs:
                           with:
                                   webhook-url: ${{ secrets.VSDS_WEBHOOKKEY }}
                                   filename: vsds-${{ github.ref_name }}.rbxm
+                                  wait: true
+                                  username: '@Github'
+                                  avatar-url: https://avatars.githubusercontent.com/u/97051909
 
                         #- name: Publish VSDS V3 Development Version
                         #  uses: fjogeleit/http-request-action@v1.15.4
