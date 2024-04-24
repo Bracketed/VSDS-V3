@@ -40,19 +40,18 @@ jobs:
                           run: dotnet YolusCLI.dll
 
                         - name: Build
-                          run: rojo build -o vsds.rbxm release.project.json
+                          run: rojo build -o vsds-${{ github.ref_name }}.rbxm release.project.json
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
                                   name: VSDS V3 DEVELOPMENT BUILD
-                                  path: vsds.rbxm
+                                  path: vsds-${{ github.ref_name }}.rbxm
 
                         - name: Release changelog to Discord
-                          uses: kludge-cs/gitcord-release-changelogger@v3.0.0
+                          uses: tsickert/discord-webhook@v6.0.0
                           with:
-                                  release-body: ${{ github.event.release.body }}
-                                  release-name: ${{ github.ref_name }}
                                   webhook-url: ${{ secrets.VSDS_WEBHOOKKEY }}
+                                  filename: vsds-${{ github.ref_name }}.rbxm
 
                         #- name: Publish VSDS V3 Development Version
                         #  uses: fjogeleit/http-request-action@v1.15.4
