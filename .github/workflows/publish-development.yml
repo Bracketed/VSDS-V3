@@ -27,7 +27,6 @@ jobs:
                           with:
                                   luaVersion: 5.1
 
-                        - run: ls .lua/bin
                         - name: Apply fix to luajit
                           working-directory: .lua/bin
                           run: mv luajit* luajit
@@ -36,7 +35,7 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - name: Test Obfuscation
+                        - name: Obfuscate Source Files
                           working-directory: Obfuscator
                           run: dotnet YolusCLI.dll
 
