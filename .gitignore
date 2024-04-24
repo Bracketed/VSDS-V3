@@ -370,4 +370,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Pre-built obfuscator
-Obfuscator
+#Obfuscator

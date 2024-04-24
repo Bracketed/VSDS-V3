@@ -1,0 +1,4 @@
+namespace YolusCORE.Obfuscator.Opcodes
+{
+
+}

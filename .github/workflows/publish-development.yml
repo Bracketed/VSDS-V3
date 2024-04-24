@@ -35,13 +35,13 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - name: Build Obfuscator
-                          working-directory: yolus-source
-                          run: dotnet build
+                        # - name: Build Obfuscator
+                        #   working-directory: yolus-source
+                        #   run: dotnet build
 
-                        - name: Publish Obfuscator
-                          working-directory: yolus-source
-                          run: dotnet publish --output ../Obfuscator
+                        # - name: Publish Obfuscator
+                        #   working-directory: yolus-source
+                        #   run: dotnet publish --output ../Obfuscator
 
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator
