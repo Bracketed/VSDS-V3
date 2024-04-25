@@ -371,3 +371,4 @@ FodyWeavers.xsd
 
 # Pre-built obfuscator
 #Obfuscator
+.env

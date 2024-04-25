@@ -17,7 +17,9 @@ jobs:
                         - uses: actions/setup-dotnet@v4
                           with:
                                   dotnet-version: 7.0
-
+                        - uses: actions/setup-node@v4
+                          with:
+                                  node-version: 21
                         - uses: leafo/gh-actions-lua@v10
                           with:
                                   luaVersion: luajit
@@ -61,16 +63,20 @@ jobs:
                         #          username: '@Github'
                         #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
+                        - name: Create .env for CRSF container
+                          working-directory: crsf
+                          run: echo "ROBLOXCOOKIE=${{secrets.VSDS_ROBLOXSECURITYKEY}}" > .env
+
+                        - name: Setup CRSF container
+                          working-directory: crsf
+                          run: yarn install && yarn set version stable && yarn install
+
                         - name: Obtain X-CRSF-TOKEN from auth.roblox.com
                           id: auth
-                          continue-on-error: true
-                          uses: fjogeleit/http-request-action@v1
-                          with:
-                                  url: 'https://auth.roblox.com/'
-                                  method: 'POST'
-                                  customHeaders: '{"Accept": "application/json", "User-Agent": "Roblox/WinInet", "Cookie": "${{ secrets.VSDS_ROBLOXSECURITYKEY }}"}'
+                          working-directory: crsf
+                          run: node index.js
 
-                        - run: echo ${{ steps.auth.outputs.headers }}
+                        - run: echo ${{ steps.auth.outputs }}
 
                         - name: Publish VSDS V3 Development Version to roblox.com
                           run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}
