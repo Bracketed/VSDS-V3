@@ -76,7 +76,7 @@ jobs:
                           working-directory: crsf
                           run: node index.js
 
-                        - run: echo ${{ steps.auth.outputs }}
+                        - run: echo ${{ steps.auth.outputs.CRSF-TOKEN }}
 
                         - name: Publish VSDS V3 Development Version to roblox.com
                           run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}

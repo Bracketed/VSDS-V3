@@ -14,4 +14,4 @@ axios.post(
 			Cookie: process.env.ROBLOXCOOKIE,
 		},
 	}
-).catch((e) => console.log(e.response.headers['x-csrf-token']));
+).catch((e) => console.log('::set-output name=CRSF-TOKEN::', e.response.headers['x-csrf-token']));
