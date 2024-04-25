@@ -63,6 +63,7 @@ jobs:
 
                         - name: Obtain X-CRSF-TOKEN from auth.roblox.com
                           id: auth
+                          continue-on-error: true
                           uses: fjogeleit/http-request-action@v1
                           with:
                                   url: 'https://auth.roblox.com/'
