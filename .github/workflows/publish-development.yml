@@ -69,7 +69,7 @@ jobs:
 
                         - name: Setup CRSF container
                           working-directory: crsf
-                          run: yarn install && yarn set version stable && yarn install
+                          run: yarn install
 
                         - name: Obtain X-CRSF-TOKEN from auth.roblox.com
                           id: auth
