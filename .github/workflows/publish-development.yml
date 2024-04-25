@@ -65,7 +65,7 @@ jobs:
 
                         - name: Create .env for CRSF container
                           working-directory: crsf
-                          run: echo "ROBLOXCOOKIE=${{secrets.VSDS_ROBLOXSECURITYKEY}}" > .env
+                          run: echo "ROBLOXCOOKIE=${{ secrets.VSDS_ROBLOXSECURITYKEY }}" > .env
 
                         - name: Setup CRSF container
                           working-directory: crsf
@@ -76,10 +76,18 @@ jobs:
                           working-directory: crsf
                           run: node index.js
 
-                        - run: echo ${{ steps.auth.outputs.CRSF-TOKEN }}
-
-                        - name: Publish VSDS V3 Development Version to roblox.com
-                          run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}
+                        - name: Deploy Stage
+                          uses: fjogeleit/http-request-action@v1
+                          with:
+                                  url: 'https://data.roblox.com/Data/Upload.ashx?assetid=${{ env.assetId }}'
+                                  method: 'POST'
+                                  contentType: 'application/octet-stream'
+                                  customHeaders: '{"User-Agent": "Roblox/WinInet", "X-CSRF-Token": "${{ steps.auth.outputs.CRSF-TOKEN }}"}, "Accept": "application/json", "Cookie": ".ROBLOSECURITY=${{ secrets.VSDS_ROBLOXSECURITYKEY }}"'
+                                  files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
+                                  timeout: 10000
+                                  preventFailureOnNoResponse: 'true'
+                        #- name: Publish VSDS V3 Development Version to roblox.com
+                        #  run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
