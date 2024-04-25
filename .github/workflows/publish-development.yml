@@ -61,6 +61,16 @@ jobs:
                         #          username: '@Github'
                         #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
+                        - name: Obtain X-CRSF-TOKEN from auth.roblox.com
+                          id: auth
+                          uses: fjogeleit/http-request-action@v1
+                          with:
+                                  url: 'https://auth.roblox.com/'
+                                  method: 'POST'
+                                  customHeaders: '{"Accept": "application/json", "User-Agent": "Roblox/WinInet", "Cookie": "${{ secrets.VSDS_ROBLOXSECURITYKEY }}"}'
+
+                        - run: echo ${{ steps.auth.outputs.headers }}
+
                         - name: Publish VSDS V3 Development Version to roblox.com
                           run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}
 
