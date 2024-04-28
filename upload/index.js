@@ -48,4 +48,4 @@ async function uploadAsset(buffer, assetId) {
 	}
 }
 
-uploadAsset(fs.readFileSync(`./${process.env.TARGETFILE}`), process.env.TARGETASSET);
+uploadAsset(Buffer.from(fs.readFileSync(`./${process.env.TARGETFILE}`)), process.env.TARGETASSET);
