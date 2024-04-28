@@ -52,7 +52,19 @@ jobs:
                           run: dotnet YolusCLI.dll
 
                         - name: Build
-                          run: rojo build -o vsds-${{ github.ref_name }}.rbxm
+                          run: rojo build -o ./upload/vsds-${{ github.ref_name }}.rbxm
+
+                        - name: Create .env for upload container
+                          working-directory: upload
+                          run: echo "ROBLOXCOOKIE=${{ secrets.VSDS_ROBLOXSECURITYKEY }}" > .env
+
+                        - name: Set ENV variables for upload to roblox.com 1
+                          working-directory: upload
+                          run: echo "TARGETFILE=vsds-${{ github.ref_name }}.rbxm" > .env
+
+                        - name: Set ENV variables for upload to roblox.com 2
+                          working-directory: upload
+                          run: echo "TARGETASSET=${{ env.assetId }}" > .env
 
                         #- name: Release changelog to Discord
                         #  uses: tsickert/discord-webhook@v6.0.0
@@ -74,6 +86,14 @@ jobs:
                         - name: Obtain X-CRSF-TOKEN from auth.roblox.com
                           id: auth
                           working-directory: crsf
+                          run: node index.js
+
+                        - name: Setup upload scripts
+                          working-directory: upload
+                          run: yarn install
+
+                        - name: Attempt to upload to roblox.com
+                          working-directory: upload
                           run: node index.js
 
                         - name: Deploy Stage

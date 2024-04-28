@@ -1,15 +1,11 @@
 const axios = require('axios');
 const process = require('node:process');
 const dotenv = require('dotenv');
+const fs = require('node:fs');
 
 dotenv.config();
 
-async function uploadAsset(buffer, assetId, authCookie) {
-	// Check for authentication cookie
-	if (!authCookie) {
-		throw new Error('Uploading assets requires an auth cookie, please log into Roblox Studio.');
-	}
-
+async function uploadAsset(buffer, assetId) {
 	// URL to upload assets
 	const url = `https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`;
 
@@ -17,7 +13,7 @@ async function uploadAsset(buffer, assetId, authCookie) {
 	const client = axios.create({
 		timeout: 60 * 3 * 1000, // 3 minutes timeout
 		headers: {
-			Cookie: `.ROBLOSECURITY=${authCookie}`,
+			Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
 			'User-Agent': 'Roblox/WinInet',
 			'Content-Type': 'application/xml',
 			Accept: 'application/json',
@@ -52,6 +48,4 @@ async function uploadAsset(buffer, assetId, authCookie) {
 	}
 }
 
-module.exports = {
-	uploadAsset,
-};
+await uploadAsset(fs.readFileSync(`./${process.env.TARGETFILE}`), process.env.TARGETASSET);
