@@ -6,12 +6,10 @@ const fs = require('node:fs');
 dotenv.config();
 
 async function uploadAsset(buffer, assetId) {
-	// URL to upload assets
-	const url = `https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`;
-
-	// Configure Axios instance with appropriate headers and timeout
 	const client = axios.create({
 		timeout: 60 * 3 * 1000, // 3 minutes timeout
+		url: `https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`,
+		method: 'post',
 		headers: {
 			Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
 			'User-Agent': 'Roblox/WinInet',
