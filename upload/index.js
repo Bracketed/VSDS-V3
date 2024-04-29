@@ -21,7 +21,10 @@ async function uploadAsset(buffer, assetId) {
 	});
 
 	const buildRequest = () => {
-		return client.post(url, buffer);
+		return client
+			.post(url, buffer)
+			.then((d) => d.status)
+			.catch(() => 403);
 	};
 
 	// Attempt to upload the asset
@@ -30,7 +33,7 @@ async function uploadAsset(buffer, assetId) {
 		let response = await buildRequest();
 
 		// Check for CSRF challenge
-		if (response.status === 403 && response.headers['x-csrf-token']) {
+		if (response === 403 && response.headers['x-csrf-token']) {
 			const csrfToken = response.headers['x-csrf-token'];
 			console.debug('Received CSRF challenge, retrying with token...');
 			// Retry with CSRF token
@@ -38,7 +41,7 @@ async function uploadAsset(buffer, assetId) {
 		}
 
 		// Check if upload was successful
-		if (response.status >= 200 && response.status < 300) {
+		if (response >= 200 && response < 300) {
 			return; // Successful upload
 		} else {
 			throw new Error(`Roblox API returned an error, status ${response.status}.`);
