@@ -2,6 +2,7 @@ const axios = require('axios');
 const process = require('node:process');
 const dotenv = require('dotenv');
 const fs = require('node:fs');
+const { hostname } = require('node:os');
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ async function uploadAsset(buffer, assetId) {
 	const client = axios.create({
 		timeout: 60 * 3 * 1000, // 3 minutes timeout
 		baseUrl: 'https://data.roblox.com/',
+		hostname: 'https://data.roblox.com/',
 		method: 'POST',
 		data: buffer,
 		headers: {
