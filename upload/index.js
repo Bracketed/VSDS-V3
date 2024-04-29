@@ -24,7 +24,10 @@ async function uploadAsset(buffer, assetId) {
 		return client
 			.post(url, buffer)
 			.then((d) => d)
-			.catch((e) => e);
+			.catch((e) => {
+				console.error(e);
+				return e;
+			});
 	};
 
 	// Attempt to upload the asset
