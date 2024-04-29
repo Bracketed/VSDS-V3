@@ -23,8 +23,8 @@ async function uploadAsset(buffer, assetId) {
 	const buildRequest = () => {
 		return client
 			.post(url, buffer)
-			.then((d) => d.status)
-			.catch(() => 403);
+			.then((d) => d)
+			.catch((e) => e);
 	};
 
 	// Attempt to upload the asset
