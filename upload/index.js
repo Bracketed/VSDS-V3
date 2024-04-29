@@ -30,28 +30,23 @@ async function uploadAsset(buffer, assetId) {
 			});
 	};
 
-	// Attempt to upload the asset
-	try {
-		console.debug('Uploading to Roblox...');
-		let response = await buildRequest();
+	console.debug('Uploading to Roblox...');
+	let response = await buildRequest();
 
-		// Check for CSRF challenge
-		if (response.response.status === 403 && response.response.headers['x-csrf-token']) {
-			const csrfToken = response.response.headers['x-csrf-token'];
-			console.debug('Received CSRF challenge, retrying with token...');
-			// Retry with CSRF token
-			client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
-			response = await buildRequest();
-		}
+	// Check for CSRF challenge
+	if (response.response.status === 403 && response.response.headers['x-csrf-token']) {
+		const csrfToken = response.response.headers['x-csrf-token'];
+		console.debug('Received CSRF challenge, retrying with token...');
+		// Retry with CSRF token
+		client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
+		response = await buildRequest();
+	}
 
-		// Check if upload was successful
-		if (response.response.status >= 200 && response.response.status < 300) {
-			return; // Successful upload
-		} else {
-			throw new Error(`Roblox API returned an error, status ${response.status}.`);
-		}
-	} catch (error) {
-		throw new Error(`Error during upload: ${error.message}`);
+	// Check if upload was successful
+	if (response.response.status >= 200 && response.response.status < 300) {
+		return; // Successful upload
+	} else {
+		throw new Error(`Roblox API returned an error, status ${response.status}.`);
 	}
 }
 
