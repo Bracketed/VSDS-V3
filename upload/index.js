@@ -8,8 +8,9 @@ dotenv.config();
 async function uploadAsset(buffer, assetId) {
 	const client = axios.create({
 		timeout: 60 * 3 * 1000, // 3 minutes timeout
-		url: `https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`,
-		method: 'post',
+		baseUrl: 'https://data.roblox.com/',
+		method: 'POST',
+		data: buffer,
 		headers: {
 			Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
 			'User-Agent': 'Roblox/WinInet',
@@ -18,18 +19,14 @@ async function uploadAsset(buffer, assetId) {
 		},
 	});
 
-	const buildRequest = () => {
-		return client
-			.post(url, buffer)
-			.then((d) => d)
-			.catch((e) => {
-				console.error(e);
-				return e;
-			});
-	};
-
 	console.debug('Uploading to Roblox...');
-	let response = await buildRequest();
+	let response = await client
+		.request(`Data/Upload.ashx?assetid=${assetId}`)
+		.then((d) => d)
+		.catch((e) => {
+			console.error(e);
+			return e;
+		});
 
 	// Check for CSRF challenge
 	if (response.response.status === 403 && response.response.headers['x-csrf-token']) {
@@ -37,7 +34,13 @@ async function uploadAsset(buffer, assetId) {
 		console.debug('Received CSRF challenge, retrying with token...');
 		// Retry with CSRF token
 		client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
-		response = await buildRequest();
+		response = await client
+			.request(`Data/Upload.ashx?assetid=${assetId}`)
+			.then((d) => d)
+			.catch((e) => {
+				console.error(e);
+				return e;
+			});
 	}
 
 	// Check if upload was successful
