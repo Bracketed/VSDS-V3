@@ -40,7 +40,8 @@ async function uploadAsset(buffer, assetId) {
 			const csrfToken = response.response.headers['x-csrf-token'];
 			console.debug('Received CSRF challenge, retrying with token...');
 			// Retry with CSRF token
-			response = await buildRequest().then((req) => req.setHeader('X-CSRF-Token', csrfToken));
+			client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
+			response = await buildRequest();
 		}
 
 		// Check if upload was successful
