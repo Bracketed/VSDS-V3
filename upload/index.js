@@ -9,8 +9,6 @@ dotenv.config();
 async function uploadAsset(buffer, assetId) {
 	const client = axios.create({
 		timeout: 60 * 3 * 1000, // 3 minutes timeout
-		baseUrl: 'https://data.roblox.com/',
-		hostname: 'https://data.roblox.com/',
 		method: 'POST',
 		data: buffer,
 		headers: {
@@ -23,7 +21,7 @@ async function uploadAsset(buffer, assetId) {
 
 	console.debug('Uploading to Roblox...');
 	let response = await client
-		.request(`Data/Upload.ashx?assetid=${assetId}`)
+		.request(`https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`)
 		.then((d) => d)
 		.catch((e) => {
 			console.error(e);
@@ -37,7 +35,7 @@ async function uploadAsset(buffer, assetId) {
 		// Retry with CSRF token
 		client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
 		response = await client
-			.request(`Data/Upload.ashx?assetid=${assetId}`)
+			.request(`https://data.roblox.com/Data/Upload.ashx?assetid=${assetId}`)
 			.then((d) => d)
 			.catch((e) => {
 				console.error(e);
