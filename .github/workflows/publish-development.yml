@@ -12,6 +12,10 @@ jobs:
         build:
                 name: build
                 runs-on: ubuntu-latest
+                permissions:
+                        id-token: write
+                        attestations: write
+                        contents: read # optional, usually required
                 steps:
                         - uses: actions/checkout@v4.1.1
                         - uses: actions/setup-dotnet@v4
@@ -75,3 +79,7 @@ jobs:
                           with:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds-${{ github.ref_name }}.rbxm
+
+                        - uses: github-early-access/generate-build-provenance@main
+                          with:
+                                  subject-path: '${{ github.workspace }}/upload/vsds-${{ github.ref_name }}.rbxm'
