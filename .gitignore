@@ -371,5 +371,5 @@ FodyWeavers.xsd
 
 # Pre-built obfuscator
 #Obfuscator
-.env
+#.env
 yarn.lock
