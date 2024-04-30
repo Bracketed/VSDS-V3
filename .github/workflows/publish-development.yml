@@ -75,19 +75,6 @@ jobs:
                         #          username: '@Github'
                         #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
-                        - name: Create .env for CRSF container
-                          working-directory: crsf
-                          run: echo "ROBLOXCOOKIE=${{ secrets.VSDS_ROBLOXSECURITYKEY }}" > .env
-
-                        - name: Setup CRSF container
-                          working-directory: crsf
-                          run: yarn install
-
-                        - name: Obtain X-CRSF-TOKEN from auth.roblox.com
-                          id: auth
-                          working-directory: crsf
-                          run: node index.js
-
                         - name: Setup upload scripts
                           working-directory: upload
                           run: yarn install
@@ -95,20 +82,6 @@ jobs:
                         - name: Attempt to upload to roblox.com
                           working-directory: upload
                           run: node index.js
-
-                        - name: Deploy Stage
-                          uses: fjogeleit/http-request-action@v1
-                          with:
-                                  url: 'https://data.roblox.com/Data/Upload.ashx?assetid=${{ env.assetId }}'
-                                  method: 'POST'
-                                  contentType: 'application/octet-stream'
-                                  customHeaders: '{"User-Agent":"Roblox/WinInet","X-CSRF-Token":"${{ steps.auth.outputs.CRSF-TOKEN }}","Accept":"application/json","Cookie":".ROBLOSECURITY=${{ secrets.VSDS_ROBLOXSECURITYKEY }}"}'
-                                  files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
-                                  timeout: 10000
-                                  preventFailureOnNoResponse: 'true'
-
-                        #- name: Publish VSDS V3 Development Version to roblox.com
-                        #  run: rojo upload "/home/runner/work/VSDS-V3/VSDS-V3" --cookie "${{ secrets.VSDS_ROBLOXSECURITYKEY }}" --asset_id ${{ env.assetId }}
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
