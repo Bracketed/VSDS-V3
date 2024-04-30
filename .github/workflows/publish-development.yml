@@ -60,11 +60,11 @@ jobs:
 
                         - name: Set ENV variables for upload to roblox.com 1
                           working-directory: upload
-                          run: echo "TARGETFILE=vsds-${{ github.ref_name }}.rbxm" >> .env
+                          run: echo "\nTARGETFILE=vsds-${{ github.ref_name }}.rbxm" >> .env
 
                         - name: Set ENV variables for upload to roblox.com 2
                           working-directory: upload
-                          run: echo "TARGETASSET=${{ env.assetId }}" >> .env
+                          run: echo "\nTARGETASSET=${{ env.assetId }}" >> .env
 
                         #- name: Release changelog to Discord
                         #  uses: tsickert/discord-webhook@v6.0.0
