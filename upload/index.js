@@ -1,15 +1,14 @@
-import { env as Environment } from 'node:process';
 import dotenv from 'dotenv';
 import fs from 'node:fs';
 import nbx from 'noblox.js';
 
 dotenv.config();
 
-const usr = await nbx.setCookie(Environment.ROBLOXCOOKIE);
+const usr = await nbx.setCookie(process.env.ROBLOXCOOKIE);
 console.log(`Logged in as ${usr.UserName} [${usr.UserID}]`);
 
 const res = await nbx.uploadModel(
-	fs.readFileSync(`./${Environment.TARGETFILE}`),
+	fs.readFileSync(`./${process.env.TARGETFILE}`),
 	{
 		name: 'VSDS-V3-DEV',
 		description:
@@ -18,7 +17,7 @@ const res = await nbx.uploadModel(
 		allowComments: false,
 		groupId: 33845647,
 	},
-	Environment.TARGETASSET
+	process.env.TARGETASSET
 );
 
 console.log(res);
