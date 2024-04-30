@@ -7,5 +7,4 @@ const nbx = require('noblox.js');
 dotenv.config();
 
 nbx.setCookie(process.env.ROBLOXCOOKIE);
-nbx.nbx.uploadModel(fs.readFileSync(`./${process.env.TARGETFILE}`), { name: 'VSDS-V3-DEV' }, process.env.TARGETASSET);
-
+nbx.uploadModel(fs.readFileSync(`./${process.env.TARGETFILE}`), { name: 'VSDS-V3-DEV' }, process.env.TARGETASSET);
