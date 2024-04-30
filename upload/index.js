@@ -6,11 +6,11 @@ const fs = require('node:fs');
 dotenv.config();
 
 async function uploadAsset() {
-	const buffer = Buffer.from(fs.readFileSync(`./${process.env.TARGETFILE}`));
+	const buffer = fs.readFileSync(`./${process.env.TARGETFILE}`);
 
 	console.debug('Uploading to Roblox...');
 	let response = await axios
-		.post(`https://data.roblox.com/Data/Upload.ashx?assetid={${process.env.TARGETASSET}}`, buffer, {
+		.post(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`, buffer, {
 			timeout: 60 * 3 * 1000,
 			headers: {
 				Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
@@ -30,7 +30,7 @@ async function uploadAsset() {
 		console.debug('Received CSRF challenge, retrying with token...');
 
 		response = await axios
-			.post(`https://data.roblox.com/Data/Upload.ashx?assetid={${process.env.TARGETASSET}}`, buffer, {
+			.post(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`, buffer, {
 				timeout: 60 * 3 * 1000,
 				headers: {
 					'X-CSRF-Token': csrfToken,
