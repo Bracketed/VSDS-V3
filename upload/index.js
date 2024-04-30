@@ -8,21 +8,17 @@ dotenv.config();
 async function uploadAsset() {
 	const buffer = Buffer.from(fs.readFileSync(`./${process.env.TARGETFILE}`));
 
-	const client = axios.create({
-		timeout: 60 * 3 * 1000,
-		method: 'POST',
-		data: buffer,
-		headers: {
-			Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
-			'User-Agent': 'Roblox/WinInet',
-			'Content-Type': 'application/xml',
-			Accept: 'application/json',
-		},
-	});
-
 	console.debug('Uploading to Roblox...');
-	let response = await client
-		.request(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`)
+	let response = await axios
+		.post(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`, buffer, {
+			timeout: 60 * 3 * 1000,
+			headers: {
+				Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
+				'User-Agent': 'Roblox/WinInet',
+				'Content-Type': 'application/xml',
+				Accept: 'application/json',
+			},
+		})
 		.then((d) => d)
 		.catch((e) => {
 			console.error(e);
@@ -33,9 +29,17 @@ async function uploadAsset() {
 		const csrfToken = response.response.headers['x-csrf-token'];
 		console.debug('Received CSRF challenge, retrying with token...');
 
-		client.defaults.headers.post['X-CSRF-Token'] = csrfToken;
-		response = await client
-			.request(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`)
+		response = await axios
+			.post(`https://data.roblox.com/Data/Upload.ashx?assetid=${process.env.TARGETASSET}`, buffer, {
+				timeout: 60 * 3 * 1000,
+				headers: {
+					'X-CSRF-Token': csrfToken,
+					Cookie: `.ROBLOSECURITY=${process.env.ROBLOXCOOKIE}`,
+					'User-Agent': 'Roblox/WinInet',
+					'Content-Type': 'application/xml',
+					Accept: 'application/json',
+				},
+			})
 			.then((d) => d)
 			.catch((e) => {
 				console.error(e);
