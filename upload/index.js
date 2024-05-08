@@ -4,7 +4,8 @@ import nbx from 'noblox.js';
 
 dotenv.config();
 
-const usr = await nbx.setCookie(process.env.ROBLOXCOOKIE);
+await nbx.setCookie(process.env.ROBLOXCOOKIE);
+const usr = await nbx.getCurrentUser();
 console.log(`Logged in as ${usr.UserName} [${usr.UserID}]`);
 
 const res = await nbx.uploadModel(
