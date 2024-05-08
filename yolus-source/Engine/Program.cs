@@ -22,11 +22,11 @@ namespace YolusCORE
 
         public static async Task<ObfuscationResult> Obfuscate(string path, string input, bool isSpecialFile)
         {
-            string OS = "/home/runner/work/VSDS-V3/VSDS-V3/.lua/bin/";
-            ObfuscationSettings settings = new ObfuscationSettings();
+            string OS = "/home/bracketed/actions-runner/_work/VSDS-V3/VSDS-V3/.lua/bin/";
+            ObfuscationSettings settings = new();
             DateTime CurrentDate = DateTime.Now;
             string ObfuscationID = Guid.NewGuid().ToString();
-            ObfuscationResult result = new ObfuscationResult();
+            ObfuscationResult result = new();
 
             try
             {
@@ -34,7 +34,7 @@ namespace YolusCORE
 
                 string l = Path.Combine(path, "luac.out");
 
-                Process proc = new Process
+                Process proc = new()
                 {
                     StartInfo =
                     {
@@ -158,7 +158,7 @@ namespace YolusCORE
 
                 if (settings.ControlFlow)
                 {
-                    CFContext cf = new CFContext(lChunk);
+                    CFContext cf = new(lChunk);
                     cf.DoChunks();
                 }
 
