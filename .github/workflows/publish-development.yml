@@ -37,8 +37,12 @@ jobs:
                           run: mv release.project.json default.project.json
 
                         - name: Setup Aftman
-                          run: aftman install
-                        # - name: Build Obfuscator
+                          run: ./aftmanci self-install
+
+                        - name: Setup Aftman Deps
+                          run: ./aftmanci install
+
+                          # - name: Build Obfuscator
                         #   working-directory: yolus-source
                         #   run: dotnet build
 
