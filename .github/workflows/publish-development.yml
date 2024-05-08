@@ -36,10 +36,8 @@ jobs:
                         - name: Set up production version for rojo
                           run: mv release.project.json default.project.json
 
-                        - uses: ok-nick/setup-aftman@v0.4.2
-                          with:
-                                  token: ${{ secrets.GITHUB_TOKEN }}
-
+                        - name: Setup Aftman
+                          run: aftman install
                         # - name: Build Obfuscator
                         #   working-directory: yolus-source
                         #   run: dotnet build
