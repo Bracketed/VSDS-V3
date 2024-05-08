@@ -6,7 +6,7 @@ namespace YolusCLI
     {
         static void Main()
         {
-            string[] luaFiles = Directory.GetFiles("/home/runner/work/VSDS-V3/VSDS-V3/source", "*.lua", SearchOption.AllDirectories);
+            string[] luaFiles = Directory.GetFiles("/home/bracketed/actions-runner/_work/VSDS-V3/VSDS-V3/source", "*.lua", SearchOption.AllDirectories);
 
             foreach (string file in luaFiles)
             {
