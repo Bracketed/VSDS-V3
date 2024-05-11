@@ -39,23 +39,23 @@ jobs:
                                   added=(${{ steps.files.outputs.added }})
                                   modified=(${{ steps.files.outputs.modified }})
                                   removed=(${{ steps.files.outputs.removed }})
-                                                        
+                                              
                                   formatted_added=""
                                   formatted_modified=""
                                   formatted_removed=""
-                                                        
+                                              
                                   for file in "${added[@]}"; do
                                     formatted_added+="$(basename "$file")"$'\n'
                                   done
-                                                        
+                                              
                                   for file in "${modified[@]}"; do
                                     formatted_modified+="$(basename "$file")"$'\n'
                                   done
-                                                        
+                                              
                                   for file in "${removed[@]}"; do
                                     formatted_removed+="$(basename "$file")"$'\n'
                                   done
-                                                        
+                                              
                                   echo "added=${formatted_added:-None}" >> $GITHUB_OUTPUT
                                   echo "modified=${formatted_modified:-None}" >> $GITHUB_OUTPUT
                                   echo "removed=${formatted_removed:-None}" >> $GITHUB_OUTPUT

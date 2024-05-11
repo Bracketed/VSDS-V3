@@ -24,17 +24,10 @@ end
 
 local M = {}
 
---- The module's name.
-M._NAME = 'luasrcdiet'
-
---- The module's version number.
-M._VERSION = '1.0.0'
-
---- The module's homepage.
-M._HOMEPAGE = 'https://github.com/jirutka/luasrcdiet'
-
---- All optimizations disabled.
-M.NONE_OPTS = {
+M._NAME = 'luasrcdiet' --- The module's name.
+M._VERSION = '1.0.0' --- The module's version number.
+M._HOMEPAGE = 'https://github.com/jirutka/luasrcdiet' --- The module's homepage.
+M.NONE_OPTS = { --- All optimizations disabled.
     binequiv = false,
     comments = false,
     emptylines = false,
@@ -48,23 +41,20 @@ M.NONE_OPTS = {
     whitespace = false
 }
 
---- Basic optimizations enabled.
 -- @table BASIC_OPTS
-M.BASIC_OPTS = merge(M.NONE_OPTS, {
+M.BASIC_OPTS = merge(M.NONE_OPTS, { --- Basic optimizations enabled.
     comments = true,
     emptylines = true,
     srcequiv = true,
     whitespace = true
 })
 
---- Defaults.
 -- @table DEFAULT_OPTS
-M.DEFAULT_OPTS = merge(M.BASIC_OPTS, {locals = true, numbers = true})
+M.DEFAULT_OPTS = merge(M.BASIC_OPTS, {locals = true, numbers = true}) --- Defaults.
 
---- Maximum optimizations enabled (all except experimental).
 -- @table MAXIMUM_OPTS
 M.MAXIMUM_OPTS = merge(M.DEFAULT_OPTS,
-                       {entropy = true, eols = true, strings = true})
+                       {entropy = true, eols = true, strings = true}) --- Maximum optimizations enabled (all except experimental).
 
 --- Optimizes the given Lua source code.
 --
