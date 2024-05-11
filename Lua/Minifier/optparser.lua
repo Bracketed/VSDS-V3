@@ -17,9 +17,9 @@
 local byte = string.byte
 local char = string.char
 local concat = table.concat
-local fmt = string.format
+-- local fmt = string.format
 local pairs = pairs
-local rep = string.rep
+-- local rep = string.rep
 local sort = table.sort
 local sub = string.sub
 
@@ -49,7 +49,7 @@ local toklist, seminfolist, -- token lists (lexer output)
 tokpar, seminfopar, xrefpar, -- token lists (parser output)
 globalinfo, localinfo, -- variable information tables
 statinfo, -- statment type table
-globaluniq, localuniq, -- unique name tables
+globaluniq, -- localuniq, -- unique name tables
 var_new, -- index of new variable names
 varlist -- list of output variables
 
@@ -203,6 +203,7 @@ end
 -- @tparam table localuniq
 -- @tparam table afteruniq
 -- @tparam table option
+--[[
 local function stats_summary(globaluniq, localuniq, afteruniq, option) -- luacheck: ignore 431
     local print = M.print or print
     local opt_details = option.DETAILS
@@ -330,6 +331,7 @@ local function stats_summary(globaluniq, localuniq, afteruniq, option) -- luache
         print(hl .. "\n")
     end
 end
+--]]
 
 --- Does experimental optimization for f("string") statements.
 --
@@ -417,7 +419,7 @@ local function optimize_locals(option)
 
     -- Preprocess global/local tables, handle entropy reduction.
     globaluniq = preprocess(globalinfo)
-    localuniq = preprocess(localinfo)
+    -- localuniq = preprocess(localinfo)
     if option["opt-entropy"] then -- for entropy improvement
         recalc_for_entropy(option)
     end

@@ -441,9 +441,10 @@ local function process_file(srcfl, destfl)
         local tok, seminfo = toklist[i], seminfolist[i]
         stat_add(tok, seminfo)
     end -- for
-    local stat_a = stat_calc()
+    -- local stat_a = stat_calc()
 
     -- Display output.
+    --[[
     print("Statistics for: " .. srcfl .. " -> " .. destfl .. "\n")
     local function figures(tt)
         return stat1_c[tt], stat1_l[tt], stat1_a[tt], stat_c[tt], stat_l[tt],
@@ -468,6 +469,7 @@ local function process_file(srcfl, destfl)
     print(hl)
     print(fmt(tabf2, "Total Tokens", figures("TOTAL_TOK")))
     print(hl)
+    --]]
 
     -- Report warning flags from optimizing process.
     if warn.LSTRING then
