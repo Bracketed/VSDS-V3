@@ -3,11 +3,11 @@
 ----
 package.path = package.path .. ";../Lua/Minifier/?.lua"
 
-local llex = require 'llex'
-local lparser = require 'lparser'
-local optlex = require 'optlex'
-local optparser = require 'optparser'
-local utils = require 'utils'
+local llex = require('llex')
+local lparser = require('lparser')
+local optlex = require('optlex')
+local optparser = require('optparser')
+local utils = require('utils')
 
 local concat = table.concat
 local merge = utils.merge

@@ -21,10 +21,9 @@ local fmt = string.format
 local match = string.match
 local sub = string.sub
 local tonumber = tonumber
-
 local M = {}
-
 local kw = {}
+
 for v in ([[
 and break do else elseif end false for function if in
 local nil not or repeat return then true until while]]):gmatch("%S+") do

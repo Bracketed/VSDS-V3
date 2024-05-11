@@ -16,13 +16,12 @@
 ----
 package.path = package.path .. ";../Lua/Minifier/?.lua"
 
-local fs = require "fs"
-local llex = require "llex"
-local lparser = require "lparser"
-local luasrcdiet = require "init"
-local optlex = require "optlex"
-local optparser = require "optparser"
-
+local fs = require("fs")
+local llex = require("llex")
+local lparser = require("lparser")
+local luasrcdiet = require("init")
+local optlex = require("optlex")
+local optparser = require("optparser")
 local byte = string.byte
 local concat = table.concat
 local find = string.find
@@ -36,9 +35,7 @@ local sub = string.sub
 local plugin
 
 local LUA_VERSION = match(_VERSION, " (5%.[123])$") or "5.1"
-
--- Is --opt-binequiv available for this Lua version?
-local BIN_EQUIV_AVAIL = LUA_VERSION == "5.1" and not package.loaded.jit
+local BIN_EQUIV_AVAIL = LUA_VERSION == "5.1" and not package.loaded.jit -- Is --opt-binequiv available for this Lua version?
 
 ---------------------- Messages and textual data ----------------------
 

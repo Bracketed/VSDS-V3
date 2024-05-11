@@ -22,7 +22,6 @@ local pairs = pairs
 local rep = string.rep
 local sort = table.sort
 local sub = string.sub
-
 local M = {}
 
 -- Letter frequencies for reducing symbol entropy (fixed version)
