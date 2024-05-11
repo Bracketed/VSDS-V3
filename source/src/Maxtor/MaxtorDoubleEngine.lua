@@ -1,5 +1,6 @@
 return {
     run = function(script, ...)
+        -- ill be back to update these doors one day
         local Door1 = script.Parent.DoorL
         local Door2 = script.Parent.DoorR
         local DoorSettings = require(script.Parent.Settings)
