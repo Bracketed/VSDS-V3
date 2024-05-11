@@ -6,6 +6,7 @@ on:
                 paths:
                         - source/**
                         - Obfuscator/**
+                        - yolus-source/**
                         - .github/**
         workflow_dispatch:
 
@@ -97,6 +98,42 @@ jobs:
                         - name: Create Release
                           uses: softprops/action-gh-release@v2
                           with:
+                                  name: ${{ steps.release-data.outputs.title }}
+                                  tag_name: ${{ steps.release-data.outputs.tag }}
+                                  files: vsds-${{ github.ref_name }}.rbxm
+                                  body: |
+                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+
+                                          *Commit Message: "${{ github.event.head_commit.message }}"*
+                                          *Commit SHA:* ${{ github.sha }}
+                                          *Commited At:* `${{ steps.release-data.outputs.date }}`
+                                          *Committed By:* `${{ github.actor }}`
+                                          *Files Attached:* 
+                                          - `Source code (zip)`
+                                          - `Source code (tar.gz)`
+                                          - `vsds-${{ github.ref_name }}.rbxm`
+
+                                          **Files Modified:**
+                                          Added:
+                                            ```diff
+                                            ${{ steps.formatting.outputs.added }}
+                                            ```
+                                          Modified:
+                                            ```diff
+                                            ${{ steps.formatting.outputs.modified }}
+                                            ```
+                                          Removed:
+                                            ```diff
+                                            ${{ steps.formatting.outputs.removed }}
+                                            ```
+                                  draft: false
+                                  make_latest: true
+
+                        - name: Create Release [PUBLIC]
+                          uses: softprops/action-gh-release@v2
+                          with:
+                                  repository: Bracketed/VSDS
+                                  token: ${{ secrets.VSDS_PUBCOMMIT }}
                                   name: ${{ steps.release-data.outputs.title }}
                                   tag_name: ${{ steps.release-data.outputs.tag }}
                                   files: vsds-${{ github.ref_name }}.rbxm
