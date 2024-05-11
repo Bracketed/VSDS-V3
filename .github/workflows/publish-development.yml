@@ -36,22 +36,22 @@ jobs:
                         - name: Format changed files
                           id: formatting
                           run: |
-                                  added=$(echo "${{ steps.files.outputs.added }}" | tr ' ' '\n' | sed 's/^/+ /g')
-                                  modified=$(echo "${{ steps.files.outputs.modified }}" | tr ' ' '\n' | sed 's/^/+ /g')
-                                  removed=$(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/- /g')
-                                                        
-                                  if [[ $(echo "$added" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
+                                  added=$(echo "${{ steps.files.outputs.added }}" | sed 's/^\(\+ \)/"+ \1"/g')
+                                  modified=$(echo "${{ steps.files.outputs.modified }}" | sed 's/^\(\+ \)/"+ \1"/g')
+                                  removed=$(echo "${{ steps.files.outputs.removed }}" | sed 's/^\(- \)/"- \1"/g')
+                                                                                      
+                                  if [[ $(echo "$added" | grep -cE '^("\+ ){0,1}"$') -eq 1 ]]; then
                                     added="# None"
                                   fi
-
-                                  if [[ $(echo "$modified" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
+                                                        
+                                  if [[ $(echo "$modified" | grep -cE '^("\+ ){0,1}"$') -eq 1 ]]; then
                                     modified="# None"
                                   fi
-
-                                  if [[ $(echo "$removed" | grep -cE '^(\- ){0,1}$') -eq 1 ]]; then
+                                                        
+                                  if [[ $(echo "$removed" | grep -cE '^("- ){0,1}"$') -eq 1 ]]; then
                                     removed="# None"
                                   fi
-                                                        
+                                                                                      
                                   echo "added=$added" >> $GITHUB_OUTPUT
                                   echo "modified=$modified" >> $GITHUB_OUTPUT
                                   echo "removed=$removed" >> $GITHUB_OUTPUT
