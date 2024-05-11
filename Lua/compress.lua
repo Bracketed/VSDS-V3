@@ -20,9 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-]]
-
-local char = string.char
+]] local char = string.char
 local type = type
 local select = select
 local sub = string.sub
@@ -38,25 +36,23 @@ end
 
 local function dictAddA(str, dict, a, b)
     if a >= 256 then
-        a, b = 0, b+1
+        a, b = 0, b + 1
         if b >= 256 then
             dict = {}
             b = 1
         end
     end
-    dict[str] = char(a,b)
-    a = a+1
+    dict[str] = char(a, b)
+    a = a + 1
     return dict, a, b
 end
 
 local function compress(input)
     if type(input) ~= "string" then
-        return nil, "string expected, got "..type(input)
+        return nil, "string expected, got " .. type(input)
     end
     local len = #input
-    if len <= 1 then
-        return "u"..input
-    end
+    if len <= 1 then return "u" .. input end
 
     local dict = {}
     local a, b = 0, 1
@@ -67,7 +63,7 @@ local function compress(input)
     local word = ""
     for i = 1, len do
         local c = sub(input, i, i)
-        local wc = word..c
+        local wc = word .. c
         if not (basedictcompress[wc] or dict[wc]) then
             local write = basedictcompress[word] or dict[word]
             if not write then
@@ -75,10 +71,8 @@ local function compress(input)
             end
             result[n] = write
             resultlen = resultlen + #write
-            n = n+1
-            if  len <= resultlen then
-                return "u"..input
-            end
+            n = n + 1
+            if len <= resultlen then return "u" .. input end
             dict, a, b = dictAddA(wc, dict, a, b)
             word = c
         else
@@ -86,11 +80,9 @@ local function compress(input)
         end
     end
     result[n] = basedictcompress[word] or dict[word]
-    resultlen = resultlen+#result[n]
-    n = n+1
-    if  len <= resultlen then
-        return "u"..input
-    end
+    resultlen = resultlen + #result[n]
+    n = n + 1
+    if len <= resultlen then return "u" .. input end
     return tconcat(result)
 end
 
@@ -159,22 +151,18 @@ local Args = {...};
 local FN = Args[1];
 
 local F = io.open(FN, 'r');
-if (not F) then
-    return print'-- FAILURE TO COMPRESS';
-end;
-local Str = F:read'*all';
+if (not F) then return print '-- FAILURE TO COMPRESS'; end
+local Str = F:read '*all';
 F:close();
 
 local Comp = compress(Str);
 local NewS = '';
-for Idx = 1, #Comp do
-    NewS = NewS .. '\\' .. Comp:sub(Idx, Idx):byte();
-end;
+for Idx = 1, #Comp do NewS = NewS .. '\\' .. Comp:sub(Idx, Idx):byte(); end
 
 DecompStr = DecompStr:gsub('STRING', NewS);
 package.path = package.path .. ";../Lua/?.lua"
 
-local Minify = require'minify';
+local Minify = require 'minify';
 
 local AST = Minify.CreateLuaParser(DecompStr);
 local GS, RS = Minify.AddVariableInfo(AST);

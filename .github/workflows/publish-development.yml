@@ -6,6 +6,7 @@ on:
                 paths:
                         - source/**
                         - Obfuscator/**
+                        - Lua/**
                         - yolus-source/**
                         - .github/**
         workflow_dispatch:
@@ -72,6 +73,10 @@ jobs:
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
+
+                        - name: Test build obfuscator
+                          working-directory: yolus-source
+                          run: dotnet build --output ../Test
 
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator

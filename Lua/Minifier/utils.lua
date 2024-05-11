@@ -15,16 +15,14 @@ local M = {}
 --
 -- @tparam {table,...} ... The tables to merge.
 -- @treturn table A new table.
-function M.merge (...)
-  local result = {}
+function M.merge(...)
+    local result = {}
 
-  for _, tab in ipairs{...} do
-    for key, val in pairs(tab) do
-      result[key] = val
+    for _, tab in ipairs {...} do
+        for key, val in pairs(tab) do result[key] = val end
     end
-  end
 
-  return result
+    return result
 end
 
 return M

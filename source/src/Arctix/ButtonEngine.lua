@@ -12,7 +12,7 @@ return {
         local ButtonInteraction
 
         function Button.ChangeLED(Color)
-            for i, LED in pairs(script.Parent.Parent.Parts:GetDescendants()) do
+            for _, LED in pairs(script.Parent.Parent.Parts:GetDescendants()) do
                 if LED.Name == 'ButtonLED' then
                     if Color then
                         TS:Create(LED, TSInfo, {Color = Color}):Play()

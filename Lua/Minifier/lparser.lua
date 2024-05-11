@@ -33,25 +33,22 @@ local M = {}
 -- initialization: main variables
 ----------------------------------------------------------------------
 
-local toklist,                  -- grammar-only token tables (token table,
-      seminfolist,              -- semantic information table, line number
-      toklnlist,                -- table, cross-reference table)
-      xreflist,
-      tpos,                     -- token position
-
-      line,                     -- start line # for error messages
-      lastln,                   -- last line # for ambiguous syntax chk
-      tok, seminfo, ln, xref,   -- token, semantic info, line
-      nameref,                  -- proper position of <name> token
-      fs,                       -- current function state
-      top_fs,                   -- top-level function state
-
-      globalinfo,               -- global variable information table
-      globallookup,             -- global variable name lookup table
-      localinfo,                -- local variable information table
-      ilocalinfo,               -- inactive locals (prior to activation)
-      ilocalrefs,               -- corresponding references to activate
-      statinfo                  -- statements labeled by type
+local toklist, -- grammar-only token tables (token table,
+seminfolist, -- semantic information table, line number
+toklnlist, -- table, cross-reference table)
+xreflist, tpos, -- token position
+line, -- start line # for error messages
+lastln, -- last line # for ambiguous syntax chk
+tok, seminfo, ln, xref, -- token, semantic info, line
+nameref, -- proper position of <name> token
+fs, -- current function state
+top_fs, -- top-level function state
+globalinfo, -- global variable information table
+globallookup, -- global variable name lookup table
+localinfo, -- local variable information table
+ilocalinfo, -- inactive locals (prior to activation)
+ilocalrefs, -- corresponding references to activate
+statinfo -- statements labeled by type
 
 -- forward references for local functions
 local explist1, expr, block, exp1, body, chunk
@@ -60,13 +57,11 @@ local explist1, expr, block, exp1, body, chunk
 -- initialization: data structures
 ----------------------------------------------------------------------
 
-local block_follow = {}         -- lookahead check in chunk(), returnstat()
-for v in gmatch("else elseif end until <eof>", "%S+") do
-  block_follow[v] = true
-end
+local block_follow = {} -- lookahead check in chunk(), returnstat()
+for v in gmatch("else elseif end until <eof>", "%S+") do block_follow[v] = true end
 
-local binopr_left = {}          -- binary operators, left priority
-local binopr_right = {}         -- binary operators, right priority
+local binopr_left = {} -- binary operators, left priority
+local binopr_right = {} -- binary operators, right priority
 for op, lt, rt in gmatch([[
 {+ 6 6}{- 6 6}{* 7 7}{/ 7 7}{% 7 7}
 {^ 10 9}{.. 5 4}
@@ -74,13 +69,12 @@ for op, lt, rt in gmatch([[
 {< 3 3}{<= 3 3}{> 3 3}{>= 3 3}
 {and 2 2}{or 1 1}
 ]], "{(%S+)%s(%d+)%s(%d+)}") do
-  binopr_left[op] = lt + 0
-  binopr_right[op] = rt + 0
+    binopr_left[op] = lt + 0
+    binopr_right[op] = rt + 0
 end
 
-local unopr = { ["not"] = true, ["-"] = true,
-                ["#"] = true, } -- unary operators
-local UNARY_PRIORITY = 8        -- priority for unary operators
+local unopr = {["not"] = true, ["-"] = true, ["#"] = true} -- unary operators
+local UNARY_PRIORITY = 8 -- priority for unary operators
 
 --[[--------------------------------------------------------------------
 -- support functions
@@ -92,8 +86,8 @@ local UNARY_PRIORITY = 8        -- priority for unary operators
 ----------------------------------------------------------------------
 
 local function errorline(s, line)
-  local e = M.error or error
-  e(fmt("(source):%d: %s", line or ln, s))
+    local e = M.error or error
+    e(fmt("(source):%d: %s", line or ln, s))
 end
 
 ----------------------------------------------------------------------
@@ -103,32 +97,28 @@ end
 
 -- reads in next token
 local function nextt()
-  lastln = toklnlist[tpos]
-  tok, seminfo, ln, xref
-    = toklist[tpos], seminfolist[tpos], toklnlist[tpos], xreflist[tpos]
-  tpos = tpos + 1
+    lastln = toklnlist[tpos]
+    tok, seminfo, ln, xref = toklist[tpos], seminfolist[tpos], toklnlist[tpos],
+                             xreflist[tpos]
+    tpos = tpos + 1
 end
 
 -- peek at next token (single lookahead for table constructor)
-local function lookahead()
-  return toklist[tpos]
-end
+local function lookahead() return toklist[tpos] end
 
 ----------------------------------------------------------------------
 -- throws a syntax error, or if token expected is not there
 ----------------------------------------------------------------------
 
 local function syntaxerror(msg)
-  if tok ~= "<number>" and tok ~= "<string>" then
-    if tok == "<name>" then tok = seminfo end
-    tok = "'"..tok.."'"
-  end
-  errorline(msg.." near "..tok)
+    if tok ~= "<number>" and tok ~= "<string>" then
+        if tok == "<name>" then tok = seminfo end
+        tok = "'" .. tok .. "'"
+    end
+    errorline(msg .. " near " .. tok)
 end
 
-local function error_expected(token)
-  syntaxerror("'"..token.."' expected")
-end
+local function error_expected(token) syntaxerror("'" .. token .. "' expected") end
 
 ----------------------------------------------------------------------
 -- tests for a token, returns outcome
@@ -136,45 +126,46 @@ end
 ----------------------------------------------------------------------
 
 local function testnext(c)
-  if tok == c then nextt(); return true end
+    if tok == c then
+        nextt();
+        return true
+    end
 end
 
 ----------------------------------------------------------------------
 -- check for existence of a token, throws error if not found
 ----------------------------------------------------------------------
 
-local function check(c)
-  if tok ~= c then error_expected(c) end
-end
+local function check(c) if tok ~= c then error_expected(c) end end
 
 ----------------------------------------------------------------------
 -- verify existence of a token, then skip it
 ----------------------------------------------------------------------
 
 local function checknext(c)
-  check(c); nextt()
+    check(c);
+    nextt()
 end
 
 ----------------------------------------------------------------------
 -- throws error if condition not matched
 ----------------------------------------------------------------------
 
-local function check_condition(c, msg)
-  if not c then syntaxerror(msg) end
-end
+local function check_condition(c, msg) if not c then syntaxerror(msg) end end
 
 ----------------------------------------------------------------------
 -- verifies token conditions are met or else throw error
 ----------------------------------------------------------------------
 
 local function check_match(what, who, where)
-  if not testnext(what) then
-    if where == ln then
-      error_expected(what)
-    else
-      syntaxerror("'"..what.."' expected (to close '"..who.."' at line "..where..")")
+    if not testnext(what) then
+        if where == ln then
+            error_expected(what)
+        else
+            syntaxerror("'" .. what .. "' expected (to close '" .. who ..
+                            "' at line " .. where .. ")")
+        end
     end
-  end
 end
 
 ----------------------------------------------------------------------
@@ -182,11 +173,11 @@ end
 ----------------------------------------------------------------------
 
 local function str_checkname()
-  check("<name>")
-  local ts = seminfo
-  nameref = xref
-  nextt()
-  return ts
+    check("<name>")
+    local ts = seminfo
+    nameref = xref
+    nextt()
+    return ts
 end
 
 --[[--------------------------------------------------------------------
@@ -206,29 +197,29 @@ end
 ----------------------------------------------------------------------
 
 local function new_localvar(name, special)
-  local bl = fs.bl
-  local locallist
-  -- locate locallist in current block object or function root object
-  if bl then
-    locallist = bl.locallist
-  else
-    locallist = fs.locallist
-  end
-  -- build local variable information object and set localinfo
-  local id = #localinfo + 1
-  localinfo[id] = {             -- new local variable object
-    name = name,                -- local variable name
-    xref = { nameref },         -- xref, first value is declaration
-    decl = nameref,             -- location of declaration, = xref[1]
-  }
-  if special or name == "_ENV" then  -- "self" and "_ENV" must be not be changed
-    localinfo[id].is_special = true
-  end
-  -- this can override a local with the same name in the same scope
-  -- but first, keep it inactive until it gets activated
-  local i = #ilocalinfo + 1
-  ilocalinfo[i] = id
-  ilocalrefs[i] = locallist
+    local bl = fs.bl
+    local locallist
+    -- locate locallist in current block object or function root object
+    if bl then
+        locallist = bl.locallist
+    else
+        locallist = fs.locallist
+    end
+    -- build local variable information object and set localinfo
+    local id = #localinfo + 1
+    localinfo[id] = { -- new local variable object
+        name = name, -- local variable name
+        xref = {nameref}, -- xref, first value is declaration
+        decl = nameref -- location of declaration, = xref[1]
+    }
+    if special or name == "_ENV" then -- "self" and "_ENV" must be not be changed
+        localinfo[id].is_special = true
+    end
+    -- this can override a local with the same name in the same scope
+    -- but first, keep it inactive until it gets activated
+    local i = #ilocalinfo + 1
+    ilocalinfo[i] = id
+    ilocalrefs[i] = locallist
 end
 
 ----------------------------------------------------------------------
@@ -238,26 +229,26 @@ end
 ----------------------------------------------------------------------
 
 local function adjustlocalvars(nvars)
-  local sz = #ilocalinfo
-  -- i goes from left to right, in order of local allocation, because
-  -- of something like: local a,a,a = 1,2,3 which gives a = 3
-  while nvars > 0 do
-    nvars = nvars - 1
-    local i = sz - nvars
-    local id = ilocalinfo[i]            -- local's id
-    local obj = localinfo[id]
-    local name = obj.name               -- name of local
-    obj.act = xref                      -- set activation location
-    ilocalinfo[i] = nil
-    local locallist = ilocalrefs[i]     -- ref to lookup table to update
-    ilocalrefs[i] = nil
-    local existing = locallist[name]    -- if existing, remove old first!
-    if existing then                    -- do not overlap, set special
-      obj = localinfo[existing]         -- form of rem, as -id
-      obj.rem = -id
+    local sz = #ilocalinfo
+    -- i goes from left to right, in order of local allocation, because
+    -- of something like: local a,a,a = 1,2,3 which gives a = 3
+    while nvars > 0 do
+        nvars = nvars - 1
+        local i = sz - nvars
+        local id = ilocalinfo[i] -- local's id
+        local obj = localinfo[id]
+        local name = obj.name -- name of local
+        obj.act = xref -- set activation location
+        ilocalinfo[i] = nil
+        local locallist = ilocalrefs[i] -- ref to lookup table to update
+        ilocalrefs[i] = nil
+        local existing = locallist[name] -- if existing, remove old first!
+        if existing then -- do not overlap, set special
+            obj = localinfo[existing] -- form of rem, as -id
+            obj.rem = -id
+        end
+        locallist[name] = id -- activate, now visible to Lua
     end
-    locallist[name] = id                -- activate, now visible to Lua
-  end
 end
 
 ----------------------------------------------------------------------
@@ -267,19 +258,19 @@ end
 ----------------------------------------------------------------------
 
 local function removevars()
-  local bl = fs.bl
-  local locallist
-  -- locate locallist in current block object or function root object
-  if bl then
-    locallist = bl.locallist
-  else
-    locallist = fs.locallist
-  end
-  -- enumerate the local list at current scope and deactivate 'em
-  for _, id in pairs(locallist) do
-    local obj = localinfo[id]
-    obj.rem = xref                      -- set deactivation location
-  end
+    local bl = fs.bl
+    local locallist
+    -- locate locallist in current block object or function root object
+    if bl then
+        locallist = bl.locallist
+    else
+        locallist = fs.locallist
+    end
+    -- enumerate the local list at current scope and deactivate 'em
+    for _, id in pairs(locallist) do
+        local obj = localinfo[id]
+        obj.rem = xref -- set deactivation location
+    end
 end
 
 ----------------------------------------------------------------------
@@ -291,10 +282,10 @@ end
 ----------------------------------------------------------------------
 
 local function new_localvarliteral(name, special)
-  if name:sub(1, 1) == "(" then  -- can skip internal locals
-    return
-  end
-  new_localvar(name, special)
+    if name:sub(1, 1) == "(" then -- can skip internal locals
+        return
+    end
+    new_localvar(name, special)
 end
 
 ----------------------------------------------------------------------
@@ -304,18 +295,18 @@ end
 ----------------------------------------------------------------------
 
 local function searchvar(fs, n)
-  local bl = fs.bl
-  local locallist
-  if bl then
-    locallist = bl.locallist
-    while locallist do
-      if locallist[n] then return locallist[n] end  -- found
-      bl = bl.prev
-      locallist = bl and bl.locallist
+    local bl = fs.bl
+    local locallist
+    if bl then
+        locallist = bl.locallist
+        while locallist do
+            if locallist[n] then return locallist[n] end -- found
+            bl = bl.prev
+            locallist = bl and bl.locallist
+        end
     end
-  end
-  locallist = fs.locallist
-  return locallist[n] or -1  -- found or not found (-1)
+    locallist = fs.locallist
+    return locallist[n] or -1 -- found or not found (-1)
 end
 
 ----------------------------------------------------------------------
@@ -325,25 +316,25 @@ end
 ----------------------------------------------------------------------
 
 local function singlevaraux(fs, n, var)
-  if fs == nil then  -- no more levels?
-    var.k = "VGLOBAL"  -- default is global variable
-    return "VGLOBAL"
-  else
-    local v = searchvar(fs, n)  -- look up at current level
-    if v >= 0 then
-      var.k = "VLOCAL"
-      var.id = v
-      --  codegen may need to deal with upvalue here
-      return "VLOCAL"
-    else  -- not found at current level; try upper one
-      if singlevaraux(fs.prev, n, var) == "VGLOBAL" then
+    if fs == nil then -- no more levels?
+        var.k = "VGLOBAL" -- default is global variable
         return "VGLOBAL"
-      end
-      -- else was LOCAL or UPVAL, handle here
-      var.k = "VUPVAL"  -- upvalue in this level
-      return "VUPVAL"
-    end--if v
-  end--if fs
+    else
+        local v = searchvar(fs, n) -- look up at current level
+        if v >= 0 then
+            var.k = "VLOCAL"
+            var.id = v
+            --  codegen may need to deal with upvalue here
+            return "VLOCAL"
+        else -- not found at current level; try upper one
+            if singlevaraux(fs.prev, n, var) == "VGLOBAL" then
+                return "VGLOBAL"
+            end
+            -- else was LOCAL or UPVAL, handle here
+            var.k = "VUPVAL" -- upvalue in this level
+            return "VUPVAL"
+        end -- if v
+    end -- if fs
 end
 
 ----------------------------------------------------------------------
@@ -352,30 +343,30 @@ end
 ----------------------------------------------------------------------
 
 local function singlevar(v)
-  local name = str_checkname()
-  singlevaraux(fs, name, v)
-  ------------------------------------------------------------------
-  -- variable tracking
-  ------------------------------------------------------------------
-  if v.k == "VGLOBAL" then
-    -- if global being accessed, keep track of it by creating an object
-    local id = globallookup[name]
-    if not id then
-      id = #globalinfo + 1
-      globalinfo[id] = {                -- new global variable object
-        name = name,                    -- global variable name
-        xref = { nameref },             -- xref, first value is declaration
-      }
-      globallookup[name] = id           -- remember it
+    local name = str_checkname()
+    singlevaraux(fs, name, v)
+    ------------------------------------------------------------------
+    -- variable tracking
+    ------------------------------------------------------------------
+    if v.k == "VGLOBAL" then
+        -- if global being accessed, keep track of it by creating an object
+        local id = globallookup[name]
+        if not id then
+            id = #globalinfo + 1
+            globalinfo[id] = { -- new global variable object
+                name = name, -- global variable name
+                xref = {nameref} -- xref, first value is declaration
+            }
+            globallookup[name] = id -- remember it
+        else
+            local obj = globalinfo[id].xref
+            obj[#obj + 1] = nameref -- add xref
+        end
     else
-      local obj = globalinfo[id].xref
-      obj[#obj + 1] = nameref           -- add xref
+        -- local/upvalue is being accessed, keep track of it
+        local obj = localinfo[v.id].xref
+        obj[#obj + 1] = nameref -- add xref
     end
-  else
-    -- local/upvalue is being accessed, keep track of it
-    local obj = localinfo[v.id].xref
-    obj[#obj + 1] = nameref             -- add xref
-  end
 end
 
 --[[--------------------------------------------------------------------
@@ -387,11 +378,11 @@ end
 ----------------------------------------------------------------------
 
 local function enterblock(isbreakable)
-  local bl = {}  -- per-block state
-  bl.isbreakable = isbreakable
-  bl.prev = fs.bl
-  bl.locallist = {}
-  fs.bl = bl
+    local bl = {} -- per-block state
+    bl.isbreakable = isbreakable
+    bl.prev = fs.bl
+    bl.locallist = {}
+    fs.bl = bl
 end
 
 ----------------------------------------------------------------------
@@ -399,9 +390,9 @@ end
 ----------------------------------------------------------------------
 
 local function leaveblock()
-  local bl = fs.bl
-  removevars()
-  fs.bl = bl.prev
+    local bl = fs.bl
+    removevars()
+    fs.bl = bl.prev
 end
 
 ----------------------------------------------------------------------
@@ -412,16 +403,16 @@ end
 ----------------------------------------------------------------------
 
 local function open_func()
-  local new_fs  -- per-function state
-  if not fs then  -- top_fs is created early
-    new_fs = top_fs
-  else
-    new_fs = {}
-  end
-  new_fs.prev = fs  -- linked list of function states
-  new_fs.bl = nil
-  new_fs.locallist = {}
-  fs = new_fs
+    local new_fs -- per-function state
+    if not fs then -- top_fs is created early
+        new_fs = top_fs
+    else
+        new_fs = {}
+    end
+    new_fs.prev = fs -- linked list of function states
+    new_fs.bl = nil
+    new_fs.locallist = {}
+    fs = new_fs
 end
 
 ----------------------------------------------------------------------
@@ -430,8 +421,8 @@ end
 ----------------------------------------------------------------------
 
 local function close_func()
-  removevars()
-  fs = fs.prev
+    removevars()
+    fs = fs.prev
 end
 
 --[[--------------------------------------------------------------------
@@ -445,10 +436,10 @@ end
 ----------------------------------------------------------------------
 
 local function field(v)
-  -- field -> ['.' | ':'] NAME
-  nextt()  -- skip the dot or colon
-  str_checkname()
-  v.k = "VINDEXED"
+    -- field -> ['.' | ':'] NAME
+    nextt() -- skip the dot or colon
+    str_checkname()
+    v.k = "VINDEXED"
 end
 
 ----------------------------------------------------------------------
@@ -457,10 +448,10 @@ end
 ----------------------------------------------------------------------
 
 local function yindex()
-  -- index -> '[' expr ']'
-  nextt()  -- skip the '['
-  expr({})
-  checknext("]")
+    -- index -> '[' expr ']'
+    nextt() -- skip the '['
+    expr({})
+    checknext("]")
 end
 
 ----------------------------------------------------------------------
@@ -469,14 +460,14 @@ end
 ----------------------------------------------------------------------
 
 local function recfield()
-  -- recfield -> (NAME | '['exp1']') = exp1
-  if tok == "<name>" then
-    str_checkname()
-  else-- tok == '['
-    yindex()
-  end
-  checknext("=")
-  expr({})
+    -- recfield -> (NAME | '['exp1']') = exp1
+    if tok == "<name>" then
+        str_checkname()
+    else -- tok == '['
+        yindex()
+    end
+    checknext("=")
+    expr({})
 end
 
 ----------------------------------------------------------------------
@@ -484,9 +475,7 @@ end
 -- * used in constructor()
 ----------------------------------------------------------------------
 
-local function listfield(cc)
-  expr(cc.v)
-end
+local function listfield(cc) expr(cc.v) end
 
 ----------------------------------------------------------------------
 -- parse a table constructor
@@ -494,33 +483,31 @@ end
 ----------------------------------------------------------------------
 
 local function constructor(t)
-  -- constructor -> '{' [ field { fieldsep field } [ fieldsep ] ] '}'
-  -- field -> recfield | listfield
-  -- fieldsep -> ',' | ';'
-  local line = ln
-  local cc = {
-    v = { k = "VVOID" },
-  }
-  t.k = "VRELOCABLE"
-  checknext("{")
-  repeat
-    if tok == "}" then break end
-    -- closelistfield(cc) here
-    local c = tok
-    if c == "<name>" then  -- may be listfields or recfields
-      if lookahead() ~= "=" then  -- look ahead: expression?
-        listfield(cc)
-      else
-        recfield()
-      end
-    elseif c == "[" then  -- constructor_item -> recfield
-      recfield()
-    else  -- constructor_part -> listfield
-      listfield(cc)
-    end
-  until not testnext(",") and not testnext(";")
-  check_match("}", "{", line)
-  -- lastlistfield(cc) here
+    -- constructor -> '{' [ field { fieldsep field } [ fieldsep ] ] '}'
+    -- field -> recfield | listfield
+    -- fieldsep -> ',' | ';'
+    local line = ln
+    local cc = {v = {k = "VVOID"}}
+    t.k = "VRELOCABLE"
+    checknext("{")
+    repeat
+        if tok == "}" then break end
+        -- closelistfield(cc) here
+        local c = tok
+        if c == "<name>" then -- may be listfields or recfields
+            if lookahead() ~= "=" then -- look ahead: expression?
+                listfield(cc)
+            else
+                recfield()
+            end
+        elseif c == "[" then -- constructor_item -> recfield
+            recfield()
+        else -- constructor_part -> listfield
+            listfield(cc)
+        end
+    until not testnext(",") and not testnext(";")
+    check_match("}", "{", line)
+    -- lastlistfield(cc) here
 end
 
 ----------------------------------------------------------------------
@@ -529,23 +516,23 @@ end
 ----------------------------------------------------------------------
 
 local function parlist()
-  -- parlist -> [ param { ',' param } ]
-  local nparams = 0
-  if tok ~= ")" then  -- is 'parlist' not empty?
-    repeat
-      local c = tok
-      if c == "<name>" then  -- param -> NAME
-        new_localvar(str_checkname())
-        nparams = nparams + 1
-      elseif c == "..." then
-        nextt()
-        fs.is_vararg = true
-      else
-        syntaxerror("<name> or '...' expected")
-      end
-    until fs.is_vararg or not testnext(",")
-  end--if
-  adjustlocalvars(nparams)
+    -- parlist -> [ param { ',' param } ]
+    local nparams = 0
+    if tok ~= ")" then -- is 'parlist' not empty?
+        repeat
+            local c = tok
+            if c == "<name>" then -- param -> NAME
+                new_localvar(str_checkname())
+                nparams = nparams + 1
+            elseif c == "..." then
+                nextt()
+                fs.is_vararg = true
+            else
+                syntaxerror("<name> or '...' expected")
+            end
+        until fs.is_vararg or not testnext(",")
+    end -- if
+    adjustlocalvars(nparams)
 end
 
 ----------------------------------------------------------------------
@@ -555,26 +542,26 @@ end
 ----------------------------------------------------------------------
 
 local function funcargs(f)
-  local line = ln
-  local c = tok
-  if c == "(" then  -- funcargs -> '(' [ explist1 ] ')'
-    if line ~= lastln then
-      syntaxerror("ambiguous syntax (function call x new statement)")
-    end
-    nextt()
-    if tok ~= ")" then  -- arg list is not empty?
-      explist1()
-    end
-    check_match(")", "(", line)
-  elseif c == "{" then  -- funcargs -> constructor
-    constructor({})
-  elseif c == "<string>" then  -- funcargs -> STRING
-    nextt()  -- must use 'seminfo' before 'next'
-  else
-    syntaxerror("function arguments expected")
-    return
-  end--if c
-  f.k = "VCALL"
+    local line = ln
+    local c = tok
+    if c == "(" then -- funcargs -> '(' [ explist1 ] ')'
+        if line ~= lastln then
+            syntaxerror("ambiguous syntax (function call x new statement)")
+        end
+        nextt()
+        if tok ~= ")" then -- arg list is not empty?
+            explist1()
+        end
+        check_match(")", "(", line)
+    elseif c == "{" then -- funcargs -> constructor
+        constructor({})
+    elseif c == "<string>" then -- funcargs -> STRING
+        nextt() -- must use 'seminfo' before 'next'
+    else
+        syntaxerror("function arguments expected")
+        return
+    end -- if c
+    f.k = "VCALL"
 end
 
 --[[--------------------------------------------------------------------
@@ -587,18 +574,18 @@ end
 ----------------------------------------------------------------------
 
 local function prefixexp(v)
-  -- prefixexp -> NAME | '(' expr ')'
-  local c = tok
-  if c == "(" then
-    local line = ln
-    nextt()
-    expr(v)
-    check_match(")", "(", line)
-  elseif c == "<name>" then
-    singlevar(v)
-  else
-    syntaxerror("unexpected symbol")
-  end--if c
+    -- prefixexp -> NAME | '(' expr ')'
+    local c = tok
+    if c == "(" then
+        local line = ln
+        nextt()
+        expr(v)
+        check_match(")", "(", line)
+    elseif c == "<name>" then
+        singlevar(v)
+    else
+        syntaxerror("unexpected symbol")
+    end -- if c
 end
 
 ----------------------------------------------------------------------
@@ -608,26 +595,26 @@ end
 ----------------------------------------------------------------------
 
 local function primaryexp(v)
-  -- primaryexp ->
-  --    prefixexp { '.' NAME | '[' exp ']' | ':' NAME funcargs | funcargs }
-  prefixexp(v)
-  while true do
-    local c = tok
-    if c == "." then  -- field
-      field(v)
-    elseif c == "[" then  -- '[' exp1 ']'
-      v.k = "VLOCAL"
-      yindex()
-    elseif c == ":" then  -- ':' NAME funcargs
-      nextt()
-      str_checkname()
-      funcargs(v)
-    elseif c == "(" or c == "<string>" or c == "{" then  -- funcargs
-      funcargs(v)
-    else
-      return
-    end--if c
-  end--while
+    -- primaryexp ->
+    --    prefixexp { '.' NAME | '[' exp ']' | ':' NAME funcargs | funcargs }
+    prefixexp(v)
+    while true do
+        local c = tok
+        if c == "." then -- field
+            field(v)
+        elseif c == "[" then -- '[' exp1 ']'
+            v.k = "VLOCAL"
+            yindex()
+        elseif c == ":" then -- ':' NAME funcargs
+            nextt()
+            str_checkname()
+            funcargs(v)
+        elseif c == "(" or c == "<string>" or c == "{" then -- funcargs
+            funcargs(v)
+        else
+            return
+        end -- if c
+    end -- while
 end
 
 ----------------------------------------------------------------------
@@ -636,35 +623,35 @@ end
 ----------------------------------------------------------------------
 
 local function simpleexp(v)
-  -- simpleexp -> NUMBER | STRING | NIL | TRUE | FALSE | ... |
-  --              constructor | FUNCTION body | primaryexp
-  local c = tok
-  if c == "<number>" then
-    v.k = "VKNUM"
-  elseif c == "<string>" then
-    v.k = "VK"
-  elseif c == "nil" then
-    v.k = "VNIL"
-  elseif c == "true" then
-    v.k = "VTRUE"
-  elseif c == "false" then
-    v.k = "VFALSE"
-  elseif c == "..." then  -- vararg
-    check_condition(fs.is_vararg == true,
-                    "cannot use '...' outside a vararg function");
-    v.k = "VVARARG"
-  elseif c == "{" then  -- constructor
-    constructor(v)
-    return
-  elseif c == "function" then
+    -- simpleexp -> NUMBER | STRING | NIL | TRUE | FALSE | ... |
+    --              constructor | FUNCTION body | primaryexp
+    local c = tok
+    if c == "<number>" then
+        v.k = "VKNUM"
+    elseif c == "<string>" then
+        v.k = "VK"
+    elseif c == "nil" then
+        v.k = "VNIL"
+    elseif c == "true" then
+        v.k = "VTRUE"
+    elseif c == "false" then
+        v.k = "VFALSE"
+    elseif c == "..." then -- vararg
+        check_condition(fs.is_vararg == true,
+                        "cannot use '...' outside a vararg function");
+        v.k = "VVARARG"
+    elseif c == "{" then -- constructor
+        constructor(v)
+        return
+    elseif c == "function" then
+        nextt()
+        body(false, ln)
+        return
+    else
+        primaryexp(v)
+        return
+    end -- if c
     nextt()
-    body(false, ln)
-    return
-  else
-    primaryexp(v)
-    return
-  end--if c
-  nextt()
 end
 
 ------------------------------------------------------------------------
@@ -678,27 +665,27 @@ end
 ------------------------------------------------------------------------
 
 local function subexpr(v, limit)
-  -- subexpr -> (simpleexp | unop subexpr) { binop subexpr }
-  --   * where 'binop' is any binary operator with a priority
-  --     higher than 'limit'
-  local op = tok
-  local uop = unopr[op]
-  if uop then
-    nextt()
-    subexpr(v, UNARY_PRIORITY)
-  else
-    simpleexp(v)
-  end
-  -- expand while operators have priorities higher than 'limit'
-  op = tok
-  local binop = binopr_left[op]
-  while binop and binop > limit do
-    nextt()
-    -- read sub-expression with higher priority
-    op = subexpr({}, binopr_right[op])  -- next operator
-    binop = binopr_left[op]
-  end
-  return op  -- return first untreated operator
+    -- subexpr -> (simpleexp | unop subexpr) { binop subexpr }
+    --   * where 'binop' is any binary operator with a priority
+    --     higher than 'limit'
+    local op = tok
+    local uop = unopr[op]
+    if uop then
+        nextt()
+        subexpr(v, UNARY_PRIORITY)
+    else
+        simpleexp(v)
+    end
+    -- expand while operators have priorities higher than 'limit'
+    op = tok
+    local binop = binopr_left[op]
+    while binop and binop > limit do
+        nextt()
+        -- read sub-expression with higher priority
+        op = subexpr({}, binopr_right[op]) -- next operator
+        binop = binopr_left[op]
+    end
+    return op -- return first untreated operator
 end
 
 ----------------------------------------------------------------------
@@ -711,8 +698,8 @@ end
 
 -- this is a forward-referenced local
 function expr(v)
-  -- expr -> subexpr
-  subexpr(v, 0)
+    -- expr -> subexpr
+    subexpr(v, 0)
 end
 
 --[[--------------------------------------------------------------------
@@ -726,20 +713,20 @@ end
 ------------------------------------------------------------------------
 
 local function assignment(v)
-  local c = v.v.k
-  check_condition(c == "VLOCAL" or c == "VUPVAL" or c == "VGLOBAL"
-                  or c == "VINDEXED", "syntax error")
-  if testnext(",") then  -- assignment -> ',' primaryexp assignment
-    local nv = {}  -- expdesc
-    nv.v = {}
-    primaryexp(nv.v)
-    -- lparser.c deals with some register usage conflict here
-    assignment(nv)
-  else  -- assignment -> '=' explist1
-    checknext("=")
-    explist1()
-    return  -- avoid default
-  end
+    local c = v.v.k
+    check_condition(c == "VLOCAL" or c == "VUPVAL" or c == "VGLOBAL" or c ==
+                        "VINDEXED", "syntax error")
+    if testnext(",") then -- assignment -> ',' primaryexp assignment
+        local nv = {} -- expdesc
+        nv.v = {}
+        primaryexp(nv.v)
+        -- lparser.c deals with some register usage conflict here
+        assignment(nv)
+    else -- assignment -> '=' explist1
+        checknext("=")
+        explist1()
+        return -- avoid default
+    end
 end
 
 ----------------------------------------------------------------------
@@ -748,12 +735,12 @@ end
 ----------------------------------------------------------------------
 
 local function forbody(nvars)
-  -- forbody -> DO block
-  checknext("do")
-  enterblock(false)  -- scope for declared variables
-  adjustlocalvars(nvars)
-  block()
-  leaveblock()  -- end of scope for declared variables
+    -- forbody -> DO block
+    checknext("do")
+    enterblock(false) -- scope for declared variables
+    adjustlocalvars(nvars)
+    block()
+    leaveblock() -- end of scope for declared variables
 end
 
 ----------------------------------------------------------------------
@@ -762,21 +749,21 @@ end
 ----------------------------------------------------------------------
 
 local function fornum(varname)
-  -- fornum -> NAME = exp1, exp1 [, exp1] DO body
-  new_localvarliteral("(for index)")
-  new_localvarliteral("(for limit)")
-  new_localvarliteral("(for step)")
-  new_localvar(varname)
-  checknext("=")
-  exp1()  -- initial value
-  checknext(",")
-  exp1()  -- limit
-  if testnext(",") then
-    exp1()  -- optional step
-  else
-    -- default step = 1
-  end
-  forbody(1)
+    -- fornum -> NAME = exp1, exp1 [, exp1] DO body
+    new_localvarliteral("(for index)")
+    new_localvarliteral("(for limit)")
+    new_localvarliteral("(for step)")
+    new_localvar(varname)
+    checknext("=")
+    exp1() -- initial value
+    checknext(",")
+    exp1() -- limit
+    if testnext(",") then
+        exp1() -- optional step
+    else
+        -- default step = 1
+    end
+    forbody(1)
 end
 
 ----------------------------------------------------------------------
@@ -785,21 +772,21 @@ end
 ----------------------------------------------------------------------
 
 local function forlist(indexname)
-  -- forlist -> NAME {, NAME} IN explist1 DO body
-  -- create control variables
-  new_localvarliteral("(for generator)")
-  new_localvarliteral("(for state)")
-  new_localvarliteral("(for control)")
-  -- create declared variables
-  new_localvar(indexname)
-  local nvars = 1
-  while testnext(",") do
-    new_localvar(str_checkname())
-    nvars = nvars + 1
-  end
-  checknext("in")
-  explist1()
-  forbody(nvars)
+    -- forlist -> NAME {, NAME} IN explist1 DO body
+    -- create control variables
+    new_localvarliteral("(for generator)")
+    new_localvarliteral("(for state)")
+    new_localvarliteral("(for control)")
+    -- create declared variables
+    new_localvar(indexname)
+    local nvars = 1
+    while testnext(",") do
+        new_localvar(str_checkname())
+        nvars = nvars + 1
+    end
+    checknext("in")
+    explist1()
+    forbody(nvars)
 end
 
 ----------------------------------------------------------------------
@@ -808,17 +795,15 @@ end
 ----------------------------------------------------------------------
 
 local function funcname(v)
-  -- funcname -> NAME {field} [':' NAME]
-  local needself = false
-  singlevar(v)
-  while tok == "." do
-    field(v)
-  end
-  if tok == ":" then
-    needself = true
-    field(v)
-  end
-  return needself
+    -- funcname -> NAME {field} [':' NAME]
+    local needself = false
+    singlevar(v)
+    while tok == "." do field(v) end
+    if tok == ":" then
+        needself = true
+        field(v)
+    end
+    return needself
 end
 
 ----------------------------------------------------------------------
@@ -828,8 +813,8 @@ end
 
 -- this is a forward-referenced local
 function exp1()
-  -- exp1 -> expr
-  expr({})
+    -- exp1 -> expr
+    expr({})
 end
 
 ----------------------------------------------------------------------
@@ -838,8 +823,8 @@ end
 ----------------------------------------------------------------------
 
 local function cond()
-  -- cond -> expr
-  expr({})  -- read condition
+    -- cond -> expr
+    expr({}) -- read condition
 end
 
 ----------------------------------------------------------------------
@@ -848,11 +833,11 @@ end
 ----------------------------------------------------------------------
 
 local function test_then_block()
-  -- test_then_block -> [IF | ELSEIF] cond THEN block
-  nextt()  -- skip IF or ELSEIF
-  cond()
-  checknext("then")
-  block()  -- 'then' part
+    -- test_then_block -> [IF | ELSEIF] cond THEN block
+    nextt() -- skip IF or ELSEIF
+    cond()
+    checknext("then")
+    block() -- 'then' part
 end
 
 ----------------------------------------------------------------------
@@ -861,10 +846,10 @@ end
 ----------------------------------------------------------------------
 
 local function localfunc()
-  -- localfunc -> NAME body
-  new_localvar(str_checkname())
-  adjustlocalvars(1)
-  body(false, ln)
+    -- localfunc -> NAME body
+    new_localvar(str_checkname())
+    adjustlocalvars(1)
+    body(false, ln)
 end
 
 ----------------------------------------------------------------------
@@ -873,18 +858,18 @@ end
 ----------------------------------------------------------------------
 
 local function localstat()
-  -- localstat -> NAME {',' NAME} ['=' explist1]
-  local nvars = 0
-  repeat
-    new_localvar(str_checkname())
-    nvars = nvars + 1
-  until not testnext(",")
-  if testnext("=") then
-    explist1()
-  else
-    -- VVOID
-  end
-  adjustlocalvars(nvars)
+    -- localstat -> NAME {',' NAME} ['=' explist1]
+    local nvars = 0
+    repeat
+        new_localvar(str_checkname())
+        nvars = nvars + 1
+    until not testnext(",")
+    if testnext("=") then
+        explist1()
+    else
+        -- VVOID
+    end
+    adjustlocalvars(nvars)
 end
 
 ----------------------------------------------------------------------
@@ -895,12 +880,10 @@ end
 
 -- this is a forward-referenced local
 function explist1()
-  -- explist1 -> expr { ',' expr }
-  local e = {}
-  expr(e)
-  while testnext(",") do
+    -- explist1 -> expr { ',' expr }
+    local e = {}
     expr(e)
-  end
+    while testnext(",") do expr(e) end
 end
 
 ----------------------------------------------------------------------
@@ -910,18 +893,18 @@ end
 
 -- this is a forward-referenced local
 function body(needself, line)
-  -- body ->  '(' parlist ')' chunk END
-  open_func()
-  checknext("(")
-  if needself then
-    new_localvarliteral("self", true)
-    adjustlocalvars(1)
-  end
-  parlist()
-  checknext(")")
-  chunk()
-  check_match("end", "function", line)
-  close_func()
+    -- body ->  '(' parlist ')' chunk END
+    open_func()
+    checknext("(")
+    if needself then
+        new_localvarliteral("self", true)
+        adjustlocalvars(1)
+    end
+    parlist()
+    checknext(")")
+    chunk()
+    check_match("end", "function", line)
+    close_func()
 end
 
 ----------------------------------------------------------------------
@@ -932,10 +915,10 @@ end
 
 -- this is a forward-referenced local
 function block()
-  -- block -> chunk
-  enterblock(false)
-  chunk()
-  leaveblock()
+    -- block -> chunk
+    enterblock(false)
+    chunk()
+    leaveblock()
 end
 
 --[[--------------------------------------------------------------------
@@ -952,21 +935,21 @@ end
 ----------------------------------------------------------------------
 
 local function for_stat()
-  -- stat -> for_stat -> FOR (fornum | forlist) END
-  local line = line
-  enterblock(true)  -- scope for loop and control variables
-  nextt()  -- skip 'for'
-  local varname = str_checkname()  -- first variable name
-  local c = tok
-  if c == "=" then
-    fornum(varname)
-  elseif c == "," or c == "in" then
-    forlist(varname)
-  else
-    syntaxerror("'=' or 'in' expected")
-  end
-  check_match("end", "for", line)
-  leaveblock()  -- loop scope (`break' jumps to this point)
+    -- stat -> for_stat -> FOR (fornum | forlist) END
+    local line = line
+    enterblock(true) -- scope for loop and control variables
+    nextt() -- skip 'for'
+    local varname = str_checkname() -- first variable name
+    local c = tok
+    if c == "=" then
+        fornum(varname)
+    elseif c == "," or c == "in" then
+        forlist(varname)
+    else
+        syntaxerror("'=' or 'in' expected")
+    end
+    check_match("end", "for", line)
+    leaveblock() -- loop scope (`break' jumps to this point)
 end
 
 ----------------------------------------------------------------------
@@ -975,15 +958,15 @@ end
 ----------------------------------------------------------------------
 
 local function while_stat()
-  -- stat -> while_stat -> WHILE cond DO block END
-  local line = line
-  nextt()  -- skip WHILE
-  cond()  -- parse condition
-  enterblock(true)
-  checknext("do")
-  block()
-  check_match("end", "while", line)
-  leaveblock()
+    -- stat -> while_stat -> WHILE cond DO block END
+    local line = line
+    nextt() -- skip WHILE
+    cond() -- parse condition
+    enterblock(true)
+    checknext("do")
+    block()
+    check_match("end", "while", line)
+    leaveblock()
 end
 
 ----------------------------------------------------------------------
@@ -995,17 +978,17 @@ end
 ----------------------------------------------------------------------
 
 local function repeat_stat()
-  -- stat -> repeat_stat -> REPEAT block UNTIL cond
-  local line = line
-  enterblock(true)  -- loop block
-  enterblock(false)  -- scope block
-  nextt()  -- skip REPEAT
-  chunk()
-  check_match("until", "repeat", line)
-  cond()
-  -- close upvalues at scope level below
-  leaveblock()  -- finish scope
-  leaveblock()  -- finish loop
+    -- stat -> repeat_stat -> REPEAT block UNTIL cond
+    local line = line
+    enterblock(true) -- loop block
+    enterblock(false) -- scope block
+    nextt() -- skip REPEAT
+    chunk()
+    check_match("until", "repeat", line)
+    cond()
+    -- close upvalues at scope level below
+    leaveblock() -- finish scope
+    leaveblock() -- finish loop
 end
 
 ----------------------------------------------------------------------
@@ -1014,18 +997,18 @@ end
 ----------------------------------------------------------------------
 
 local function if_stat()
-  -- stat -> if_stat -> IF cond THEN block
-  --                    {ELSEIF cond THEN block} [ELSE block] END
-  local line = line
-  test_then_block()  -- IF cond THEN block
-  while tok == "elseif" do
-    test_then_block()  -- ELSEIF cond THEN block
-  end
-  if tok == "else" then
-    nextt()  -- skip ELSE
-    block()  -- 'else' part
-  end
-  check_match("end", "if", line)
+    -- stat -> if_stat -> IF cond THEN block
+    --                    {ELSEIF cond THEN block} [ELSE block] END
+    local line = line
+    test_then_block() -- IF cond THEN block
+    while tok == "elseif" do
+        test_then_block() -- ELSEIF cond THEN block
+    end
+    if tok == "else" then
+        nextt() -- skip ELSE
+        block() -- 'else' part
+    end
+    check_match("end", "if", line)
 end
 
 ----------------------------------------------------------------------
@@ -1034,14 +1017,14 @@ end
 ----------------------------------------------------------------------
 
 local function return_stat()
-  -- stat -> return_stat -> RETURN explist
-  nextt()  -- skip RETURN
-  local c = tok
-  if block_follow[c] or c == ";" then
-    -- return no values
-  else
-    explist1()  -- optional return values
-  end
+    -- stat -> return_stat -> RETURN explist
+    nextt() -- skip RETURN
+    local c = tok
+    if block_follow[c] or c == ";" then
+        -- return no values
+    else
+        explist1() -- optional return values
+    end
 end
 
 ----------------------------------------------------------------------
@@ -1050,15 +1033,13 @@ end
 ----------------------------------------------------------------------
 
 local function break_stat()
-  -- stat -> break_stat -> BREAK
-  local bl = fs.bl
-  nextt()  -- skip BREAK
-  while bl and not bl.isbreakable do -- find a breakable block
-    bl = bl.prev
-  end
-  if not bl then
-    syntaxerror("no loop to break")
-  end
+    -- stat -> break_stat -> BREAK
+    local bl = fs.bl
+    nextt() -- skip BREAK
+    while bl and not bl.isbreakable do -- find a breakable block
+        bl = bl.prev
+    end
+    if not bl then syntaxerror("no loop to break") end
 end
 
 ----------------------------------------------------------------------
@@ -1069,10 +1050,10 @@ end
 ----------------------------------------------------------------------
 
 local function label_stat()
-  -- stat -> label_stat -> '::' NAME '::'
-  nextt()  -- skip '::'
-  str_checkname()
-  checknext("::")
+    -- stat -> label_stat -> '::' NAME '::'
+    nextt() -- skip '::'
+    str_checkname()
+    checknext("::")
 end
 
 ----------------------------------------------------------------------
@@ -1083,9 +1064,9 @@ end
 ----------------------------------------------------------------------
 
 local function goto_stat()
-  -- stat -> goto_stat -> GOTO NAME
-  nextt()  -- skip GOTO
-  str_checkname()
+    -- stat -> goto_stat -> GOTO NAME
+    nextt() -- skip GOTO
+    str_checkname()
 end
 
 ----------------------------------------------------------------------
@@ -1096,18 +1077,18 @@ end
 ----------------------------------------------------------------------
 
 local function expr_stat()
-  local id = tpos - 1
-  -- stat -> expr_stat -> func | assignment
-  local v = { v = {} }
-  primaryexp(v.v)
-  if v.v.k == "VCALL" then  -- stat -> func
-    -- call statement uses no results
-    statinfo[id] = "call"
-  else  -- stat -> assignment
-    v.prev = nil
-    assignment(v)
-    statinfo[id] = "assign"
-  end
+    local id = tpos - 1
+    -- stat -> expr_stat -> func | assignment
+    local v = {v = {}}
+    primaryexp(v.v)
+    if v.v.k == "VCALL" then -- stat -> func
+        -- call statement uses no results
+        statinfo[id] = "call"
+    else -- stat -> assignment
+        v.prev = nil
+        assignment(v)
+        statinfo[id] = "assign"
+    end
 end
 
 ----------------------------------------------------------------------
@@ -1116,11 +1097,11 @@ end
 ----------------------------------------------------------------------
 
 local function function_stat()
-  -- stat -> function_stat -> FUNCTION funcname body
-  local line = line
-  nextt()  -- skip FUNCTION
-  local needself = funcname({})
-  body(needself, line)
+    -- stat -> function_stat -> FUNCTION funcname body
+    local line = line
+    nextt() -- skip FUNCTION
+    local needself = funcname({})
+    body(needself, line)
 end
 
 ----------------------------------------------------------------------
@@ -1129,11 +1110,11 @@ end
 ----------------------------------------------------------------------
 
 local function do_stat()
-  -- stat -> do_stat -> DO block END
-  local line = line
-  nextt()  -- skip DO
-  block()
-  check_match("end", "do", line)
+    -- stat -> do_stat -> DO block END
+    local line = line
+    nextt() -- skip DO
+    block()
+    check_match("end", "do", line)
 end
 
 ----------------------------------------------------------------------
@@ -1142,14 +1123,14 @@ end
 ----------------------------------------------------------------------
 
 local function local_stat()
-  -- stat -> local_stat -> LOCAL FUNCTION localfunc
-  --                    -> LOCAL localstat
-  nextt()  -- skip LOCAL
-  if testnext("function") then  -- local function?
-    localfunc()
-  else
-    localstat()
-  end
+    -- stat -> local_stat -> LOCAL FUNCTION localfunc
+    --                    -> LOCAL localstat
+    nextt() -- skip LOCAL
+    if testnext("function") then -- local function?
+        localfunc()
+    else
+        localstat()
+    end
 end
 
 --[[--------------------------------------------------------------------
@@ -1163,36 +1144,36 @@ end
 -- * used in chunk()
 ----------------------------------------------------------------------
 
-local stat_call = {             -- lookup for calls in stat()
-  ["if"] = if_stat,
-  ["while"] = while_stat,
-  ["do"] = do_stat,
-  ["for"] = for_stat,
-  ["repeat"] = repeat_stat,
-  ["function"] = function_stat,
-  ["local"] = local_stat,
-  ["return"] = return_stat,
-  ["break"] = break_stat,
-  ["::"] = label_stat,
+local stat_call = { -- lookup for calls in stat()
+    ["if"] = if_stat,
+    ["while"] = while_stat,
+    ["do"] = do_stat,
+    ["for"] = for_stat,
+    ["repeat"] = repeat_stat,
+    ["function"] = function_stat,
+    ["local"] = local_stat,
+    ["return"] = return_stat,
+    ["break"] = break_stat,
+    ["::"] = label_stat
 }
 
 local function stat()
-  -- stat -> if_stat while_stat do_stat for_stat repeat_stat
-  --         function_stat local_stat return_stat break_stat
-  --         expr_stat
-  line = ln  -- may be needed for error messages
-  local c = tok
-  local fn = stat_call[c]
-  -- handles: if while do for repeat function local return break
-  if fn then
-    statinfo[tpos - 1] = c
-    fn()
-    -- return must be last statement
-    if c == "return" then return true end
-  else
-    expr_stat()
-  end
-  return false
+    -- stat -> if_stat while_stat do_stat for_stat repeat_stat
+    --         function_stat local_stat return_stat break_stat
+    --         expr_stat
+    line = ln -- may be needed for error messages
+    local c = tok
+    local fn = stat_call[c]
+    -- handles: if while do for repeat function local return break
+    if fn then
+        statinfo[tpos - 1] = c
+        fn()
+        -- return must be last statement
+        if c == "return" then return true end
+    else
+        expr_stat()
+    end
+    return false
 end
 
 ----------------------------------------------------------------------
@@ -1202,12 +1183,12 @@ end
 
 -- this is a forward-referenced local
 function chunk()
-  -- chunk -> { stat [';'] }
-  local islast = false
-  while not islast and not block_follow[tok] do
-    islast = stat()
-    testnext(";")
-  end
+    -- chunk -> { stat [';'] }
+    local islast = false
+    while not islast and not block_follow[tok] do
+        islast = stat()
+        testnext(";")
+    end
 end
 
 ----------------------------------------------------------------------
@@ -1215,48 +1196,48 @@ end
 ----------------------------------------------------------------------
 
 local function init(tokorig, seminfoorig, toklnorig)
-  tpos = 1                      -- token position
-  top_fs = {}                   -- reset top level function state
-  ------------------------------------------------------------------
-  -- set up grammar-only token tables; impedance-matching...
-  -- note that constants returned by the lexer is source-level, so
-  -- for now, fake(!) constant tokens (TK_NUMBER|TK_STRING|TK_LSTRING)
-  ------------------------------------------------------------------
-  local j = 1
-  toklist, seminfolist, toklnlist, xreflist = {}, {}, {}, {}
-  for i = 1, #tokorig do
-    local tok = tokorig[i]
-    local yep = true
-    if tok == "TK_KEYWORD" or tok == "TK_OP" then
-      tok = seminfoorig[i]
-    elseif tok == "TK_NAME" then
-      tok = "<name>"
-      seminfolist[j] = seminfoorig[i]
-    elseif tok == "TK_NUMBER" then
-      tok = "<number>"
-      seminfolist[j] = 0  -- fake!
-    elseif tok == "TK_STRING" or tok == "TK_LSTRING" then
-      tok = "<string>"
-      seminfolist[j] = ""  -- fake!
-    elseif tok == "TK_EOS" then
-      tok = "<eof>"
-    else
-      -- non-grammar tokens; ignore them
-      yep = false
-    end
-    if yep then  -- set rest of the information
-      toklist[j] = tok
-      toklnlist[j] = toklnorig[i]
-      xreflist[j] = i
-      j = j + 1
-    end
-  end--for
-  ------------------------------------------------------------------
-  -- initialize data structures for variable tracking
-  ------------------------------------------------------------------
-  globalinfo, globallookup, localinfo = {}, {}, {}
-  ilocalinfo, ilocalrefs = {}, {}
-  statinfo = {}  -- experimental
+    tpos = 1 -- token position
+    top_fs = {} -- reset top level function state
+    ------------------------------------------------------------------
+    -- set up grammar-only token tables; impedance-matching...
+    -- note that constants returned by the lexer is source-level, so
+    -- for now, fake(!) constant tokens (TK_NUMBER|TK_STRING|TK_LSTRING)
+    ------------------------------------------------------------------
+    local j = 1
+    toklist, seminfolist, toklnlist, xreflist = {}, {}, {}, {}
+    for i = 1, #tokorig do
+        local tok = tokorig[i]
+        local yep = true
+        if tok == "TK_KEYWORD" or tok == "TK_OP" then
+            tok = seminfoorig[i]
+        elseif tok == "TK_NAME" then
+            tok = "<name>"
+            seminfolist[j] = seminfoorig[i]
+        elseif tok == "TK_NUMBER" then
+            tok = "<number>"
+            seminfolist[j] = 0 -- fake!
+        elseif tok == "TK_STRING" or tok == "TK_LSTRING" then
+            tok = "<string>"
+            seminfolist[j] = "" -- fake!
+        elseif tok == "TK_EOS" then
+            tok = "<eof>"
+        else
+            -- non-grammar tokens; ignore them
+            yep = false
+        end
+        if yep then -- set rest of the information
+            toklist[j] = tok
+            toklnlist[j] = toklnorig[i]
+            xreflist[j] = i
+            j = j + 1
+        end
+    end -- for
+    ------------------------------------------------------------------
+    -- initialize data structures for variable tracking
+    ------------------------------------------------------------------
+    globalinfo, globallookup, localinfo = {}, {}, {}
+    ilocalinfo, ilocalrefs = {}, {}
+    statinfo = {} -- experimental
 end
 
 ----------------------------------------------------------------------
@@ -1264,23 +1245,23 @@ end
 ----------------------------------------------------------------------
 
 function M.parse(tokens, seminfo, tokens_ln)
-  init(tokens, seminfo, tokens_ln)
+    init(tokens, seminfo, tokens_ln)
 
-  open_func()
-  fs.is_vararg = true  -- main func. is always vararg
-  nextt()  -- read first token
-  chunk()
-  check("<eof>")
-  close_func()
-  return {  -- return everything
-    globalinfo = globalinfo,
-    localinfo = localinfo,
-    statinfo = statinfo,
-    toklist = toklist,
-    seminfolist = seminfolist,
-    toklnlist = toklnlist,
-    xreflist = xreflist,
-  }
+    open_func()
+    fs.is_vararg = true -- main func. is always vararg
+    nextt() -- read first token
+    chunk()
+    check("<eof>")
+    close_func()
+    return { -- return everything
+        globalinfo = globalinfo,
+        localinfo = localinfo,
+        statinfo = statinfo,
+        toklist = toklist,
+        seminfolist = seminfolist,
+        toklnlist = toklnlist,
+        xreflist = xreflist
+    }
 end
 
 return M
