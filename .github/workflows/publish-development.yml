@@ -38,15 +38,15 @@ jobs:
                                   modified=$(echo "${{ steps.files.outputs.modified }}" | tr ' ' '\n' | sed 's/^/+ /g')
                                   removed=$(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/- /g')
                                                         
-                                  if [[ $added != *"+ "* ]]; then
+                                  if [[ $(echo "$added" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
                                     added="None"
                                   fi
                                                         
-                                  if [[ $modified != *"+ "* ]]; then
+                                  if [[ $(echo "$modified" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
                                     modified="None"
                                   fi
                                                         
-                                  if [[ $removed != *"- "* ]]; then
+                                  if [[ $(echo "$removed" | grep -cE '^(\- ){0,1}$') -eq 1 ]]; then
                                     removed="None"
                                   fi
                                                         
@@ -101,12 +101,15 @@ jobs:
                                   tag_name: ${{ steps.release-data.outputs.tag }}
                                   files: vsds-${{ github.ref_name }}.rbxm
                                   body: |
-                                          Newest VSDS update made by ${{ github.actor}} at ${{ steps.release-data.outputs.date }}.
+                                          # Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
-                                          Commit Message: "${{ github.event.head_commit.message }}"
-                                          Commit SHA: ${{ github.sha }}
+                                          *Commit Message: "${{ github.event.head_commit.message }}"*
+                                          *Commit SHA:* ${{ github.sha }}
+                                          *Commited At:* `${{ steps.release-data.outputs.date }}`
+                                          *Committed By:* `${{ github.actor }}`
+                                          *Files Attached:* `Source`, `vsds-${{ github.ref_name }}.rbxm`
 
-                                          Files Modified:
+                                          **Files Modified:**
                                           Added:
                                             ```diff
                                             ${{ steps.formatting.outputs.added }}
