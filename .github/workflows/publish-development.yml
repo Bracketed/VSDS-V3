@@ -129,14 +129,15 @@ jobs:
                           uses: tsickert/discord-webhook@v5.3.0
                           with:
                                   username: '@Github Actions'
-                                  avatar-url: https://avatars.githubusercontent.com/u/97051909
+                                  avatar-url: https://avatars.githubusercontent.com/in/15368
                                   webhook-url: ${{ secrets.VSDS_WEBHOOK }}
                                   embed-title: ${{ steps.release-data.outputs.title }}
+                                  embed-color: 000000
                                   embed-url: https://create.roblox.com/store/asset/16582923129
                                   embed-author-name: ${{ steps.release-data.outputs.tag }}
                                   filename: vsds-${{ github.ref_name }}.rbxm
                                   embed-description: |
-                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+                                          #### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
                                           *Commit Message: "${{ github.event.head_commit.message }}"*
                                           *Commit SHA:* ${{ github.sha }}
