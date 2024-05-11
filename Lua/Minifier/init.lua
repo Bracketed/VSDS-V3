@@ -8,8 +8,10 @@ local lparser = require 'lparser'
 local optlex = require 'optlex'
 local optparser = require 'optparser'
 local utils = require 'utils'
+
 local concat = table.concat
 local merge = utils.merge
+
 local _ -- placeholder
 
 local function noop() return end

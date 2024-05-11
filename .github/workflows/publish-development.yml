@@ -36,22 +36,28 @@ jobs:
                         - name: Format changed files
                           id: formatting
                           run: |
-                                  added=$(echo "${{ steps.files.outputs.added }}" | sed 's/^\(\+ \)/"+ \1"/g')
-                                  modified=$(echo "${{ steps.files.outputs.modified }}" | sed 's/^\(\+ \)/"+ \1"/g')
-                                  removed=$(echo "${{ steps.files.outputs.removed }}" | sed 's/^\(- \)/"- \1"/g')
-                                                                                      
-                                  if [[ $(echo "$added" | grep -cE '^("\+ ){0,1}"$') -eq 1 ]]; then
-                                    added="# None"
+                                  added="${{ steps.files.outputs.added }}"
+                                  modified="${{ steps.files.outputs.modified }}"
+                                  removed="${{ steps.files.outputs.removed }}"
+
+                                  if [[ -z "$added" ]]; then
+                                    added="None"
+                                  else
+                                    added=$(echo "$added" | tr ' ' '\n')
                                   fi
-                                                        
-                                  if [[ $(echo "$modified" | grep -cE '^("\+ ){0,1}"$') -eq 1 ]]; then
-                                    modified="# None"
+
+                                  if [[ -z "$modified" ]]; then
+                                    modified="None"
+                                  else
+                                    modified=$(echo "$modified" | tr ' ' '\n')
                                   fi
-                                                        
-                                  if [[ $(echo "$removed" | grep -cE '^("- ){0,1}"$') -eq 1 ]]; then
-                                    removed="# None"
+
+                                  if [[ -z "$removed" ]]; then
+                                    removed="None"
+                                  else
+                                    removed=$(echo "$removed" | tr ' ' '\n')
                                   fi
-                                                                                      
+
                                   echo "added=$added" >> $GITHUB_OUTPUT
                                   echo "modified=$modified" >> $GITHUB_OUTPUT
                                   echo "removed=$removed" >> $GITHUB_OUTPUT
