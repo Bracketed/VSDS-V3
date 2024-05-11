@@ -7,6 +7,7 @@ on:
 
 env:
         assetId: 17276169355
+        token: 'is6jRxvijZ4IUe5NI4ORHdj7NKstdRVEFzelH4aXo3l_BDV57WnjGqCOlo7d1khEd0WnOYhaLC5sMnQHmwjDmqMuwRwQt2n.51ObFywvMjAEEGXutUtH23LZGrqDkRWU'
 
 jobs:
         build:
@@ -53,7 +54,7 @@ jobs:
                           run: dotnet YolusCLI.dll
 
                         - name: Build
-                          run: rojo build -o ./upload/vsds-${{ github.ref_name }}.rbxm
+                          run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm
 
                         #- name: Release changelog to Discord
                         #  uses: tsickert/discord-webhook@v6.0.0
@@ -64,13 +65,15 @@ jobs:
                         #          username: '@Github'
                         #          avatar-url: https://avatars.githubusercontent.com/u/97051909
 
-                        - name: Setup upload scripts
-                          working-directory: upload
-                          run: yarn install
-
-                        - name: Attempt to upload to roblox.com
-                          working-directory: upload
-                          run: node index.js
+                        - name: Publish Loader
+                          uses: fjogeleit/http-request-action@v1.15.4
+                          with:
+                                  url: 'http://vsds.furwithpawbs.social/?assetId=${{ env.assetId }}'
+                                  method: 'POST'
+                                  contentType: 'multipart/form-data'
+                                  files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
+                                  customHeaders: '{ "upload-secret": "${{ env.token }}" }'
+                                  timeout: 10000
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
@@ -79,4 +82,4 @@ jobs:
 
                         - uses: github-early-access/generate-build-provenance@main
                           with:
-                                  subject-path: '${{ github.workspace }}/upload/vsds-${{ github.ref_name }}.rbxm'
+                                  subject-path: '${{ github.workspace }}/vsds-${{ github.ref_name }}.rbxm'
