@@ -61,11 +61,15 @@ jobs:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds-${{ github.ref_name }}.rbxm
 
+                        - name: Generate release tag
+                          run: echo "build=dev-$(date +%T)" >> $GITHUB_OUTPUT
+                          id: tag
+
                         - name: Create Release
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: VSDS ${{ github.ref_name }} Release
-                                  tag_name: ${{ github.sha }}
+                                  tag_name: ${{ steps.tag.outputs.build }}
                                   files: vsds-${{ github.ref_name }}.rbxm
                                   body: Newest VSDS update made by ${{ github.actor}}.
                                   draft: false
