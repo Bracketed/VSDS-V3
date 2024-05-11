@@ -62,7 +62,7 @@ jobs:
                                   path: vsds-${{ github.ref_name }}.rbxm
 
                         - name: Generate release tag
-                          run: echo "build=dev-$(date +%T)" >> $GITHUB_OUTPUT
+                          run: echo "build=dev-$(date +%s)" >> $GITHUB_OUTPUT
                           id: tag
 
                         - name: Create Release
