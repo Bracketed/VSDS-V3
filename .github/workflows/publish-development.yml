@@ -34,8 +34,8 @@ jobs:
                         - name: Generate release data
                           run: |
                                   echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT
-                                  echo "title=VSDS ${${{ github.ref_name }}^} Release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
-                                  echo -e "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T).\n\nCommit Message: ${{ github.event.head_commit.message }}\nCommit SHA: ${{github.sha}}\nFiles Modified:\nAdded: ${{ steps.files.outputs.added }}\nModified: ${{ steps.files.outputs.modified }}\nRemoved: ${{ steps.files.outputs.removed }}" >> $GITHUB_OUTPUT
+                                  echo "title=VSDS ${{ github.ref_name }} release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
+                                  echo "date=$(date +%F_%T)" >> $GITHUB_OUTPUT
                           id: release-data
 
                         - name: Apply fix to luajit
@@ -77,6 +77,15 @@ jobs:
                                   name: ${{ steps.release-data.outputs.title }}
                                   tag_name: ${{ steps.release-data.outputs.tag }}
                                   files: vsds-${{ github.ref_name }}.rbxm
-                                  body: ${{ steps.release-data.outputs.body }}
+                                  body: |
+                                          Newest VSDS update made by ${{ github.actor}} at ${{ steps.release-data.outputs.date }}.
+
+                                          Commit Message: ${{ github.event.head_commit.message }}
+                                          Commit SHA: ${{ github.sha }}
+
+                                          Files Modified:
+                                          Added: ${{ steps.files.outputs.added }}
+                                          Modified: ${{ steps.files.outputs.modified }}
+                                          Removed: ${{ steps.files.outputs.removed }}
                                   draft: false
                                   make_latest: true
