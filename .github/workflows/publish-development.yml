@@ -12,6 +12,8 @@ jobs:
         build:
                 name: build
                 runs-on: ubuntu-latest
+                permissions:
+                        contents: write
                 steps:
                         - uses: actions/checkout@v4.1.1
                         - uses: actions/setup-dotnet@v4
@@ -57,3 +59,12 @@ jobs:
                           with:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds-${{ github.ref_name }}.rbxm
+
+                        - name: Create Release
+                          uses: softprops/action-gh-release@v2
+                          with:
+                                  name: VSDS ${{ github.ref_name }} Release
+                                  files: vsds-${{ github.ref_name }}.rbxm
+                                  body: Newest VSDS update made by ${{ github.actor}}.
+                                  draft: false
+                                  make_latest: true
