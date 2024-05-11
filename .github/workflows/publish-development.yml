@@ -80,12 +80,15 @@ jobs:
                                   body: |
                                           Newest VSDS update made by ${{ github.actor}} at ${{ steps.release-data.outputs.date }}.
 
-                                          Commit Message: ${{ github.event.head_commit.message }}
+                                          Commit Message: "${{ github.event.head_commit.message }}"
                                           Commit SHA: ${{ github.sha }}
 
                                           Files Modified:
-                                          Added: ${{ steps.files.outputs.added }}
-                                          Modified: ${{ steps.files.outputs.modified }}
-                                          Removed: ${{ steps.files.outputs.removed }}
+                                          Added:
+                                            ```${{ steps.files.outputs.added }}```
+                                          Modified:
+                                            ```${{ steps.files.outputs.modified }}```
+                                          Removed:
+                                            ```${{ steps.files.outputs.removed }}```
                                   draft: false
                                   make_latest: true

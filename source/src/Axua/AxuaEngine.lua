@@ -4,18 +4,12 @@ return {
         local function print(...) warn(':: Virtua Axua ::', ...) end
         Instance.new('Folder', script.Parent).Name = 'WeldStorage'
 
-        -- //GAME SERVICES\\--
         local TS = game:GetService("TweenService")
-
-        -- //DOOR AND CONFIG\\--
         local this = script.Parent
         local settings = require(this.AxuaConfiguration)
-
-        -- //DOOR LOGIC PROCESS\\--
         local state = 'CLOSED'
         local altsate = 'NONE'
 
-        -- //TWEEN CONFIG\\--
         local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed,
                                           settings.Tweening.EasingStyle,
                                           settings.Tweening.EasingDirection)
@@ -24,7 +18,6 @@ return {
                                            settings.Tweening.EasingDirection)
         local Tweens_DEFAULTPOS = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
 
-        -- //DOOR ENGINE\\--
         for i, v in pairs(this.Sensors:GetChildren()) do
             if v:FindFirstChild('SensorRange') then
                 local LED = v:FindFirstChild('LED') or nil
@@ -69,7 +62,6 @@ return {
             end
         end
 
-        -- //DOOR OPEN FUNCTION\\--
         function DOOROPEN()
             state = 'OPENING'
             for _, v in pairs(this.Doors:GetChildren()) do
@@ -105,7 +97,6 @@ return {
             state = 'OPEN'
         end))
 
-        -- //DOOR CLOSE FUNCTION\\--
         function DOORCLOSE()
             state = 'CLOSING'
             for _, v in pairs(this.Doors:GetChildren()) do
@@ -136,8 +127,6 @@ return {
             until timer >= settings.Movement.CloseSpeed
             state = 'CLOSED'
         end))
-
-        -- //DOOR API\\--
 
         function this.AxuaAPI.OnInvoke(Command)
             if Command == 'EVENTS_DOOROPEN' and
