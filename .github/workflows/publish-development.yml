@@ -8,7 +8,6 @@ on:
                         - Obfuscator/**
                         - Lua/**
                         - yolus/**
-                        - .github/**
         workflow_dispatch:
 
 jobs:
@@ -45,7 +44,7 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - name: Test build obfuscator
+                        - name: Build Obfuscator
                           working-directory: yolus
                           run: dotnet build --output ../Obfuscator
 
