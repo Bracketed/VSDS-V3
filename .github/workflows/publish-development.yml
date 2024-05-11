@@ -35,7 +35,7 @@ jobs:
                           run: |
                                   echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT
                                   echo "title=VSDS ${${{ github.ref_name }}^} Release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
-                                  echo "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T).\n\nFiles Modified:\nAdded: ${{ steps.files.outputs.added }}\nModified: ${{ steps.files.outputs.modified }}\nRemoved: ${{ steps.files.outputs.removed }}" >> $GITHUB_OUTPUT
+                                  echo -e "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T).\n\nCommit Message: ${{ github.event.head_commit.message }}\nCommit SHA: ${{github.sha}}\nFiles Modified:\nAdded: ${{ steps.files.outputs.added }}\nModified: ${{ steps.files.outputs.modified }}\nRemoved: ${{ steps.files.outputs.removed }}" >> $GITHUB_OUTPUT
                           id: release-data
 
                         - name: Apply fix to luajit
