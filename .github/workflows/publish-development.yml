@@ -33,9 +33,9 @@ jobs:
 
                         - name: Generate release data
                           run: |
-                                  echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT && \
-                                  echo "title=VSDS ${${{ github.ref_name }}^} Release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT && \
-                                  echo "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T).\n\nFiles Modified:\nAdded: ${{ steps.files.outputs.added }}\nModified: ${{ steps.files.outputs.modified }}\nRemoved: ${{ steps.files.outputs.removed }}" >> $GITHUB_OUTPUT &&
+                                  echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT
+                                  echo "title=VSDS ${${{ github.ref_name }}^} Release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
+                                  echo "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T).\n\nFiles Modified:\nAdded: ${{ steps.files.outputs.added }}\nModified: ${{ steps.files.outputs.modified }}\nRemoved: ${{ steps.files.outputs.removed }}" >> $GITHUB_OUTPUT
                           id: release-data
 
                         - name: Apply fix to luajit
