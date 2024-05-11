@@ -3,6 +3,9 @@ name: Development Publish
 on:
         push:
                 branches: [development]
+                paths:
+                        - source/**
+                        - Obfuscator/**
         workflow_dispatch:
 
 jobs:
