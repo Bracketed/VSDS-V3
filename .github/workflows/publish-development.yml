@@ -34,19 +34,19 @@ jobs:
                         - name: Format changed files
                           id: formatting
                           run: |
-                                  added=$(echo "${{ steps.files.outputs.added }}" | tr ' ' '\n' | sed 's/^/+/g')
-                                  modified=$(echo "${{ steps.files.outputs.modified }}" | tr ' ' '\n' | sed 's/^/+/g')
-                                  removed=$(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/-/g')
+                                  added=$(echo "${{ steps.files.outputs.added }}" | tr ' ' '\n' | sed 's/^/+ /g')
+                                  modified=$(echo "${{ steps.files.outputs.modified }}" | tr ' ' '\n' | sed 's/^/+ /g')
+                                  removed=$(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/- /g')
                                                         
-                                  if [ -z "$added" ]; then
+                                  if [[ $added != *"+ "* ]]; then
                                     added="None"
                                   fi
                                                         
-                                  if [ -z "$modified" ]; then
+                                  if [[ $modified != *"+ "* ]]; then
                                     modified="None"
                                   fi
                                                         
-                                  if [ -z "$removed" ]; then
+                                  if [[ $removed != *"- "* ]]; then
                                     removed="None"
                                   fi
                                                         
