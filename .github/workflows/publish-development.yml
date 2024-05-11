@@ -28,6 +28,17 @@ jobs:
                           with:
                                   luaVersion: 5.1
 
+                        - id: files
+                          uses: jitterbit/get-changed-files@v1
+
+                        - name: Generate release data
+                          run: |
+                                  echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT && 
+                                  echo "title=VSDS ${${{ github.ref_name }}^} Release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT && 
+                                  echo "body=Newest VSDS update made by ${{ github.actor}} at $(date +%F_%T)." >> $GITHUB_OUTPUT && 
+                                  echo "${{ steps.files.outputs.all }}"
+                          id: release-data
+
                         - name: Apply fix to luajit
                           working-directory: .lua/bin
                           run: mv luajit* luajit
@@ -61,15 +72,11 @@ jobs:
                                   name: VSDS V3 DEVELOPMENT BUILD
                                   path: vsds-${{ github.ref_name }}.rbxm
 
-                        - name: Generate release tag
-                          run: echo "build=dev-$(date +%s)" >> $GITHUB_OUTPUT
-                          id: tag
-
                         - name: Create Release
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: VSDS ${{ github.ref_name }} Release
-                                  tag_name: ${{ steps.tag.outputs.build }}
+                                  tag_name: ${{ steps.release-data.outputs.tag }}
                                   files: vsds-${{ github.ref_name }}.rbxm
                                   body: Newest VSDS update made by ${{ github.actor}}.
                                   draft: false
