@@ -39,15 +39,15 @@ jobs:
                                   removed=$(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/- /g')
                                                         
                                   if [[ $(echo "$added" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
-                                    added="None"
+                                    added="# None"
                                   fi
-                                                        
+
                                   if [[ $(echo "$modified" | grep -cE '^(\+ ){0,1}$') -eq 1 ]]; then
-                                    modified="None"
+                                    modified="# None"
                                   fi
-                                                        
+
                                   if [[ $(echo "$removed" | grep -cE '^(\- ){0,1}$') -eq 1 ]]; then
-                                    removed="None"
+                                    removed="# None"
                                   fi
                                                         
                                   echo "added=$added" >> $GITHUB_OUTPUT
@@ -101,13 +101,13 @@ jobs:
                                   tag_name: ${{ steps.release-data.outputs.tag }}
                                   files: vsds-${{ github.ref_name }}.rbxm
                                   body: |
-                                          # Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
                                           *Commit Message: "${{ github.event.head_commit.message }}"*
                                           *Commit SHA:* ${{ github.sha }}
                                           *Commited At:* `${{ steps.release-data.outputs.date }}`
                                           *Committed By:* `${{ github.actor }}`
-                                          *Files Attached:* `Source`, `vsds-${{ github.ref_name }}.rbxm`
+                                          *Files Attached:* `Source code (zip)`, `Source code (tar.gz)`, `vsds-${{ github.ref_name }}.rbxm`
 
                                           **Files Modified:**
                                           Added:
