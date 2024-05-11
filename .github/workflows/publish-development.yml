@@ -64,6 +64,7 @@ jobs:
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: VSDS ${{ github.ref_name }} Release
+                                  tag_name: ${{ github.ref }}
                                   files: vsds-${{ github.ref_name }}.rbxm
                                   body: Newest VSDS update made by ${{ github.actor}}.
                                   draft: false
