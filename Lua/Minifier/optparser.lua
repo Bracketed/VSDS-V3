@@ -607,8 +607,8 @@ local function optimize_locals(option)
 
     -- Deal with statistics output.
     for _, name in ipairs(used_specials) do varlist[#varlist + 1] = name end
-    local afteruniq = preprocess(localinfo)
-    stats_summary(globaluniq, localuniq, afteruniq, option)
+    -- local afteruniq = preprocess(localinfo)
+    -- stats_summary(globaluniq, localuniq, afteruniq, option)
 end
 
 --- The main entry point.
