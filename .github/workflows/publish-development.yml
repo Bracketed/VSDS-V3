@@ -7,7 +7,7 @@ on:
                         - source/**
                         - Obfuscator/**
                         - Lua/**
-                        - yolus-source/**
+                        - yolus/**
                         - .github/**
         workflow_dispatch:
 
@@ -41,15 +41,12 @@ jobs:
                           working-directory: .lua/bin
                           run: mv luajit* luajit
 
-                        - name: Set up production version for rojo
-                          run: mv release.project.json default.project.json
-
                         - uses: ok-nick/setup-aftman@v0.4.2
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
                         - name: Test build obfuscator
-                          working-directory: yolus-source
+                          working-directory: yolus
                           run: dotnet build --output ../Obfuscator
 
                         - name: Obfuscate Source Files
@@ -57,7 +54,7 @@ jobs:
                           run: dotnet YolusCLI.dll
 
                         - name: Build
-                          run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm
+                          run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
 
                         - name: Publish Loader
                           uses: fjogeleit/http-request-action@v1.15.4
@@ -87,6 +84,7 @@ jobs:
                                           *Commit SHA:* ${{ github.sha }}
                                           *Commited At:* `${{ steps.release-data.outputs.date }}`
                                           *Committed By:* `${{ github.actor }}`
+
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
@@ -110,6 +108,7 @@ jobs:
                                           *Commit SHA:* ${{ github.sha }}
                                           *Commited At:* `${{ steps.release-data.outputs.date }}`
                                           *Committed By:* `${{ github.actor }}`
+
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
@@ -136,6 +135,7 @@ jobs:
                                           *Commit SHA:* ${{ github.sha }}
                                           *Commited At:* `${{ steps.release-data.outputs.date }}`
                                           *Committed By:* `${{ github.actor }}`
+
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
