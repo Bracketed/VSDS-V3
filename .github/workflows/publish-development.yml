@@ -76,7 +76,7 @@ jobs:
 
                         - name: Test build obfuscator
                           working-directory: yolus-source
-                          run: dotnet build --output ../Test
+                          run: dotnet build --output ../Obfuscator
 
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator
