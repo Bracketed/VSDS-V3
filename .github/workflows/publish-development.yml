@@ -19,9 +19,9 @@ jobs:
                         contents: read # optional, usually required
                 steps:
                         - uses: actions/checkout@v4.1.1
-                        - uses: actions/setup-node@v4
+                        - uses: actions/setup-dotnet@v4
                           with:
-                                  node-version: 21
+                                  dotnet-version: 7.0
                         - uses: leafo/gh-actions-lua@v10
                           with:
                                   luaVersion: luajit

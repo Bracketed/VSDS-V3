@@ -22,7 +22,7 @@ namespace YolusCORE
 
         public static async Task<ObfuscationResult> Obfuscate(string path, string input, bool isSpecialFile)
         {
-            string OS = "/home/bracketed/actions-runner/_work/VSDS-V3/VSDS-V3/.lua/bin/";
+            string OS = "/home/runner/work/VSDS-V3/VSDS-V3/.lua/bin/";
             ObfuscationSettings settings = new();
             DateTime CurrentDate = DateTime.Now;
             string ObfuscationID = Guid.NewGuid().ToString();
