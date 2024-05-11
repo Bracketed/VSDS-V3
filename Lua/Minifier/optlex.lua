@@ -13,14 +13,11 @@ local rep = string.rep
 local sub = string.sub
 local tonumber = tonumber
 local tostring = tostring
-
 local print -- set in optimize()
-
 local M = {}
 
 -- error function, can override by setting own function into module
 M.error = error
-
 M.warn = {} -- table for warning flags
 
 local stoks, sinfos, stoklns -- source lists

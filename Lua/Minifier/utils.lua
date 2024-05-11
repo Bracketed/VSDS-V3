@@ -5,7 +5,6 @@
 ----
 local ipairs = ipairs
 local pairs = pairs
-
 local M = {}
 
 --- Returns a new table containing the contents of all the given tables.
