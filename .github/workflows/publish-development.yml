@@ -31,6 +31,13 @@ jobs:
                         - id: files
                           uses: jitterbit/get-changed-files@v1
 
+                        - name: Format changed files
+                          id: formatting
+                          run: |
+                                  echo "added=+ $(echo "${{ steps.files.outputs.added }}" | tr ' ' '\n' | sed 's/^/+/g')" >> $GITHUB_OUTPUT
+                                  echo "modified=+ $(echo "${{ steps.files.outputs.modified }}" | tr ' ' '\n' | sed 's/^/+/g')" >> $GITHUB_OUTPUT
+                                  echo "removed=- $(echo "${{ steps.files.outputs.removed }}" | tr ' ' '\n' | sed 's/^/-/g')" >> $GITHUB_OUTPUT
+
                         - name: Generate release data
                           run: |
                                   echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT
@@ -85,10 +92,16 @@ jobs:
 
                                           Files Modified:
                                           Added:
-                                            ```${{ steps.files.outputs.added }}```
+                                            ```diff
+                                            ${{ steps.formatting.outputs.added }}
+                                            ```
                                           Modified:
-                                            ```${{ steps.files.outputs.modified }}```
+                                            ```diff
+                                            ${{ steps.formatting.outputs.modified }}
+                                            ```
                                           Removed:
-                                            ```${{ steps.files.outputs.removed }}```
+                                            ```diff
+                                            ${{ steps.formatting.outputs.removed }}
+                                            ```
                                   draft: false
                                   make_latest: true
