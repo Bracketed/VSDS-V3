@@ -1,27 +1,27 @@
 return {
     run = function(script, ...)
-        getfenv().require = _G.require
+        local Doors = {}
+
+        for Index, Instance in pairs(script.Parent:GetChildren()) do
+            if string.find(Instance.Name, 'DOOR') and Instance:IsA('Model') then
+                table.insert(Doors, Instance)
+            end
+        end
+
         local function print(...) warn(':: Virtua Axua ::', ...) end
-        Instance.new('Folder', script.Parent).Name = 'WeldStorage'
 
         -- //GAME SERVICES\\--
         local TS = game:GetService("TweenService")
 
         -- //DOOR AND CONFIG\\--
         local this = script.Parent
-        local settings = require(this.AxuaConfiguration)
 
         -- //DOOR LOGIC PROCESS\\--
         local state = 'CLOSED'
         local altsate = 'NONE'
 
         -- //TWEEN CONFIG\\--
-        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed,
-                                          settings.Tweening.EasingStyle,
-                                          settings.Tweening.EasingDirection)
-        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed,
-                                           settings.Tweening.EasingStyle,
-                                           settings.Tweening.EasingDirection)
+
         local Tweens_DEFAULTPOS = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
 
         -- //DOOR ENGINE\\--
@@ -35,38 +35,17 @@ return {
                     end
                     if (LED) then
                         TS:Create(LED, Tweens_DEFAULTPOS,
-                                  {Color = settings.SensorColours.Active})
-                            :Play()
+                                  {Color = Color3.fromRGB(0, 255, 0)}):Play()
                         wait(1)
                         TS:Create(LED, Tweens_DEFAULTPOS,
-                                  {Color = settings.SensorColours.Inactive})
-                            :Play()
+                                  {Color = Color3.fromRGB(255, 0, 0)}):Play()
                     end
                 end)
             end
         end
 
-        for i, v in pairs(this.Doors:GetChildren()) do
-            if v:FindFirstChild('DoorMovementGoal') then
-                for i, x in pairs(v:GetChildren()) do
-                    if x.Name == 'DoorMovementEngine' then
-                        x.Anchored = true
-                    end
-                    if not (x.Name == 'DoorMovementEngine') then
-                        z = Instance.new('WeldConstraint')
-                        local bx = Instance.new('CFrameValue')
-                        z.Part0 = v.DoorMovementEngine
-                        z.Part1 = x
-                        x.Anchored = false
-                        z.Parent = this.WeldStorage
-                        if not v:FindFirstChild('DoorCFrame') then
-                            bx.Value = v.DoorMovementEngine.CFrame
-                            bx.Name = 'DoorCFrame'
-                            bx.Parent = v
-                        end
-                    end
-                end
-            end
+        for _, Door in pairs(Doors) do
+            Door.Door.HingeConstraint.TargetAngle = 0
         end
 
         -- //DOOR OPEN FUNCTION\\--
@@ -74,14 +53,13 @@ return {
             state = 'OPENING'
             for _, v in pairs(this.Doors:GetChildren()) do
                 if v:IsA('Model') then
-                    TS:Create(v.DoorMovementEngine, Tweens_OPEN,
-                              {CFrame = v.DoorMovementGoal.CFrame}):Play()
+                    v.Door.HingeConstraint.TargetAngle = 90
                     coroutine.resume(coroutine.create(function()
                         local time = 0
                         repeat
                             time = time + 0.05
                             wait(0.05)
-                        until time >= settings.Movement.OpenSpeed / 2
+                        until time >= 1 / 2
                         repeat
                             time = time - 0.05
                             wait(0.05)
@@ -90,7 +68,7 @@ return {
                 end
             end
             if not ((altsate == 'HOLD') or (altsate == 'LOCKED')) then
-                wait(settings.Movement.OpenSpeed + settings.Movement.OpenTime)
+                wait(6)
                 DOORCLOSE()
             end
         end
@@ -101,7 +79,7 @@ return {
             repeat
                 timer = timer + 0.1
                 wait(0.1)
-            until timer >= settings.Movement.OpenSpeed
+            until timer >= 1
             state = 'OPEN'
         end))
 
@@ -110,14 +88,13 @@ return {
             state = 'CLOSING'
             for _, v in pairs(this.Doors:GetChildren()) do
                 if v:IsA('Model') then
-                    TS:Create(v.DoorMovementEngine, Tweens_CLOSE,
-                              {CFrame = v.DoorCFrame.Value}):Play()
+                    v.Door.HingeConstraint.TargetAngle = 0
                     coroutine.resume(coroutine.create(function()
                         local time = 0
                         repeat
                             time = time + 0.05
                             wait(0.05)
-                        until time >= settings.Movement.CloseSpeed / 2
+                        until time >= 1 / 2
                         repeat
                             time = time - 0.05
                             wait(0.05)
@@ -133,7 +110,7 @@ return {
             repeat
                 timer = timer + 0.1
                 wait(0.1)
-            until timer >= settings.Movement.CloseSpeed
+            until timer >= 1
             state = 'CLOSED'
         end))
 
