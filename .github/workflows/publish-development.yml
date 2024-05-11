@@ -36,31 +36,29 @@ jobs:
                         - name: Format changed files
                           id: formatting
                           run: |
-                                  added="${{ steps.files.outputs.added }}"
-                                  modified="${{ steps.files.outputs.modified }}"
-                                  removed="${{ steps.files.outputs.removed }}"
-
-                                  if [[ -z "$added" ]]; then
-                                    added="None"
-                                  else
-                                    added=$(echo "$added" | tr ' ' '\n')
-                                  fi
-
-                                  if [[ -z "$modified" ]]; then
-                                    modified="None"
-                                  else
-                                    modified=$(echo "$modified" | tr ' ' '\n')
-                                  fi
-
-                                  if [[ -z "$removed" ]]; then
-                                    removed="None"
-                                  else
-                                    removed=$(echo "$removed" | tr ' ' '\n')
-                                  fi
-
-                                  echo "added=$added" >> $GITHUB_OUTPUT
-                                  echo "modified=$modified" >> $GITHUB_OUTPUT
-                                  echo "removed=$removed" >> $GITHUB_OUTPUT
+                                  added=(${{ steps.files.outputs.added }})
+                                  modified=(${{ steps.files.outputs.modified }})
+                                  removed=(${{ steps.files.outputs.removed }})
+                                                        
+                                  formatted_added=""
+                                  formatted_modified=""
+                                  formatted_removed=""
+                                                        
+                                  for file in "${added[@]}"; do
+                                    formatted_added+="$(basename "$file")"$'\n'
+                                  done
+                                                        
+                                  for file in "${modified[@]}"; do
+                                    formatted_modified+="$(basename "$file")"$'\n'
+                                  done
+                                                        
+                                  for file in "${removed[@]}"; do
+                                    formatted_removed+="$(basename "$file")"$'\n'
+                                  done
+                                                        
+                                  echo "added=${formatted_added:-None}" >> $GITHUB_OUTPUT
+                                  echo "modified=${formatted_modified:-None}" >> $GITHUB_OUTPUT
+                                  echo "removed=${formatted_removed:-None}" >> $GITHUB_OUTPUT
 
                         - name: Generate release data
                           run: |
