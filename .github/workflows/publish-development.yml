@@ -31,7 +31,7 @@ jobs:
 
                         - name: Generate release data
                           run: |
-                                  echo "tag=dev-$(date +%s)" >> $GITHUB_OUTPUT
+                                  echo "tag=${{ github.ref_name }}-$(date +%s)" >> $GITHUB_OUTPUT
                                   echo "title=VSDS ${{ github.ref_name }} release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
                                   echo "date=$(date +%F_%T)" >> $GITHUB_OUTPUT
                           id: release-data
