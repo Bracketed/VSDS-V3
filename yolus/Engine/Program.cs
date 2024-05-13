@@ -223,7 +223,7 @@ namespace YolusCORE
   Project Bracketed 2024
   Project Yolus Obfuscator 2024
 
-  ninjaninja140, eledontlie, Jakisall and the rest of the team behind Project Bracketed thank you for using our obfuscator.
+  ninjaninja140, eledontlie and the rest of the team behind Project Bracketed thank you for using our obfuscator.
 --]]
 
 --[[

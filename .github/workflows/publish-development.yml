@@ -55,15 +55,24 @@ jobs:
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
 
-                        - name: Publish Loader
-                          uses: fjogeleit/http-request-action@v1.15.4
+                        - name: Check for ??? uptime
+                          uses: fjogeleit/http-request-action@main
                           with:
-                                  url: 'http://upload.furwithpawbs.social/?assetId=${{ secrets.VSDS_ASSETID }}'
+                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}'
+                                  method: 'GET'
+                                  timeout: 10000
+
+                        - name: Publish Loader
+                          uses: fjogeleit/http-request-action@main
+                          with:
+                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}/upload?assetId=${{ secrets.VSDS_ASSETID }}'
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
                                   files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
                                   customHeaders: '{ "authentication": "${{ secrets.VSDS_COMMITKEY }}" }'
                                   timeout: 10000
+                                  retry: 5
+                                  retryWait: 60000
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:

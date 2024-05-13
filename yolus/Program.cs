@@ -12,10 +12,10 @@ namespace YolusCLI
             {
                 var SpecialFile = false;
 
-                if (file.EndsWith("-NOOBFUSCATE.lua"))
+                if (file.EndsWith(".opensource.lua"))
                 {
                     Console.WriteLine("Skipping " + file);
-                    File.Move(file, file.Replace("-NOOBFUSCATE", ""));
+                    File.Move(file, file.Replace(".opensource", ""));
                     continue;
                 }
 
