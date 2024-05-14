@@ -55,13 +55,6 @@ jobs:
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
 
-                        - name: Check for ??? uptime
-                          uses: fjogeleit/http-request-action@main
-                          with:
-                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}'
-                                  method: 'GET'
-                                  timeout: 10000
-
                         - name: Publish Loader
                           uses: fjogeleit/http-request-action@main
                           with:

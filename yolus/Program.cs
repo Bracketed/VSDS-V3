@@ -39,7 +39,6 @@ namespace YolusCLI
                 File.Delete("t3.lua");
             }
 
-
             Console.WriteLine("Obfuscated all files successfully!");
         }
     }
