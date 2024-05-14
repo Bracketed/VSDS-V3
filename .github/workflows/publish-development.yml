@@ -64,6 +64,8 @@ jobs:
                                   files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
                                   customHeaders: '{ "authentication": "${{ secrets.VSDS_COMMITKEY }}" }'
                                   timeout: 10000
+                                  retry: 5
+                                  retryWait: 60000
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
