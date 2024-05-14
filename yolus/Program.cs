@@ -1,4 +1,4 @@
-﻿using YolusCORE;
+using YolusCORE;
 
 namespace YolusCLI
 {
@@ -39,7 +39,7 @@ namespace YolusCLI
                 File.Delete("t3.lua");
             }
 
-            Console.WriteLine("Obfuscated all files successfully!");
+            Console.WriteLine("Obfuscated all files successfully!"); // add a timer into this
         }
     }
 }
