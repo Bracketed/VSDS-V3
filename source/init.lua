@@ -120,7 +120,7 @@ function __V3.Deploy(script, ...)
         end
     else
         -- pcall(function() script.Parent:Destroy() end)
-        -- script:Destroy()
+        -- script:Destroy() -- redo these soon 
         print('Cannot activate product!')
         return
     end
