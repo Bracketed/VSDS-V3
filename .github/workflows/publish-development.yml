@@ -58,7 +58,7 @@ jobs:
                         - name: Publish Loader
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
-                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}/upload?assetId=${{ secrets.VSDS_ASSETID }}'
+                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}/?assetId=${{ secrets.VSDS_ASSETID }}'
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
                                   files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
