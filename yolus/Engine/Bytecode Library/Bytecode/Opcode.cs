@@ -40,8 +40,6 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 		Close,
 		Closure,
 		VarArg,
-
-		//Custom VM opcodes
 		SetTop,
 		PushStack,
 		NewStack,

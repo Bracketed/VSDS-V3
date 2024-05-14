@@ -2,7 +2,7 @@ namespace YolusCORE.BytecodeLibrary.IR
 {
 	public class Constant
 	{
-		public List<Instruction> BackReferences = new List<Instruction>();
+		public List<Instruction> BackReferences = new();
 
 		public ConstantType Type;
 		public dynamic Data;

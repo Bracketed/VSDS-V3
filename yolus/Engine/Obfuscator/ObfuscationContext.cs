@@ -40,7 +40,7 @@ namespace YolusCORE.Obfuscator
 		public InstructionStep2[] InstructionSteps2;
 		public int[] ConstantMapping;
 
-		public Dictionary<Opcode, VOpcode> InstructionMapping = new Dictionary<Opcode, VOpcode>();
+		public Dictionary<Opcode, VOpcode> InstructionMapping = new();
 
 		public int PrimaryXorKey;
 
@@ -62,7 +62,7 @@ namespace YolusCORE.Obfuscator
 			ConstantMapping = Enumerable.Range(0, 4).ToArray();
 			ConstantMapping.Shuffle();
 
-			Random rand = new Random();
+			Random rand = new();
 
 			PrimaryXorKey = rand.Next(0, 256);
 			IXorKey1 = rand.Next(0, 256);

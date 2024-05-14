@@ -2,7 +2,7 @@ namespace YolusCORE.Extensions
 {
 	public static class IEnumerableExtensions
 	{
-		private static Random _rnd = new Random();
+		private static readonly Random _rnd = new();
 
 		public static void Shuffle<T>(this IList<T> list)
 		{
@@ -12,9 +12,7 @@ namespace YolusCORE.Extensions
 
 		public static void Swap<T>(this IList<T> list, int i, int j)
 		{
-			var temp = list[i];
-			list[i] = list[j];
-			list[j] = temp;
+			(list[j], list[i]) = (list[i], list[j]);
 		}
 
 		public static T Random<T>(this IList<T> list) =>

@@ -41,13 +41,10 @@ namespace YolusCORE.BytecodeLibrary.IR
 		{
 			offset -= CurrentOffset;
 			paramOffset -= CurrentParamOffset;
-
 			CurrentOffset += offset;
 			CurrentParamOffset += paramOffset;
-
 			StackSize = (byte)(StackSize + offset);
 
-			//thanks lua for not distinguishing parameters and regular stack values!
 			var Params = ParameterCount - 1;
 			for (var i = 0; i < Instructions.Count; i++)
 			{
@@ -222,7 +219,6 @@ namespace YolusCORE.BytecodeLibrary.IR
 
 							var nProto = Functions[instr.B];
 
-							//fuck you lua
 							for (var i2 = 0; i2 < nProto.UpvalueCount; i2++)
 							{
 								var cInst = Instructions[i + i2 + 1];

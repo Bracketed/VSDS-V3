@@ -66,7 +66,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 			byte[] bytes = new byte[size];
 			_stream.Read(bytes, 0, size);
 
-			if (factorEndianness && (_bigEndian == BitConverter.IsLittleEndian)) //if factor in endianness AND endianness differs between the two versions
+			if (factorEndianness && (_bigEndian == BitConverter.IsLittleEndian))
 				bytes = bytes.Reverse().ToArray();
 
 			return bytes;
@@ -107,7 +107,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 		public Instruction DecodeInstruction(Chunk chunk, int index)
 		{
 			int code = ReadInt32();
-			Instruction i = new Instruction(chunk, (Opcode)(code & 0x3F));
+			Instruction i = new(chunk, (Opcode)(code & 0x3F));
 
 			i.Data = code;
 
@@ -123,7 +123,6 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 			switch (i.InstructionType)
 			{
-				//WHAT THE FUCK LUA
 				case InstructionType.ABC:
 					i.B = (code >> 6 + 8 + 9) & 0x1FF;
 					i.C = (code >> 6 + 8) & 0x1FF;
@@ -148,7 +147,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 		public List<Instruction> DecodeInstructions(Chunk chunk)
 		{
-			List<Instruction> instructions = new List<Instruction>();
+			List<Instruction> instructions = new();
 
 			int Count = ReadInt32();
 
@@ -160,9 +159,8 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 		public Constant DecodeConstant()
 		{
-			Constant c = new Constant();
+			Constant c = new();
 			byte Type = ReadByte();
-			//ALSO WHAT THE FUCK LUA
 			switch (Type)
 			{
 				case 0:
@@ -191,7 +189,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 		public List<Constant> DecodeConstants()
 		{
-			List<Constant> constants = new List<Constant>();
+			List<Constant> constants = new();
 
 			int Count = ReadInt32();
 
@@ -225,20 +223,18 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 				inst.SetupRefs();
 
 			int count = ReadInt32();
-			for (int i = 0; i < count; i++) // source line pos list
+			for (int i = 0; i < count; i++)
 				c.Instructions[i].Line = ReadInt32();
 
-			//skip other debug info cus fuckit.wav
-
 			count = ReadInt32();
-			for (int i = 0; i < count; i++) // local list
+			for (int i = 0; i < count; i++)
 			{
 				ReadString();
 				ReadInt32();
 				ReadInt32();
 			}
 			count = ReadInt32();
-			for (int i = 0; i < count; i++) // upvalues
+			for (int i = 0; i < count; i++)
 				c.Upvalues.Add(ReadString());
 
 			return c;
@@ -246,7 +242,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 		public List<Chunk> DecodeChunks()
 		{
-			List<Chunk> Chunks = new List<Chunk>();
+			List<Chunk> Chunks = new();
 
 			int count = ReadInt32();
 
@@ -266,19 +262,13 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 			if (ReadByte() != 0x51)
 				throw new Exception("Only Lua 5.1 is supported.");
 
-			ReadByte(); //format official shit wtf
-
+			ReadByte();
 			_bigEndian = ReadByte() == 0;
-
-			ReadByte(); //size of int (assume 4 fuck off)
-
+			ReadByte();
 			_sizeSizeT = ReadByte();
-
-			ReadByte(); //size of instruction (fuck it not supporting anything else than default)
-
+			ReadByte();
 			_sizeNumber = ReadByte();
-
-			ReadByte(); //not supporting integer number bullshit fuck off
+			ReadByte();
 
 			Chunk c = DecodeChunk();
 			return c;

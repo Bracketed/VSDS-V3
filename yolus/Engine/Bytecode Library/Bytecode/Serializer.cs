@@ -6,10 +6,10 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 {
 	public class Serializer
 	{
-		private ObfuscationContext _context;
-		private ObfuscationSettings _settings;
-		private Random _r = new Random();
-		private Encoding _Lua = Encoding.GetEncoding(28591);
+		private readonly ObfuscationContext _context;
+		private readonly ObfuscationSettings _settings;
+		private readonly Random _r = new();
+		private readonly Encoding _Lua = Encoding.GetEncoding(28591);
 
 		public Serializer(ObfuscationContext context, ObfuscationSettings settings)
 		{
@@ -19,7 +19,7 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 
 		public byte[] SerializeLChunk(Chunk chunk, bool factorXor = true)
 		{
-			List<byte> bytes = new List<byte>();
+			List<byte> bytes = new();
 
 			void WriteByte(byte b)
 			{
@@ -140,7 +140,6 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 						{
 							int[] arr = SerializeInstruction(ins);
 
-							//WriteByte((byte)ins.Instruction.InstructionType);
 							WriteInt32(arr[0] ^ _context.IXorKey1);
 							WriteInt32(arr[1] ^ _context.IXorKey2);
 						}

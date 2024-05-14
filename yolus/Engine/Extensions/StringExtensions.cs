@@ -2,14 +2,6 @@ namespace YolusCORE.Extensions
 {
 	public static class StringExtensions
 	{
-		/// <summary>
-		/// takes a substring between two anchor strings (or the end of the string if that anchor is null)
-		/// </summary>
-		/// <param name="this">a string</param>
-		/// <param name="from">an optional string to search after</param>
-		/// <param name="until">an optional string to search before</param>
-		/// <param name="comparison">an optional comparison for the search</param>
-		/// <returns>a substring based on the search</returns>
 		public static string Substring(this string @this, string from = null, string until = null, StringComparison comparison = StringComparison.InvariantCulture)
 		{
 			var fromLength = (from ?? string.Empty).Length;

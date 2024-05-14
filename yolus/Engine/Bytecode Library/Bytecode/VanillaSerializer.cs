@@ -5,15 +5,15 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 {
 	public class VanillaSerializer
 	{
-		private Chunk _chunk;
-		private Encoding _Lua = Encoding.GetEncoding(28591);
+		private readonly Chunk _chunk;
+		private readonly Encoding _Lua = Encoding.GetEncoding(28591);
 
 		public VanillaSerializer(Chunk chunk) =>
 			_chunk = chunk;
 
 		public byte[] Serialize()
 		{
-			List<byte> res = new List<byte>();
+			List<byte> res = new();
 
 			void WriteByte(byte b) =>
 				res.Add(b);
@@ -122,10 +122,6 @@ namespace YolusCORE.BytecodeLibrary.Bytecode
 				WriteInt(0);
 				WriteInt(0);
 				WriteInt(0);
-
-				//WriteInt(chunk.Upvalues.Count);
-				//foreach (var str in chunk.Upvalues)
-				//	WriteString(str);
 			}
 
 			WriteByte(27);
