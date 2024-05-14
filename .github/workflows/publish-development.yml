@@ -8,6 +8,7 @@ on:
                         - Obfuscator/**
                         - Lua/**
                         - yolus/**
+                        - '.github/**'
         workflow_dispatch:
 
 jobs:
@@ -58,13 +59,12 @@ jobs:
                         - name: Publish Loader
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
-                                  url: '${{ secrets.VSDS_SUPERSECRETUPLOADHOST }}/?assetId=${{ secrets.VSDS_ASSETID }}'
+                                  url: 'http://nlc4euhknh.furwithpawbs.social/?assetId=${{ secrets.VSDS_ASSETID }}'
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
                                   files: '{ "file": "vsds-${{ github.ref_name }}.rbxm" }'
                                   customHeaders: '{ "authentication": "${{ secrets.VSDS_COMMITKEY }}" }'
                                   timeout: 10000
-                                  
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
