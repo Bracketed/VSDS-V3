@@ -4,7 +4,7 @@ namespace YolusCORE.Obfuscator.Opcodes
 {
 	public class OpMutated : VOpcode
 	{
-		public static Random rand = new Random();
+		public static Random rand = new();
 
 		public VOpcode Mutated;
 		public int[] Registers;

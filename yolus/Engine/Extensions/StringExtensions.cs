@@ -19,7 +19,7 @@ namespace YolusCORE.Extensions
 			if (endIndex < 0)
 				return null;
 
-			var subString = @this.Substring(startIndex, endIndex - startIndex);
+			var subString = @this[startIndex..endIndex];
 			return subString;
 		}
 	}
