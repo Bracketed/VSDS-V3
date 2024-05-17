@@ -119,8 +119,8 @@ function __V3.Deploy(script, ...)
                 'There was an error attempting to deploy the requested script.')
         end
     else
-        -- pcall(function() script.Parent:Destroy() end)
-        -- script:Destroy() -- redo these soon 
+        -- pcall(function() script.Parent:Destroy() end) -- redo these soon 
+        -- script:Destroy() -- and this lol
         print('Cannot activate product!')
         return
     end
