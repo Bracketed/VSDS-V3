@@ -49,8 +49,11 @@ jobs:
                           uses: GuillaumeFalourd/clone-github-repo-action@v2.3
                           with:
                                   owner: 'Brackted'
-                                  repository: 'VSDS-LUA' # Fix later
+                                  repository: 'VSDS-LUA'
                                   access-token: ${{ secrets.VSDS_PUBCOMMIT }}
+
+                        - name: Apply fix to VSDS lua binaries and minification libraries
+                          run: mv VSDS-LUA Lua
 
                         - name: Build Obfuscator
                           working-directory: yolus
@@ -147,4 +150,3 @@ jobs:
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
                                           - `vsds-${{ github.ref_name }}.rbxm`
-
