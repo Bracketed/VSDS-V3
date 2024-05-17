@@ -32,8 +32,14 @@ jobs:
                                   echo "tag=linting-$(date +%s)" >> $GITHUB_OUTPUT
                           id: release-data
 
-                        - name: Lint Scripts contained in /source
-                          run: selene source --allow-warnings
+                        - run: selene source
+
+                        - uses: NTBBloodbath/selene-action@v1.0.0
+                          name: Lint Scripts contained in /source
+                          with:
+                                  token: ${{ secrets.GITHUB_TOKEN }}
+                                  args: --allow-warnings source
+                                  version: 0.26.1
 
                         - uses: actions/checkout@v4.1.1
                         - uses: stefanzweifel/git-auto-commit-action@v5

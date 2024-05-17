@@ -8,7 +8,7 @@ on:
                         - Obfuscator/**
                         - Lua/**
                         - yolus/**
-                        - '.github/**'
+                        #- '.github/**' # for developmental perposes
         workflow_dispatch:
 
 jobs:
@@ -140,3 +140,4 @@ jobs:
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
                                           - `vsds-${{ github.ref_name }}.rbxm`
+
