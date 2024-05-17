@@ -36,7 +36,7 @@ jobs:
                           name: Lint Scripts contained in /source
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
-                                  args: . --allow-warnings --pattern source/**/*.lua
+                                  args: source --allow-warnings
 
                         - uses: actions/checkout@v4.1.1
                         - uses: stefanzweifel/git-auto-commit-action@v5
@@ -44,5 +44,4 @@ jobs:
                                   commit_message: ${{ steps.release-data.outputs.tag }}
                                   tagging_message: ${{ steps.release-data.outputs.tag }}
                                   add_options: '-A'
-                                  file_pattern: './source/**.lua'
 
