@@ -45,7 +45,7 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - name: Clone Lua Minify libraries from source
+                        - name: Download Lua Minify libraries from source
                           uses: GuillaumeFalourd/clone-github-repo-action@v2.3
                           with:
                                   owner: 'Brackted'
@@ -55,8 +55,18 @@ jobs:
                         - name: Apply fix to VSDS lua binaries and minification libraries
                           run: mv VSDS-LUA Lua
 
+                        - name: Download Yolus Obfuscator libraries from source
+                          uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+                          with:
+                                  owner: 'Brackted'
+                                  repository: 'VSDS-OBFUSCATOR'
+                                  access-token: ${{ secrets.VSDS_PUBCOMMIT }}
+
+                        - name: Apply fix to VSDS yolus binaries and obfuscation libraries
+                          run: mv VSDS-OBFUSCATOR Yolus
+
                         - name: Build Obfuscator
-                          working-directory: yolus
+                          working-directory: Yolus
                           run: dotnet build --output ../Obfuscator
 
                         - name: Obfuscate Source Files
