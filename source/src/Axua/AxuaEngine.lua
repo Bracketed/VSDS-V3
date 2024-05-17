@@ -10,12 +10,8 @@ return {
         local state = 'CLOSED'
         local altsate = 'NONE'
 
-        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed,
-                                          settings.Tweening.EasingStyle,
-                                          settings.Tweening.EasingDirection)
-        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed,
-                                           settings.Tweening.EasingStyle,
-                                           settings.Tweening.EasingDirection)
+        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
+        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
         local Tweens_DEFAULTPOS = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
 
         for i, v in pairs(this.Sensors:GetChildren()) do
