@@ -32,8 +32,6 @@ jobs:
                                   echo "tag=linting-$(date +%s)" >> $GITHUB_OUTPUT
                           id: release-data
 
-                        - run: selene source
-
                         - uses: NTBBloodbath/selene-action@v1.0.0
                           name: Lint Scripts contained in /source
                           with:
