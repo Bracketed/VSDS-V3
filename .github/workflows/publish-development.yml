@@ -5,10 +5,7 @@ on:
                 branches: [development]
                 paths:
                         - source/**
-                        - Obfuscator/**
-                        - Lua/**
-                        - yolus/**
-                        - '.github/**' # for developmental perposes
+                        #- '.github/**' # for developmental perposes
         workflow_dispatch:
 
 jobs:
@@ -64,6 +61,9 @@ jobs:
 
                         - name: Apply fix to VSDS yolus binaries and obfuscation libraries
                           run: mv VSDS-OBFUSCATOR Yolus
+
+                        - name: Extract Font libraries
+                          run: mv Yolus/Fonts Fonts
 
                         - name: Build Obfuscator
                           working-directory: Yolus
