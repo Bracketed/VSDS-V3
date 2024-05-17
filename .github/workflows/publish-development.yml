@@ -45,6 +45,13 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
+                        - name: Clone Lua Minify libraries from source
+                          uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+                          with:
+                                  owner: 'Brackted'
+                                  repository: 'VSDS-LUA' # Fix later
+                                  access-token: ${{ secrets.VSDS_PUBCOMMIT }}
+
                         - name: Build Obfuscator
                           working-directory: yolus
                           run: dotnet build --output ../Obfuscator
