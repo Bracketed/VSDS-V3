@@ -1,0 +1,40 @@
+name: Development Linting
+
+on:
+        schedule:
+                - cron: '0 0 * * 0'
+        workflow_dispatch:
+
+permissions:
+        contents: write
+
+jobs:
+        lint:
+                name: lint
+                runs-on: ubuntu-latest
+
+                steps:
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
+                                  luaVersion: luajit
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
+                                  luaVersion: 5.1
+                        - name: Apply fix to luajit
+                          working-directory: .lua/bin
+                          run: mv luajit* luajit
+                        - uses: ok-nick/setup-aftman@v0.4.2
+                          with:
+                                  token: ${{ secrets.GITHUB_TOKEN }}
+
+                        - name: Lint Scripts contained in /source
+                          run: selene source --allow-warnings
+                        - uses: actions/checkout@v4.1.1
+                          name: Checkout and push linted code
+                          run: |
+                                  git config user.name github-actions
+                                  git config user.email github-actions@github.com
+                                  git add .
+                                  git commit -m "linting-$(date +%s)"
+                                  git push
+
