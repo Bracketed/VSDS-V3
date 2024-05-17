@@ -8,7 +8,7 @@ on:
                         - Obfuscator/**
                         - Lua/**
                         - yolus/**
-                        #- '.github/**' # for developmental perposes
+                        - '.github/**' # for developmental perposes
         workflow_dispatch:
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
                         - name: Download Lua Minify libraries from source
                           uses: GuillaumeFalourd/clone-github-repo-action@v2.3
                           with:
-                                  owner: 'Brackted'
+                                  owner: 'Bracketed'
                                   repository: 'VSDS-LUA'
                                   access-token: ${{ secrets.VSDS_PUBCOMMIT }}
 
@@ -58,7 +58,7 @@ jobs:
                         - name: Download Yolus Obfuscator libraries from source
                           uses: GuillaumeFalourd/clone-github-repo-action@v2.3
                           with:
-                                  owner: 'Brackted'
+                                  owner: 'Bracketed'
                                   repository: 'VSDS-OBFUSCATOR'
                                   access-token: ${{ secrets.VSDS_PUBCOMMIT }}
 
