@@ -1,7 +1,7 @@
 return {
     run = function(script, ...)
         local function print(...)
-            warn(':: CommCommander [CLIENT] ::', ...)
+            warn(':: CommCommanderClient ::', ...)
         end
         local LocalPlayer = game:GetService('Players').LocalPlayer
 
