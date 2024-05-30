@@ -10,6 +10,8 @@ __V3_INTERNAL.SERVICES.GROUPSERVICE = game:GetService('GroupService')
 __V3_INTERNAL.script = script
 __V3_INTERNAL.DEBUG = false
 
+-- someone needs to redo all this and ik its still probably gonna be me in the end - eden
+
 local function print(...)
     if (__V3_INTERNAL.DEBUG) then warn(':: Virtua Electronics ::', ...) end
 end
