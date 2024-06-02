@@ -54,14 +54,25 @@ return {
         end
 
         if Settings.DoorLabel then
-            if Door.Doors.Door:FindFirstChild('Tag') then
-                Door.Doors.Door.Tag.Tag.TagUI.TagText.Text = Settings.DoorLabel
+            for _, UI in pairs(Door.Doors:GetDescendants()) do
+                if UI:IsA('SurfaceGui') and UI.Name == 'TagUI' then
+                    if UI.TagText.Text == 'Room' then
+                        UI.TagText.Text = Settings.DoorLabel
+                    end
+                end
             end
         else
-            if Door.Doors.Door:FindFirstChild('Tag') then
-                script.Parent.Doors.Door.Tag.Tag.Transparency = 1
-                script.Parent.Doors.Door.Tag.Case.Transparency = 1
-                script.Parent.Doors.Door.Tag.Tag.TagUI.Enabled = false
+            for _, Model in pairs(Door.Doors:GetDescendants()) do
+                if Model:IsA('Model') and Model.Name == 'Tag' then
+                    for _, Child in pairs(Model:GetDescendants()) do
+                        pcall(function()
+                            Child.Transparency = 1
+                        end)
+                        pcall(function()
+                            Child.Enabled = false
+                        end)
+                    end
+                end
             end
         end
 

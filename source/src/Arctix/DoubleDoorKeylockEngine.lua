@@ -65,25 +65,28 @@ return {
 			InteractionRightPull.MaxActivationDistance = 10
 		end
 
-		if Settings.DoorLabel then
-			if Door.Doors.DoorL:FindFirstChild('Tag') then
-				Door.Doors.DoorL.Tag.Tag.TagUI.TagText.Text = Settings.DoorLabel
-			end
-			if Door.Doors.DoorR:FindFirstChild('Tag') then
-				Door.Doors.DoorR.Tag.Tag.TagUI.TagText.Text = Settings.DoorLabel
-			end
-		else
-			if Door.Doors.DoorL:FindFirstChild('Tag') then
-				Door.Doors.DoorL.Tag.Tag.Transparency = 1
-				Door.Doors.DoorL.Tag.Case.Transparency = 1
-				Door.Doors.DoorL.Tag.Tag.TagUI.Enabled = false
-			end
-			if Door.Doors.DoorR:FindFirstChild('Tag') then
-				Door.Doors.DoorR.Tag.Tag.Transparency = 1
-				Door.Doors.DoorR.Tag.Case.Transparency = 1
-				Door.Doors.DoorR.Tag.Tag.TagUI.Enabled = false
-			end
-		end
+        if Settings.DoorLabel then
+            for _, UI in pairs(Door.Doors:GetDescendants()) do
+                if UI:IsA('SurfaceGui') and UI.Name == 'TagUI' then
+                    if UI.TagText.Text == 'Room' then
+                        UI.TagText.Text = Settings.DoorLabel
+                    end
+                end
+            end
+        else
+            for _, Model in pairs(Door.Doors:GetDescendants()) do
+                if Model:IsA('Model') and Model.Name == 'Tag' then
+                    for _, Child in pairs(Model:GetDescendants()) do
+                        pcall(function()
+                            Child.Transparency = 1
+                        end)
+                        pcall(function()
+                            Child.Enabled = false
+                        end)
+                    end
+                end
+            end
+        end
 
 		function DoorFunctions.checkForWhitelist(player)
 			if not (Settings.Whitelist.WhitelistEnabled) then return true end
