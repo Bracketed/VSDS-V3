@@ -115,8 +115,7 @@ function __V3.Deploy(script, ...)
     -- if debug == "debug" then __V3_INTERNAL.DEBUG = true end
     __V3_INTERNAL.DEBUG = true
     if (__V3.InstallServices()) then
-        if not (require(__V3_INTERNAL.script.DeploymentManagerV1).Run(script,
-                                                                      ...)) then
+        if not (require(__V3_INTERNAL.script['VSDS-DEPMAN']).Run(script, ...)) then
             print(
                 'There was an error attempting to deploy the requested script.')
         end
