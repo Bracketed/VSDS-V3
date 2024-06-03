@@ -4,7 +4,7 @@
 	<External>nil</External>
 	<Item class="Part" referent="30">
 		<Properties>
-			<bool name="Anchored">false</bool>
+			<bool name="Anchored">true</bool>
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<float name="BackParamA">-0.5</float>
 			<float name="BackParamB">0.5</float>
