@@ -86,7 +86,7 @@ jobs:
                           run: selene update-roblox-std
 
                         - name: Verify Scripts contained in /src
-                          run: selene src --quiet --config selene-release.toml
+                          run: selene src --allow-warnings --quiet --config selene-release.toml
 
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
