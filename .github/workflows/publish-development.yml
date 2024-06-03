@@ -85,7 +85,13 @@ jobs:
                         - name: Retrieve Latest Roblox Verification Libraries
                           run: selene update-roblox-std
 
-                        - name: Verify Scripts contained in /src
+                        - name: Verify Scripts contained in /src (1)
+                          run: selene src --allow-warnings --quiet --config selene-release.toml
+
+                        - name: Verify Scripts contained in /src (2)
+                          run: selene src --allow-warnings --quiet --config selene-release.toml
+
+                        - name: Verify Scripts contained in /src (3)
                           run: selene src --allow-warnings --quiet --config selene-release.toml
 
                         - name: Build
