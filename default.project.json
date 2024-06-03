@@ -7,7 +7,7 @@
 			"Virtua_SDS": {
 				"$className": "Folder",
 				"MainModule": {
-					"$path": "source",
+					"$path": "src",
 					"Thumbnail": {
 						"$className": "Part",
 						"$properties": {

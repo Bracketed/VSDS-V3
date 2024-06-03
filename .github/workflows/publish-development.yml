@@ -4,7 +4,7 @@ on:
         push:
                 branches: [development]
                 paths:
-                        - source/**
+                        - src/**
                         #- '.github/**' # for developmental perposes
         workflow_dispatch:
 
