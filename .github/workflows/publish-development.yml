@@ -77,6 +77,12 @@ jobs:
                           working-directory: Obfuscator
                           run: dotnet YolusCLI.dll
 
+                        - uses: NTBBloodbath/selene-action@v1.0.0
+                          name: Lint Scripts contained in /source
+                          with:
+                                  token: ${{ secrets.GITHUB_TOKEN }}
+                                  args: source --allow-warnings
+
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
 
