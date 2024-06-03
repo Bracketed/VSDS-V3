@@ -85,11 +85,8 @@ jobs:
                         - name: Retrieve Latest Roblox Verification Libraries
                           run: selene update-roblox-std
 
-                        - name: Add aditional verification config.
-                          run: sed -i -e "s/unused_variable = "warn"/unused_variable = "allow"/g" selene.toml
-
                         - name: Verify Scripts contained in /src
-                          run: selene src --quiet --config selene.toml
+                          run: selene src --quiet --config selene-release.toml
 
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
