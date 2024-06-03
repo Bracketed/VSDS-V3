@@ -1,7 +1,7 @@
 {
 	"name": "MainModule",
 	"tree": {
-		"$path": "source",
+		"$path": "src",
 		"Thumbnail": {
 			"$className": "Part",
 			"$properties": {

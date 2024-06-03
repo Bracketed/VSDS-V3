@@ -1,7 +1,7 @@
 local __V1 = {}
 
 local __INTERNAL = script
-local __SRC = __INTERNAL.Parent.src
+local __SRC = __INTERNAL.Parent['VSDS-SRC']
 
 local function print(...) warn(':: Virtua Electronics ::', ...) end
 

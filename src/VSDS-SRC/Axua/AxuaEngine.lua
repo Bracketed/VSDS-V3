@@ -1,63 +1,84 @@
 return {
     run = function(script, ...)
-        local Doors = {}
-
-        for Index, Instance in pairs(script.Parent:GetChildren()) do
-            if string.find(Instance.Name, 'DOOR') and Instance:IsA('Model') then
-                table.insert(Doors, Instance)
-            end
-        end
-
+        getfenv().require = _G.require
         local function print(...) warn(':: Virtua Axua ::', ...) end
+        Instance.new('Folder', script.Parent).Name = 'WeldStorage'
+
         local TS = game:GetService("TweenService")
         local this = script.Parent
+        local settings = require(this.AxuaConfiguration)
         local state = 'CLOSED'
         local altsate = 'NONE'
+
+        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
+        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
         local Tweens_DEFAULTPOS = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
 
-        for i, v in pairs(this.Sensors:GetChildren()) do
-            if v:FindFirstChild('SensorRange') then
-                local LED = v:FindFirstChild('LED') or nil
-                v.SensorRange.Touched:connect(function()
+        for _, Sensor in pairs(this.Sensors:GetChildren()) do
+            if Sensor:FindFirstChild('SensorRange') then
+                local LED = Sensor:FindFirstChild('LED') or nil
+                Sensor.SensorRange.Touched:connect(function()
                     if state == 'CLOSED' or state == 'CLOSING' and state ~=
                         'OPEN' then
                         this.AxuaAPI:Invoke('EVENTS_DOOROPEN')
                     end
                     if (LED) then
                         TS:Create(LED, Tweens_DEFAULTPOS,
-                                  {Color = Color3.fromRGB(0, 255, 0)}):Play()
-                        wait(1)
+                                  {Color = settings.SensorColours.Active})
+                            :Play()
+                        task.wait(1)
                         TS:Create(LED, Tweens_DEFAULTPOS,
-                                  {Color = Color3.fromRGB(255, 0, 0)}):Play()
+                                  {Color = settings.SensorColours.Inactive})
+                            :Play()
                     end
                 end)
             end
         end
 
-        for _, Door in pairs(Doors) do
-            Door.Door.HingeConstraint.TargetAngle = 0
+        for _, Doors in pairs(this.Doors:GetChildren()) do
+            if Doors:FindFirstChild('DoorMovementGoal') then
+                for _, DoorPart in pairs(Doors:GetChildren()) do
+                    if DoorPart.Name == 'DoorMovementEngine' then
+                        DoorPart.Anchored = true
+                    end
+                    if not (DoorPart.Name == 'DoorMovementEngine') then
+                        z = Instance.new('WeldConstraint')
+                        local bx = Instance.new('CFrameValue')
+                        z.Part0 = Doors.DoorMovementEngine
+                        z.Part1 = DoorPart
+                        DoorPart.Anchored = false
+                        z.Parent = this.WeldStorage
+                        if not Doors:FindFirstChild('DoorCFrame') then
+                            bx.Value = Doors.DoorMovementEngine.CFrame
+                            bx.Name = 'DoorCFrame'
+                            bx.Parent = Doors
+                        end
+                    end
+                end
+            end
         end
 
         function DOOROPEN()
             state = 'OPENING'
-            for _, v in pairs(this.Doors:GetChildren()) do
-                if v:IsA('Model') then
-                    v.Door.HingeConstraint.TargetAngle = 90
+            for _, Door in pairs(this.Doors:GetChildren()) do
+                if Door:IsA('Model') then
+                    TS:Create(Door.DoorMovementEngine, Tweens_OPEN,
+                              {CFrame = Door.DoorMovementGoal.CFrame}):Play()
                     coroutine.resume(coroutine.create(function()
                         local time = 0
                         repeat
                             time = time + 0.05
-                            wait(0.05)
-                        until time >= 1 / 2
+                            task.wait(0.05)
+                        until time >= settings.Movement.OpenSpeed / 2
                         repeat
                             time = time - 0.05
-                            wait(0.05)
+                            task.wait(0.05)
                         until time <= 0
                     end))
                 end
             end
             if not ((altsate == 'HOLD') or (altsate == 'LOCKED')) then
-                wait(6)
+                task.wait(settings.Movement.OpenSpeed + settings.Movement.OpenTime)
                 DOORCLOSE()
             end
         end
@@ -67,25 +88,26 @@ return {
 
             repeat
                 timer = timer + 0.1
-                wait(0.1)
-            until timer >= 1
+                task.wait(0.1)
+            until timer >= settings.Movement.OpenSpeed
             state = 'OPEN'
         end))
 
         function DOORCLOSE()
             state = 'CLOSING'
-            for _, v in pairs(this.Doors:GetChildren()) do
-                if v:IsA('Model') then
-                    v.Door.HingeConstraint.TargetAngle = 0
+            for _, Door in pairs(this.Doors:GetChildren()) do
+                if Door:IsA('Model') then
+                    TS:Create(Door.DoorMovementEngine, Tweens_CLOSE,
+                              {CFrame = Door.DoorCFrame.Value}):Play()
                     coroutine.resume(coroutine.create(function()
                         local time = 0
                         repeat
                             time = time + 0.05
-                            wait(0.05)
-                        until time >= 1 / 2
+                            task.wait(0.05)
+                        until time >= settings.Movement.CloseSpeed / 2
                         repeat
                             time = time - 0.05
-                            wait(0.05)
+                            task.wait(0.05)
                         until time <= 0
                     end))
                 end
@@ -97,8 +119,8 @@ return {
 
             repeat
                 timer = timer + 0.1
-                wait(0.1)
-            until timer >= 1
+                task.wait(0.1)
+            until timer >= settings.Movement.CloseSpeed
             state = 'CLOSED'
         end))
 

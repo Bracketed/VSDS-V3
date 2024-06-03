@@ -38,7 +38,7 @@ return {
             Door1.Door.DoorHinge.ActuatorType = "Servo"
             Door1.Door.DoorHinge.LimitsEnabled = false
             Door1.Door.DoorHinge.TargetAngle = 1
-            wait(1.5)
+            task.wait(1.5)
             Door1.Door.DoorHinge.TargetAngle = 0
         end
         local function DoorHandleL()
@@ -46,7 +46,7 @@ return {
             Door1.Door.DoorHinge.LimitsEnabled = false
             Door1.Door.DoorHinge.TargetAngle = DoorProperties.DOOR_L
             ClickHandleL.MaxActivationDistance = 0
-            wait(3)
+            task.wait(3)
             Door1.Door.DoorHinge.ActuatorType = "None"
             ClickHandleL.MaxActivationDistance = DoorProperties.HANDLE_L
             Door1.Door.DoorHinge.LimitsEnabled = true
@@ -64,11 +64,11 @@ return {
                 Door1.Bar.MainBar.Out.Transparency = 1
                 Door1.Latch.LatchOut.Transparency = 1
                 Door1.Latch.LatchIn.Transparency = 0
-                wait(0.4)
+                task.wait(0.4)
                 Door1.Bar.MainBar.In.Transparency = 1
                 Door1.Bar.MainBar.Out.Transparency = 0
 
-                spawn(UnlockL)
+                UnlockL()
                 WeldL.Enabled = false
                 ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
             elseif DoorL_Unlocked.Value == true then
@@ -79,12 +79,12 @@ return {
                 Door1.Bar.MainBar.In.Transparency = 0
                 Door1.Bar.MainBar.Out.Transparency = 1
 
-                wait(0.4)
+                task.wait(0.4)
                 Door1.Bar.MainBar.In.Transparency = 1
                 Door1.Bar.MainBar.Out.Transparency = 0
 
-                spawn(LockL)
-                wait(2.5)
+                LockL()
+                task.wait(2.5)
                 WeldL.Enabled = true
                 ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
                 Door1.Latch.LatchOut.Transparency = 1
@@ -120,14 +120,12 @@ return {
 
         ClickBarL.MouseClick:Connect(function(plr)
             if DoorLDisabled.Value == false then
-                if isWhitelisted(plr) then
-                    spawn(LeftDoorFunction)
-                end
+                if isWhitelisted(plr) then LeftDoorFunction() end
             end
         end)
         ClickHandleL.MouseClick:Connect(function(plr)
             if DoorLDisabled.Value == true then
-                if isWhitelisted(plr) then spawn(DoorHandleL) end
+                if isWhitelisted(plr) then DoorHandleL() end
             end
         end)
 
@@ -149,7 +147,7 @@ return {
                         ToolCooldownL.Value = true
                         -- Unlocking the door
                         WeldL.Enabled = false
-                        spawn(UnlockL)
+                        UnlockL()
                         DoorLDisabled.Value = true
                         DoorL_Unlocked.Value = true
                         ClickBarL.MaxActivationDistance = 0
@@ -160,26 +158,26 @@ return {
 
                         Door1.Latch.LatchOut.Transparency = 1
                         Door1.Latch.LatchIn.Transparency = 0
-                        wait(2)
+                        task.wait(2)
                         ToolCooldownL.Value = false
                     end
                 elseif DoorLDisabled.Value == true then
                     if ToolCooldownL.Value == false then
                         ToolCooldownL.Value = true
                         -- Locking the door
-                        spawn(LockL)
+                        LockL()
                         DoorLDisabled.Value = false
                         DoorL_Unlocked.Value = false
                         Door1.Bar.MainBar.In.Transparency = 1
                         Door1.Bar.MainBar.Out.Transparency = 0
                         ClickHandleL.MaxActivationDistance = 0
 
-                        wait(3.5)
+                        task.wait(3.5)
                         WeldL.Enabled = false
                         ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
                         Door1.Latch.LatchOut.Transparency = 1
                         Door1.Latch.LatchIn.Transparency = 0
-                        wait(2)
+                        task.wait(2)
                         ToolCooldownL.Value = false
                     end
                 end

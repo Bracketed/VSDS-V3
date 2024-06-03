@@ -8,12 +8,13 @@ __V3_INTERNAL.SERVICES = {}
 __V3_INTERNAL.SERVICES.HTTPSERVICE = game:GetService('HttpService')
 __V3_INTERNAL.SERVICES.GROUPSERVICE = game:GetService('GroupService')
 __V3_INTERNAL.script = script
-__V3_INTERNAL.DEBUG = false
 
 -- someone needs to redo all this and ik its still probably gonna be me in the end - eden
 
 local function print(...)
-    if (__V3_INTERNAL.DEBUG) then warn(':: Virtua Electronics ::', ...) end
+    if (workspace:GetAttribute('VirtuaDebug')) then
+        warn(':: Virtua Electronics ::', ...)
+    end
 end
 
 function __V3_INTERNAL.Attach()
@@ -110,10 +111,6 @@ function __V3.InstallServices()
 end
 
 function __V3.Deploy(script, ...)
-    local Arguments = {...}
-    local debug = Arguments[#Arguments]
-    -- if debug == "debug" then __V3_INTERNAL.DEBUG = true end
-    __V3_INTERNAL.DEBUG = true
     if (__V3.InstallServices()) then
         if not (require(__V3_INTERNAL.script['VSDS-DEPMAN']).Run(script, ...)) then
             print(
