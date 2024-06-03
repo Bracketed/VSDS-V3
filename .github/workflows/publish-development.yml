@@ -89,7 +89,7 @@ jobs:
                           run: sed -i -e "s/unused_variable = "warn"/unused_variable = "allow"/g" selene.toml
 
                         - name: Verify Scripts contained in /src
-                          run: selene --quiet --config selene.toml src
+                          run: selene src --quiet --config selene.toml
 
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxm release.project.json
