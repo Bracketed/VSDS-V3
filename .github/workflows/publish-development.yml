@@ -48,7 +48,7 @@ jobs:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
                         - name: Cache Roblox LuaU Library
-                          id: cache-roblox-std
+                          id: rblx-libcache
                           uses: actions/cache@v4.0.2
                           with:
                                   path: roblox.yml
@@ -57,7 +57,7 @@ jobs:
                         - name: Check standard Roblox LuaU Lib status
                           id: rblx-libs
                           env:
-                                  DID_CACHE: ${{steps.cache-roblox-std.outputs.cache-hit}}
+                                  DID_CACHE: ${{steps.rblx-libcache.outputs.cache-hit}}
                           run: |
                                   if test -f roblox.yml; then
                                    CUR_ROBLOX_STD_TIMEDATE="$(date +%s -d "$(cat roblox.yml |  head -n 1 | grep -oP "\d{4}-\d{2}-\d{2}(?=\s+\d{2}:\d{2}:\d{2})")")"
@@ -118,6 +118,10 @@ jobs:
 
                         - name: Verify Scripts contained in /src
                           run: selene ./src
+
+                        - name: Cat entry file to check for formatting
+                          run: cat init.lua
+                          working-directory: src
 
                         - name: Build
                           run: rojo build -o ./vsds-${{ github.ref_name }}.rbxmx release.project.json

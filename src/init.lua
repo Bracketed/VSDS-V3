@@ -124,4 +124,14 @@ function __V3.Deploy(script, ...)
     end
 end
 
+function __V3.Help()
+    local log = function(...) warn(':: VSDS ::', ...) end
+
+    log('Welcome to VSDS!')
+    log(
+        'This is a system made for distributing source code for Virtua products!')
+    log('Currently serving VSDS version:',
+        __V3_INTERNAL.script['VSDS-VER'].Value)
+end
+
 return __V3
