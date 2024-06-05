@@ -4,18 +4,18 @@ VSDS.plugin = plugin
 VSDS.self = getfenv().script
 VSDS.require = getfenv().require
 VSDS.Assets = VSDS.require(VSDS.self['VSDS-ASSETS'])
-VSDS.UI = VSDS.Assets.Require(VSDS.Assets.Plugin.Project['ROACT-UI'])
+VSDS.UI = VSDS.require(VSDS.self['ROACT-UI'])
 
 VSDS.ELAPSEDCOUNT = 0
 
 VSDS.lib = {}
-VSDS.lib.console = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.console)
-VSDS.lib.ui = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.ui)
-VSDS.lib.http = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.http)
-VSDS.lib.vsds = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.vsds)
-VSDS.lib.plugin = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.plugin)
+VSDS.lib.console = VSDS.require(VSDS.Assets.Plugin.Libraries.console)
+VSDS.lib.ui = VSDS.require(VSDS.Assets.Plugin.Libraries.ui)
+VSDS.lib.http = VSDS.require(VSDS.Assets.Plugin.Libraries.http)
+VSDS.lib.vsds = VSDS.require(VSDS.Assets.Plugin.Libraries.vsds)
+VSDS.lib.plugin = VSDS.require(VSDS.Assets.Plugin.Libraries.plugin)
 
-VSDS.lib.app = VSDS.Assets.Require(VSDS.Assets.Plugin.Application)
+VSDS.lib.app = VSDS.require(VSDS.Assets.Plugin.Application)
 
 VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.ID,
