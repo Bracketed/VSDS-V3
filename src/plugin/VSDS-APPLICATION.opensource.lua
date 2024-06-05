@@ -12,7 +12,8 @@ Application.RoactApplication = Application.RoactUI.Component:extend(
 Application.NewRoactElement = Application.RoactUI.createElement
 
 Application.Notifications = Application.require(
-                                Application.Assets.Plugin.UI.Notification)
+                                Application.Assets.Plugin.UserInterface
+                                    .Notification)
 
 function Application.RoactApplication:init() self:setState({notifications = {}}) end
 
