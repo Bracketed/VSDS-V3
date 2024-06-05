@@ -1,13 +1,13 @@
 {
-	"name": "VSDS-V3",
+	"name": "VSDS-LOADER",
 	"tree": {
 		"$className": "DataModel",
 
 		"ServerScriptService": {
-			"Virtua_SDS": {
+			"VSDS:DEVELOPMENT:LOADER": {
 				"$className": "Folder",
 				"MainModule": {
-					"$path": "src"
+					"$path": "src/loader"
 				}
 			}
 		}

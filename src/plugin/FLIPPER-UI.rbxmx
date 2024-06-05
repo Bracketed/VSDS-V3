@@ -1,0 +1,1030 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<Meta name="ExplicitAutoJoints">true</Meta>
+	<External>null</External>
+	<External>nil</External>
+	<Item class="ModuleScript" referent="RBX575D9E6A14FD4E65A0AE20998C89F65D">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+			<bool name="DefinesCapabilities">false</bool>
+			<Content name="LinkedSource"><null></null></Content>
+			<string name="Name">Flipper</string>
+			<string name="ScriptGuid">{CF1D92AB-59D7-45A1-8079-6567D942DD90}</string>
+			<ProtectedString name="Source"><![CDATA[local Flipper = {
+	SingleMotor = require(script.SingleMotor),
+	GroupMotor = require(script.GroupMotor),
+
+	Instant = require(script.Instant),
+	Linear = require(script.Linear),
+	Spring = require(script.Spring),
+	
+	isMotor = require(script.isMotor),
+}
+
+return Flipper]]></ProtectedString>
+			<int64 name="SourceAssetId">-1</int64>
+			<BinaryString name="Tags"></BinaryString>
+		</Properties>
+		<Item class="ModuleScript" referent="RBX03D6DA7F229F435BB0DF2C9F3E1CC911">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">isMotor.spec</string>
+				<string name="ScriptGuid">{C6D10C60-0B60-4258-B998-7D5D974B846E}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local isMotor = require(script.Parent.isMotor)
+
+	local SingleMotor = require(script.Parent.SingleMotor)
+	local GroupMotor = require(script.Parent.GroupMotor)
+
+	local singleMotor = SingleMotor.new(0)
+	local groupMotor = GroupMotor.new({})
+
+	it("should properly detect motors", function()
+		expect(isMotor(singleMotor)).to.equal(true)
+		expect(isMotor(groupMotor)).to.equal(true)
+	end)
+
+	it("shouldn't detect things that aren't motors", function()
+		expect(isMotor({})).to.equal(false)
+	end)
+
+	it("should return the proper motor type", function()
+		local _, singleMotorType = isMotor(singleMotor)
+		local _, groupMotorType = isMotor(groupMotor)
+
+		expect(singleMotorType).to.equal("Single")
+		expect(groupMotorType).to.equal("Group")
+	end)
+end]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX35F48849783F4CAA8C19D5CA9C5B944D">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">isMotor</string>
+				<string name="ScriptGuid">{D65BCB97-C6D2-407A-9EAE-0E5480414628}</string>
+				<ProtectedString name="Source"><![CDATA[local function isMotor(value)
+	local motorType = tostring(value):match("^Motor%((.+)%)$")
+
+	if motorType then
+		return true, motorType
+	else
+		return false
+	end
+end
+
+return isMotor]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBXC405B22B658C4E8783B8872D9143BEEE">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Spring.spec</string>
+				<string name="ScriptGuid">{EE688628-FCFB-4E65-BBEF-331BF0D48C9B}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local SingleMotor = require(script.Parent.SingleMotor)
+	local Spring = require(script.Parent.Spring)
+
+	describe("completed state", function()
+		local motor = SingleMotor.new(0, false)
+
+		local goal = Spring.new(1, { frequency = 2, dampingRatio = 0.75 })
+		motor:setGoal(goal)
+	
+		for _ = 1, 100 do
+			motor:step(1/60)
+		end
+		
+		it("should complete", function()
+			expect(motor._state.complete).to.equal(true)
+		end)
+
+		it("should be exactly the goal value when completed", function()
+			expect(motor._state.value).to.equal(1)
+		end)
+	end)
+
+	it("should inherit velocity", function()
+		local motor = SingleMotor.new(0, false)
+		motor._state = { complete = false, value = 0, velocity = -5 }
+
+		local goal = Spring.new(1, { frequency = 2, dampingRatio = 1 })
+
+		motor:setGoal(goal)
+		motor:step(1/60)
+
+		expect(motor._state.velocity < 0).to.equal(true)
+	end)
+end]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBXAE202A30FBB6482EB4A71BFE5B53C373">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Spring</string>
+				<string name="ScriptGuid">{C9DA1C04-A34C-4327-9202-4CABFD783ABB}</string>
+				<ProtectedString name="Source"><![CDATA[local VELOCITY_THRESHOLD = 0.001
+local POSITION_THRESHOLD = 0.001
+
+local EPS = 0.0001
+
+local Spring = {}
+Spring.__index = Spring
+
+function Spring.new(targetValue, options)
+	assert(targetValue, "Missing argument #1: targetValue")
+	options = options or {}
+
+	return setmetatable({
+		_targetValue = targetValue,
+		_frequency = options.frequency or 4,
+		_dampingRatio = options.dampingRatio or 1,
+	}, Spring)
+end
+
+function Spring:step(state, dt)
+	-- Copyright 2018 Parker Stebbins (parker@fractality.io)
+	-- github.com/Fraktality/Spring
+	-- Distributed under the MIT license
+
+	local d = self._dampingRatio
+	local f = self._frequency*2*math.pi
+	local g = self._targetValue
+	local p0 = state.value
+	local v0 = state.velocity or 0
+
+	local offset = p0 - g
+	local decay = math.exp(-d*f*dt)
+
+	local p1, v1
+
+	if d == 1 then -- Critically damped
+		p1 = (offset*(1 + f*dt) + v0*dt)*decay + g
+		v1 = (v0*(1 - f*dt) - offset*(f*f*dt))*decay
+	elseif d < 1 then -- Underdamped
+		local c = math.sqrt(1 - d*d)
+
+		local i = math.cos(f*c*dt)
+		local j = math.sin(f*c*dt)
+
+		-- Damping ratios approaching 1 can cause division by small numbers.
+		-- To fix that, group terms around z=j/c and find an approximation for z.
+		-- Start with the definition of z:
+		--    z = sin(dt*f*c)/c
+		-- Substitute a=dt*f:
+		--    z = sin(a*c)/c
+		-- Take the Maclaurin expansion of z with respect to c:
+		--    z = a - (a^3*c^2)/6 + (a^5*c^4)/120 + O(c^6)
+		--    z ≈ a - (a^3*c^2)/6 + (a^5*c^4)/120
+		-- Rewrite in Horner form:
+		--    z ≈ a + ((a*a)*(c*c)*(c*c)/20 - c*c)*(a*a*a)/6
+
+		local z
+		if c > EPS then
+			z = j/c
+		else
+			local a = dt*f
+			z = a + ((a*a)*(c*c)*(c*c)/20 - c*c)*(a*a*a)/6
+		end
+
+		-- Frequencies approaching 0 present a similar problem.
+		-- We want an approximation for y as f approaches 0, where:
+		--    y = sin(dt*f*c)/(f*c)
+		-- Substitute b=dt*c:
+		--    y = sin(b*c)/b
+		-- Now reapply the process from z.
+
+		local y
+		if f*c > EPS then
+			y = j/(f*c)
+		else
+			local b = f*c
+			y = dt + ((dt*dt)*(b*b)*(b*b)/20 - b*b)*(dt*dt*dt)/6
+		end
+
+		p1 = (offset*(i + d*z) + v0*y)*decay + g
+		v1 = (v0*(i - z*d) - offset*(z*f))*decay
+
+	else -- Overdamped
+		local c = math.sqrt(d*d - 1)
+
+		local r1 = -f*(d - c)
+		local r2 = -f*(d + c)
+
+		local co2 = (v0 - offset*r1)/(2*f*c)
+		local co1 = offset - co2
+
+		local e1 = co1*math.exp(r1*dt)
+		local e2 = co2*math.exp(r2*dt)
+
+		p1 = e1 + e2 + g
+		v1 = e1*r1 + e2*r2
+	end
+
+	local complete = math.abs(v1) < VELOCITY_THRESHOLD and math.abs(p1 - g) < POSITION_THRESHOLD
+	
+	return {
+		complete = complete,
+		value = complete and g or p1,
+		velocity = v1,
+	}
+end
+
+return Spring]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX0AE754DD6060475981F2AA69FBA6536B">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">SingleMotor.spec</string>
+				<string name="ScriptGuid">{FD14A692-0C57-446B-A106-6F8B743B1BE3}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local SingleMotor = require(script.Parent.SingleMotor)
+	local Instant = require(script.Parent.Instant)
+
+	it("should assign new state on step", function()
+		local motor = SingleMotor.new(0, false)
+
+		motor:setGoal(Instant.new(5))
+		motor:step(1/60)
+
+		expect(motor._state.complete).to.equal(true)
+		expect(motor._state.value).to.equal(5)
+	end)
+
+	it("should invoke onComplete listeners when the goal is completed", function()
+		local motor = SingleMotor.new(0, false)
+
+		local didComplete = false
+		motor:onComplete(function()
+			didComplete = true
+		end)
+
+		motor:setGoal(Instant.new(5))
+		motor:step(1/60)
+
+		expect(didComplete).to.equal(true)
+	end)
+
+	it("should start when the goal is set", function()
+		local motor = SingleMotor.new(0, false)
+
+		local bool = false
+		motor:onStart(function()
+			bool = not bool
+		end)
+
+		motor:setGoal(Instant.new(5))
+
+		expect(bool).to.equal(true)
+
+		motor:setGoal(Instant.new(5))
+
+		expect(bool).to.equal(false)
+	end)
+end
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX16A58A6F3BCA453D9FD928A68B864D05">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">SingleMotor</string>
+				<string name="ScriptGuid">{FEB528C9-6060-4165-A15A-AD954AEF8BAB}</string>
+				<ProtectedString name="Source"><![CDATA[local BaseMotor = require(script.Parent.BaseMotor)
+
+local SingleMotor = setmetatable({}, BaseMotor)
+SingleMotor.__index = SingleMotor
+
+function SingleMotor.new(initialValue, useImplicitConnections)
+	assert(initialValue, "Missing argument #1: initialValue")
+	assert(typeof(initialValue) == "number", "initialValue must be a number!")
+
+	local self = setmetatable(BaseMotor.new(), SingleMotor)
+
+	if useImplicitConnections ~= nil then
+		self._useImplicitConnections = useImplicitConnections
+	else
+		self._useImplicitConnections = true
+	end
+
+	self._goal = nil
+	self._state = {
+		complete = true,
+		value = initialValue,
+	}
+
+	return self
+end
+
+function SingleMotor:step(deltaTime)
+	if self._state.complete then
+		return true
+	end
+
+	local newState = self._goal:step(self._state, deltaTime)
+
+	self._state = newState
+	self._onStep:fire(newState.value)
+
+	if newState.complete then
+		if self._useImplicitConnections then
+			self:stop()
+		end
+
+		self._onComplete:fire()
+	end
+
+	return newState.complete
+end
+
+function SingleMotor:getValue()
+	return self._state.value
+end
+
+function SingleMotor:setGoal(goal)
+	self._state.complete = false
+	self._goal = goal
+
+	self._onStart:fire()
+
+	if self._useImplicitConnections then
+		self:start()
+	end
+end
+
+function SingleMotor:__tostring()
+	return "Motor(Single)"
+end
+
+return SingleMotor
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX52F0B5E3374349BAB30C993C307DA6E2">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Signal.spec</string>
+				<string name="ScriptGuid">{7CCDD627-0A26-42CF-BC80-1AB797DB593A}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local Signal = require(script.Parent.Signal)
+
+	it("should invoke all connections, instantly", function()
+		local signal = Signal.new()
+
+		local a, b
+
+		signal:connect(function(value)
+			a = value
+		end)
+
+		signal:connect(function(value)
+			b = value
+		end)
+
+		signal:fire("hello")
+
+		expect(a).to.equal("hello")
+		expect(b).to.equal("hello")
+	end)
+
+	it("should return values when :wait() is called", function()
+		local signal = Signal.new()
+
+		spawn(function()
+			signal:fire(123, "hello")
+		end)
+
+		local a, b = signal:wait()
+		
+		expect(a).to.equal(123)
+		expect(b).to.equal("hello")
+	end)
+
+	it("should properly handle disconnections", function()
+		local signal = Signal.new()
+
+		local didRun = false
+
+		local connection = signal:connect(function()
+			didRun = true
+		end)
+		connection:disconnect()
+
+		signal:fire()
+		expect(didRun).to.equal(false)
+	end)
+end]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX3404C16AD2834B28B0901C89881AE835">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Signal</string>
+				<string name="ScriptGuid">{630FC677-11B2-454C-B539-827FEFC625BD}</string>
+				<ProtectedString name="Source"><![CDATA[local Connection = {}
+Connection.__index = Connection
+
+function Connection.new(signal, handler)
+	return setmetatable({
+		signal = signal,
+		connected = true,
+		_handler = handler,
+	}, Connection)
+end
+
+function Connection:disconnect()
+	if self.connected then
+		self.connected = false
+
+		for index, connection in pairs(self.signal._connections) do
+			if connection == self then
+				table.remove(self.signal._connections, index)
+				return
+			end
+		end
+	end
+end
+
+local Signal = {}
+Signal.__index = Signal
+
+function Signal.new()
+	return setmetatable({
+		_connections = {},
+		_threads = {},
+	}, Signal)
+end
+
+function Signal:fire(...)
+	for _, connection in pairs(self._connections) do
+		connection._handler(...)
+	end
+
+	for _, thread in pairs(self._threads) do
+		coroutine.resume(thread, ...)
+	end
+	
+	self._threads = {}
+end
+
+function Signal:connect(handler)
+	local connection = Connection.new(self, handler)
+	table.insert(self._connections, connection)
+	return connection
+end
+
+function Signal:wait()
+	table.insert(self._threads, coroutine.running())
+	return coroutine.yield()
+end
+
+return Signal]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX338124360EF54E038DB8DB8699733BD8">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Linear.spec</string>
+				<string name="ScriptGuid">{7E0BC5DF-6FC8-40E2-97E0-D1DC4D19C29F}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local SingleMotor = require(script.Parent.SingleMotor)
+	local Linear = require(script.Parent.Linear)
+
+	describe("completed state", function()
+		local motor = SingleMotor.new(0, false)
+
+		local goal = Linear.new(1, { velocity = 1 })
+		motor:setGoal(goal)
+	
+		for _ = 1, 60 do
+			motor:step(1/60)
+		end
+		
+		it("should complete", function()
+			expect(motor._state.complete).to.equal(true)
+		end)
+
+		it("should be exactly the goal value when completed", function()
+			expect(motor._state.value).to.equal(1)
+		end)
+	end)
+
+	describe("uncompleted state", function()
+		local motor = SingleMotor.new(0, false)
+
+		local goal = Linear.new(1, { velocity = 1 })
+		motor:setGoal(goal)
+	
+		for _ = 1, 59 do
+			motor:step(1/60)
+		end
+		
+		it("should be uncomplete", function()
+			expect(motor._state.complete).to.equal(false)
+		end)
+	end)
+
+	describe("negative velocity", function()
+		local motor = SingleMotor.new(1, false)
+
+		local goal = Linear.new(0, { velocity = 1 })
+		motor:setGoal(goal)
+		
+		for _ = 1, 60 do
+			motor:step(1/60)
+		end
+		
+		it("should complete", function()
+			expect(motor._state.complete).to.equal(true)
+		end)
+
+		it("should be exactly the goal value when completed", function()
+			expect(motor._state.value).to.equal(0)
+		end)
+	end)
+end]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBXB8A5A0A3796C461AA4C168FAAC0858CA">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Linear</string>
+				<string name="ScriptGuid">{6636350C-D9C3-49BA-BAB0-DF27C95DA0FF}</string>
+				<ProtectedString name="Source"><![CDATA[local Linear = {}
+Linear.__index = Linear
+
+function Linear.new(targetValue, options)
+	assert(targetValue, "Missing argument #1: targetValue")
+	
+	options = options or {}
+
+	return setmetatable({
+		_targetValue = targetValue,
+		_velocity = options.velocity or 1,
+	}, Linear)
+end
+
+function Linear:step(state, dt)
+	local position = state.value
+	local velocity = self._velocity -- Linear motion ignores the state's velocity
+	local goal = self._targetValue
+
+	local dPos = dt * velocity
+
+	local complete = dPos >= math.abs(goal - position)
+	position = position + dPos * (goal > position and 1 or -1)
+	if complete then
+		position = self._targetValue
+		velocity = 0
+	end
+	
+	return {
+		complete = complete,
+		value = position,
+		velocity = velocity,
+	}
+end
+
+return Linear]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX584C6ABE9BC247EB935549B3A3FE9C85">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Instant.spec</string>
+				<string name="ScriptGuid">{914E88F3-2BFD-4AA7-8B97-B6565BAF96FC}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local Instant = require(script.Parent.Instant)
+
+	it("should return a completed state with the provided value", function()
+		local goal = Instant.new(1.23)
+		local state = goal:step(0.1, { value = 0, complete = false })
+		expect(state.complete).to.equal(true)
+		expect(state.value).to.equal(1.23)
+	end)
+end]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX315454949A5C47209C50DBF761392ACB">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">Instant</string>
+				<string name="ScriptGuid">{C85E7D7B-A104-41E7-B1AB-EF37FF7074C8}</string>
+				<ProtectedString name="Source"><![CDATA[local Instant = {}
+Instant.__index = Instant
+
+function Instant.new(targetValue)
+	return setmetatable({
+		_targetValue = targetValue,
+	}, Instant)
+end
+
+function Instant:step()
+	return {
+		complete = true,
+		value = self._targetValue,
+	}
+end
+
+return Instant]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX3BC54F5A11C644729E802B215C1DD9EA">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">GroupMotor.spec</string>
+				<string name="ScriptGuid">{CE912EFA-ED24-482A-90F8-DE2D02B3B301}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local GroupMotor = require(script.Parent.GroupMotor)
+
+	local Instant = require(script.Parent.Instant)
+	local Spring = require(script.Parent.Spring)
+
+	it("should complete when all child motors are complete", function()
+		local motor = GroupMotor.new({
+			A = 1,
+			B = 2,
+		}, false)
+
+		expect(motor._complete).to.equal(true)
+
+		motor:setGoal({
+			A = Instant.new(3),
+			B = Spring.new(4, { frequency = 7.5, dampingRatio = 1 })
+		})
+
+		expect(motor._complete).to.equal(false)
+
+		motor:step(1/60)
+
+		expect(motor._complete).to.equal(false)
+
+		for _ = 1, 0.5 * 60 do
+			motor:step(1/60)
+		end
+
+		expect(motor._complete).to.equal(true)
+	end)
+
+	it("should start when the goal is set", function()
+		local motor = GroupMotor.new({
+			A = 0,
+		}, false)
+
+		local bool = false
+		motor:onStart(function()
+			bool = not bool
+		end)
+
+		motor:setGoal({
+			A = Instant.new(1)
+		})
+
+		expect(bool).to.equal(true)
+
+		motor:setGoal({
+			A = Instant.new(1)
+		})
+
+		expect(bool).to.equal(false)
+	end)
+
+	it("should properly return all values", function()
+		local motor = GroupMotor.new({
+			A = 1,
+			B = 2,
+		}, false)
+
+		local value = motor:getValue()
+
+		expect(value.A).to.equal(1)
+		expect(value.B).to.equal(2)
+	end)
+
+	it("should error when a goal is given to GroupMotor.new", function()
+		local success = pcall(function()
+			GroupMotor.new(Instant.new(0))
+		end)
+
+		expect(success).to.equal(false)
+	end)
+
+	it("should error when a single goal is provided to GroupMotor:step", function()
+		local success = pcall(function()
+			GroupMotor.new({ a = 1 }):setGoal(Instant.new(0))
+		end)
+
+		expect(success).to.equal(false)
+	end)
+end
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX569ABF9A7763418BAA9805FD3F4B734B">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">GroupMotor</string>
+				<string name="ScriptGuid">{C72FF960-16C2-4A7B-A994-58EC64D75B86}</string>
+				<ProtectedString name="Source"><![CDATA[local BaseMotor = require(script.Parent.BaseMotor)
+local SingleMotor = require(script.Parent.SingleMotor)
+
+local isMotor = require(script.Parent.isMotor)
+
+local GroupMotor = setmetatable({}, BaseMotor)
+GroupMotor.__index = GroupMotor
+
+local function toMotor(value)
+	if isMotor(value) then
+		return value
+	end
+
+	local valueType = typeof(value)
+
+	if valueType == "number" then
+		return SingleMotor.new(value, false)
+	elseif valueType == "table" then
+		return GroupMotor.new(value, false)
+	end
+
+	error(("Unable to convert %q to motor; type %s is unsupported"):format(value, valueType), 2)
+end
+
+function GroupMotor.new(initialValues, useImplicitConnections)
+	assert(initialValues, "Missing argument #1: initialValues")
+	assert(typeof(initialValues) == "table", "initialValues must be a table!")
+	assert(not initialValues.step, "initialValues contains disallowed property \"step\". Did you mean to put a table of values here?")
+
+	local self = setmetatable(BaseMotor.new(), GroupMotor)
+
+	if useImplicitConnections ~= nil then
+		self._useImplicitConnections = useImplicitConnections
+	else
+		self._useImplicitConnections = true
+	end
+
+	self._complete = true
+	self._motors = {}
+
+	for key, value in pairs(initialValues) do
+		self._motors[key] = toMotor(value)
+	end
+
+	return self
+end
+
+function GroupMotor:step(deltaTime)
+	if self._complete then
+		return true
+	end
+
+	local allMotorsComplete = true
+
+	for _, motor in pairs(self._motors) do
+		local complete = motor:step(deltaTime)
+		if not complete then
+			-- If any of the sub-motors are incomplete, the group motor will not be complete either
+			allMotorsComplete = false
+		end
+	end
+
+	self._onStep:fire(self:getValue())
+
+	if allMotorsComplete then
+		if self._useImplicitConnections then
+			self:stop()
+		end
+
+		self._complete = true
+		self._onComplete:fire()
+	end
+
+	return allMotorsComplete
+end
+
+function GroupMotor:setGoal(goals)
+	assert(not goals.step, "goals contains disallowed property \"step\". Did you mean to put a table of goals here?")
+
+	self._complete = false
+	self._onStart:fire()
+
+	for key, goal in pairs(goals) do
+		local motor = assert(self._motors[key], ("Unknown motor for key %s"):format(key))
+		motor:setGoal(goal)
+	end
+
+	if self._useImplicitConnections then
+		self:start()
+	end
+end
+
+function GroupMotor:getValue()
+	local values = {}
+
+	for key, motor in pairs(self._motors) do
+		values[key] = motor:getValue()
+	end
+
+	return values
+end
+
+function GroupMotor:__tostring()
+	return "Motor(Group)"
+end
+
+return GroupMotor
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBX0C9E5FA53E204FC18564CD8EA6239252">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">BaseMotor.spec</string>
+				<string name="ScriptGuid">{B9D7097F-0EE2-48B8-943C-A1805E0BCD16}</string>
+				<ProtectedString name="Source"><![CDATA[return function()
+	local RunService = game:GetService("RunService")
+
+	local BaseMotor = require(script.Parent.BaseMotor)
+
+	describe("connection management", function()
+		local motor = BaseMotor.new()
+
+		it("should hook up connections on :start()", function()
+			motor:start()
+			expect(typeof(motor._connection)).to.equal("RBXScriptConnection")
+		end)
+
+		it("should remove connections on :stop() or :destroy()", function()
+			motor:stop()
+			expect(motor._connection).to.equal(nil)
+		end)
+	end)
+
+	it("should call :step() with deltaTime", function()
+		local motor = BaseMotor.new()
+
+		local argumentsProvided
+		function motor:step(...)
+			argumentsProvided = { ... }
+			motor:stop()
+		end
+
+		motor:start()
+		
+		local expectedDeltaTime = RunService.RenderStepped:Wait()
+
+		-- Give it another frame, because connections tend to be invoked later than :Wait() calls
+		RunService.RenderStepped:Wait()
+
+		expect(argumentsProvided).to.be.ok()
+		expect(argumentsProvided[1]).to.equal(expectedDeltaTime)
+	end)
+end
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ModuleScript" referent="RBXFA4A56E094EB4E0091869C29A0B5E0B0">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+				<bool name="DefinesCapabilities">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">BaseMotor</string>
+				<string name="ScriptGuid">{71FE4AF0-8E48-405D-B17E-234E79008A27}</string>
+				<ProtectedString name="Source"><![CDATA[local RunService = game:GetService("RunService")
+
+local Signal = require(script.Parent.Signal)
+
+local noop = function() end
+
+local BaseMotor = {}
+BaseMotor.__index = BaseMotor
+
+function BaseMotor.new()
+	return setmetatable({
+		_onStep = Signal.new(),
+		_onStart = Signal.new(),
+		_onComplete = Signal.new(),
+	}, BaseMotor)
+end
+
+function BaseMotor:onStep(handler)
+	return self._onStep:connect(handler)
+end
+
+function BaseMotor:onStart(handler)
+	return self._onStart:connect(handler)
+end
+
+function BaseMotor:onComplete(handler)
+	return self._onComplete:connect(handler)
+end
+
+function BaseMotor:start()
+	if not self._connection then
+		self._connection = RunService.RenderStepped:Connect(function(deltaTime)
+			self:step(deltaTime)
+		end)
+	end
+end
+
+function BaseMotor:stop()
+	if self._connection then
+		self._connection:Disconnect()
+		self._connection = nil
+	end
+end
+
+BaseMotor.destroy = BaseMotor.stop
+
+BaseMotor.step = noop
+BaseMotor.getValue = noop
+BaseMotor.setGoal = noop
+
+function BaseMotor:__tostring()
+	return "Motor"
+end
+
+return BaseMotor
+]]></ProtectedString>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

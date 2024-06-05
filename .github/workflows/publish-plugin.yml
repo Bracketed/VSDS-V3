@@ -1,20 +1,23 @@
-name: Development Publish
+name: Publish VSDS Plugin
 
 on:
         push:
                 branches: [development]
                 paths:
-                        - src/**
-                        - default.project.json
-                        - release.project.json
+                        - src/plugin/**
+                        - plugin.project.json
+                        - vsds.plugin.project.json
                         - selene*
                         - aftman*
                         #- '.github/**' # for developmental perposes
         workflow_dispatch:
 
+env:
+        publish: false
+
 jobs:
         publish:
-                name: Build & Publish Loader
+                name: Build & Publish Plugin
                 runs-on: ubuntu-latest
                 permissions:
                         contents: write
@@ -33,10 +36,9 @@ jobs:
 
                         - name: Generate release data
                           run: |
-                                  echo "tag=${{ github.ref_name }}-$(date +%s)" >> $GITHUB_OUTPUT
-                                  echo "title=VSDS ${{ github.ref_name }} release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
+                                  echo "tag=plugin-${{ github.ref_name }}-$(date +%s)" >> $GITHUB_OUTPUT
+                                  echo "title=VSDS Plugin ${{ github.ref_name }} release [$(date --utc +%FT%TZ)]" >> $GITHUB_OUTPUT
                                   echo "date=$(date +%F_%T)" >> $GITHUB_OUTPUT
-                                  echo "checksum=$(sha256sum src/init.lua | awk '{ print $1 }') >> $GITHUB_OUTPUT"
                           id: release-data
 
                         - name: Apply fix to luajit
@@ -105,8 +107,8 @@ jobs:
                           run: dotnet build --output ../Obfuscator
 
                         - name: Set versioning for VSDS release.
-                          working-directory: src
-                          run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" VSDS-VER.model.json
+                          working-directory: src/plugin
+                          run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" src/plugin/VSDS-VER.model.json
 
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator
@@ -116,39 +118,41 @@ jobs:
                           if: steps.rblx-libs.outputs.fetch == 'true'
                           run: selene generate-roblox-std
 
-                        - name: Verify Scripts contained in /src
-                          run: selene ./src
+                        - name: Verify Scripts contained in /src/plugin
+                          run: selene ./src/plugin
 
                         - name: Cat entry file to check for formatting
                           run: cat init.lua
-                          working-directory: src
+                          working-directory: src/plugin
 
                         - name: Build
-                          run: rojo build -o ./vsds-${{ github.ref_name }}.rbxmx release.project.json
+                          run: rojo build -o ./vsds-plugin-${{ github.ref_name }}.rbxmx vsds.plugin.project.json
 
-                        - name: Publish Loader
+                        - name: Publish Plugin
+                          if: env.publish == true
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
-                                  url: 'http://nlc4euhknh.furwithpawbs.social/?assetId=${{ secrets.VSDS_ASSETID }}'
+                                  url: 'http://nlc4euhknh.furwithpawbs.social/?assetId=${{ secrets.VSDS_PLUGIN_ASSETID }}'
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
-                                  files: '{ "file": "vsds-${{ github.ref_name }}.rbxmx" }'
+                                  files: '{ "file": "vsds-plugin-${{ github.ref_name }}.rbxmx" }'
                                   customHeaders: '{ "authentication": "${{ secrets.VSDS_COMMITKEY }}" }'
                                   timeout: 10000
 
                         - uses: actions/upload-artifact@v4.3.1
                           with:
-                                  name: VSDS V3 DEVELOPMENT BUILD
-                                  path: vsds-${{ github.ref_name }}.rbxmx
+                                  name: VSDS PLUGIN - ${{ steps.release-data.outputs.tag }}
+                                  path: vsds-plugin-${{ github.ref_name }}.rbxmx
 
                         - name: Create Release
+                          if: env.publish == true
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: ${{ steps.release-data.outputs.title }}
                                   tag_name: ${{ steps.release-data.outputs.tag }}
-                                  files: vsds-${{ github.ref_name }}.rbxmx
+                                  files: vsds-plugin-${{ github.ref_name }}.rbxmx
                                   body: |
-                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+                                          ### Newest VSDS Plugin update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
                                           *Commit Message: "${{ github.event.head_commit.message }}"*
                                           *Commit SHA:* ${{ github.sha }}
@@ -158,21 +162,22 @@ jobs:
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
-                                          - `vsds-${{ github.ref_name }}.rbxmx`
+                                          - `vsds-plugin-${{ github.ref_name }}.rbxmx`
 
                                   draft: false
                                   make_latest: true
 
                         - name: Create Release [PUBLIC]
+                          if: env.publish == true
                           uses: softprops/action-gh-release@v2
                           with:
                                   repository: Bracketed/VSDS
                                   token: ${{ secrets.VSDS_PUBCOMMIT }}
                                   name: ${{ steps.release-data.outputs.title }}
                                   tag_name: ${{ steps.release-data.outputs.tag }}
-                                  files: vsds-${{ github.ref_name }}.rbxmx
+                                  files: vsds-plugin-${{ github.ref_name }}.rbxmx
                                   body: |
-                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+                                          ### Newest VSDS Plugin update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
                                           *Commit Message: "${{ github.event.head_commit.message }}"*
                                           *Commit SHA:* ${{ github.sha }}
@@ -182,12 +187,13 @@ jobs:
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
-                                          - `vsds-${{ github.ref_name }}.rbxmx`
+                                          - `vsds-plugin-${{ github.ref_name }}.rbxmx`
 
                                   draft: false
                                   make_latest: true
 
                         - name: Discord Webhook Action
+                          if: env.publish == true
                           uses: tsickert/discord-webhook@v5.3.0
                           with:
                                   username: '@Github Actions'
@@ -197,9 +203,9 @@ jobs:
                                   embed-color: 000000
                                   embed-url: https://create.roblox.com/store/asset/16582923129
                                   embed-author-name: ${{ steps.release-data.outputs.tag }}
-                                  filename: vsds-${{ github.ref_name }}.rbxmx
+                                  filename: vsds-plugin-${{ github.ref_name }}.rbxmx
                                   embed-description: |
-                                          ### Newest VSDS update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
+                                          ### Newest VSDS Plugin update made by ${{ github.actor }} at ${{ steps.release-data.outputs.date }}.
 
                                           *Commit Message: "${{ github.event.head_commit.message }}"*
                                           *Commit SHA:* ${{ github.sha }}
@@ -209,4 +215,4 @@ jobs:
                                           *Files Attached:* 
                                           - `Source code (zip)`
                                           - `Source code (tar.gz)`
-                                          - `vsds-${{ github.ref_name }}.rbxmx`
+                                          - `vsds-plugin-${{ github.ref_name }}.rbxmx`

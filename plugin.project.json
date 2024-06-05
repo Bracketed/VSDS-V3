@@ -1,0 +1,18 @@
+{
+	"name": "VSDS-PLUGIN",
+	"tree": {
+		"$className": "DataModel",
+
+		"ServerScriptService": {
+			"VSDS:DEVELOPMENT:PLUGIN": {
+				"$className": "Folder",
+				"VSDS-PLUGIN": {
+					"$className": "Folder",
+					"Plugin": {
+						"$path": "src/plugin"
+					}
+				}
+			}
+		}
+	}
+}

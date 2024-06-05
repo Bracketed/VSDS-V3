@@ -1,0 +1,9 @@
+{
+	"name": "VSDS-PLUGIN",
+	"tree": {
+		"$className": "Folder",
+		"Plugin": {
+			"$path": "src/plugin"
+		}
+	}
+}
