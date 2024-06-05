@@ -16,12 +16,13 @@ Application.Notifications = Application.require(
 
 function Application.RoactApplication:init() self:setState({notifications = {}}) end
 
-function Application.RoactApplication:newNotification(...)
+function Application.RoactApplication:newNotification(messageContent, callback)
     local notifications = table.clone(self.state.notifications)
     table.insert(notifications, {
-        message = ...,
+        message = messageContent,
         timestamp = DateTime.now().UnixTimestampMillis,
-        timeout = 5
+        timeout = 5,
+        callback = callback
     })
 
     self:setState({notifications = notifications})
@@ -35,8 +36,7 @@ function Application.RoactApplication:closeNotification(notificationIndex)
 end
 function Application.RoactApplication:render()
     return Application.NewRoactElement(Application.RoactUI.createContext(nil)
-                                           .Provider,
-                                       {value = self.props.plugin}, {
+                                           .Provider, {}, {
         Application.NewRoactElement("ScreenGui",
                                     {Name = 'VSDS-PLUGIN-NOTIFICATIONS'}, {
             layout = Application.NewRoactElement("UIListLayout", {
