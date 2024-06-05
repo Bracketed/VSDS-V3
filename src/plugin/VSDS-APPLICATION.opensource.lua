@@ -55,5 +55,5 @@ function Application.RoactApplication:render()
     })
 end
 
-return function() return Application.NewRoactElement(VSDS_PLUGIN) end
+return function() return Application.NewRoactElement(Application) end
 
