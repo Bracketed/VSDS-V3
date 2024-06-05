@@ -122,8 +122,8 @@ jobs:
                           run: selene ./src/plugin
 
                         - name: Cat entry file to check for formatting
-                          run: cat init.lua
                           working-directory: src/plugin
+                          run: cat init.server.lua
 
                         - name: Build
                           run: rojo build -o ./vsds-plugin-${{ github.ref_name }}.rbxmx vsds.plugin.project.json

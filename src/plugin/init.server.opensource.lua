@@ -29,7 +29,7 @@ if not VSDS.plugin then
     return
 end
 
-VSDS.ApplicationUI = VSDS.UI.createElement(VSDS.lib.app) -- i need to finish this
+VSDS.ApplicationUI = VSDS.UI.createElement(VSDS.lib.app)
 VSDS.ApplicationUITree = VSDS.UI.mount(VSDS.ApplicationUI,
                                        VSDS.Assets.Services.CoreGui,
                                        VSDS.Assets.Configuration.CoreUITitle)
