@@ -8,7 +8,7 @@
 			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 			<bool name="DefinesCapabilities">false</bool>
 			<Content name="LinkedSource"><null></null></Content>
-			<string name="Name">Flipper</string>
+			<string name="Name">FLIPPER-UI</string>
 			<string name="ScriptGuid">{CF1D92AB-59D7-45A1-8079-6567D942DD90}</string>
 			<ProtectedString name="Source"><![CDATA[local Flipper = {
 	SingleMotor = require(script.SingleMotor),

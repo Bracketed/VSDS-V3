@@ -8,7 +8,7 @@
 			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 			<bool name="DefinesCapabilities">false</bool>
 			<Content name="LinkedSource"><null></null></Content>
-			<string name="Name">Roact</string>
+			<string name="Name">ROACT-UI</string>
 			<string name="ScriptGuid">{0F531D9F-7ED1-4836-9215-757301AB5832}</string>
 			<ProtectedString name="Source"><![CDATA[--[[
 	Packages up the internals of Roact and exposes a public API for it.
