@@ -6,11 +6,11 @@ Application.require = getfenv().require
 
 Application.container = Application.self:FindFirstAncestor('VSDS-PLUGIN').Plugin
 Application.Assets = Application.require(Application.container['VSDS-ASSETS'])
-Application.components = Application.Assets.Plugin.UI
+Application.components = Application.container['VSDS-UI']
 Application.RoactUI = Application.require(Application.container['ROACT-UI'])
-VSDS.console = Application.require(Application.Assets.Plugin.Libraries.console)
-VSDS.vsds = Application.require(Application.Assets.Plugin.Libraries.vsds)
-VSDS.plugin = Application.require(Application.Assets.Plugin.Libraries.plugin)
+VSDS.console = Application.require(Application.container['VSDS-LIB'].console)
+VSDS.vsds = Application.require(Application.container['VSDS-LIB'].vsds)
+VSDS.plugin = Application.require(Application.container['VSDS-LIB'].plugin)
 VSDS.SecondsElapsed = 0
 
 Application.RoactApplication = Application.RoactUI.Component:extend(
@@ -18,8 +18,7 @@ Application.RoactApplication = Application.RoactUI.Component:extend(
 Application.NewRoactElement = Application.RoactUI.createElement
 
 Application.Notifications = Application.require(
-                                Application.Assets.Plugin.UserInterface
-                                    .Notification)
+                                Application.components.Notification)
 
 function Application.RoactApplication:init()
     self:setState({notifications = {}, plugin = self.props.plugin})
