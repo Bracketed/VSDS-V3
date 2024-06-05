@@ -37,6 +37,6 @@ ASSETS.Services.RunService = ASSETS.Project:GetService('RunService')
 ASSETS.Services.HttpService = ASSETS.Project:GetService('HttpService')
 ASSETS.Services.ServerScriptService = ASSETS.Project:GetService(
                                           'ServerScriptService')
-ASSETS.Services.CoreGui = GetService("CoreGui")
+ASSETS.Services.CoreGui = ASSETS.Project:GetService("CoreGui")
 
 return ASSETS
