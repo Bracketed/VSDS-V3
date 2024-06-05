@@ -2,6 +2,7 @@ local console = {}
 local internal = {}
 
 internal.warn = getfenv().warn
+internal.print = getfenv().print
 internal.project = getfenv().game
 internal.require = getfenv().require
 internal.workspace = internal.project:GetService('Workspace')
@@ -18,7 +19,17 @@ function console.log(...)
             end
 
         end
+    end
+end
 
+function console.info(...)
+    if not internal.confExistance then
+        internal.conf = internal.require(
+                            internal.workspace['VSDS_CONFIGURATION'])
+
+        if not internal.conf['VSDS_PLUGIN_DEBUG'] then
+            internal.print(':: VSDS [PLUGIN] ::', ...)
+        end
     end
 end
 

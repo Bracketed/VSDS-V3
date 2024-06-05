@@ -23,6 +23,9 @@ VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.IMAGE,
     VSDS.Assets.Configuration.ToolBarButton.NAME)
 
+VSDS.lib.console.info('Welcome to VSDP!')
+VSDS.lib.console.info(
+    'To see other logs in your game from VSDP, create a ModuleScript in Workspace titled "VSDS_CONFIGURATION" with a key inside it called "VSDS_PLUGIN_DEBUG" and set it to true.')
 VSDS.lib.console.log('Welcome to VSDP!')
 VSDS.lib.console.log('Initialising VSDP Version',
                      VSDS.Assets.Plugin.Version .. '...')
@@ -32,10 +35,9 @@ if not VSDS.plugin then
     return
 end
 
-VSDS.ApplicationUI = VSDS.UI.createElement(VSDS.lib.app)
-VSDS.ApplicationUITree = VSDS.UI.mount(VSDS.ApplicationUI,
-                                       VSDS.Assets.Services.CoreGui,
-                                       VSDS.Assets.Configuration.CoreUITitle)
+VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(VSDS.lib.app),
+                                   VSDS.Assets.Services.CoreGui,
+                                   VSDS.Assets.Configuration.CoreUITitle)
 
 VSDS.httpState = VSDS.lib.http.Test()
 
@@ -53,16 +55,19 @@ VSDS.lib.ui.BrandingShow()
 VSDS.lib.console.log('VSDP initialised! [ Started plugin successfully in',
                      string.sub(getfenv().tick() - VSDS.Assets.Tick, 1, 5),
                      ' seconds! ]')
+VSDS.lib.console.info('VSDP initialised! [ Started plugin successfully in',
+                      string.sub(getfenv().tick() - VSDS.Assets.Tick, 1, 5),
+                      ' seconds! ]')
 
 VSDS.Install = VSDS.lib.vsds.RetrieveInstall()
 
 if not VSDS.Install then
     VSDS.lib.ui.Prompt(
-        'You do not have VSDS installed but Virtua products are in-game, would you like to install VSDS?', -- paraphrase this
+        'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?', -- paraphrase this
         VSDS.lib.vsds.Install())
 end
 
-plugin.Unloading:Connect(function() VSDS.UI.unmount(VSDS.ApplicationUITree) end)
+plugin.Unloading:Connect(function() VSDS.UI.unmount(VSDS.ApplicationUI) end)
 VSDS.Assets.Services.RunService.Heartbeat:Connect(function(heartbeat)
     VSDS.ELAPSEDCOUNT = VSDS.ELAPSEDCOUNT + heartbeat
 
