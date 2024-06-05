@@ -4,7 +4,7 @@ local VSDS = {}
 Application.self = getfenv().script
 Application.require = getfenv().require
 
-Application.container = Application.self:FindFirstAncestor('VSDS-PLUGIN').Plugin
+Application.container = Application.self.Parent
 Application.Assets = Application.require(Application.container['VSDS-ASSETS'])
 Application.components = Application.container['VSDS-UI']
 Application.RoactUI = Application.require(Application.container['ROACT-UI'])
