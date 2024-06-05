@@ -31,7 +31,6 @@ ASSETS.Configuration.CoreUITitle = 'VSDS-Plugin-UI'
 ASSETS.Plugin.Project = getfenv().script.Parent
 ASSETS.Plugin.Libraries = ASSETS.Plugin.Project['VSDS-LIB']
 ASSETS.Plugin.Version = ASSETS.Plugin.Project['VSDS-VER'].Value
-ASSETS.Plugin.UI = ASSETS.Plugin.Project['VSDS-UI']
 ASSETS.Plugin.Application = ASSETS.Plugin.Project['VSDS-APPLICATION']
 ASSETS.Plugin.FlipperUtil = ASSETS.Plugin.Project['FLIPPER-UI']
 

@@ -31,7 +31,7 @@ function console.info(...)
         if internal.conf['VSDS_PLUGIN_DEBUG'] then ConfigAvailable = true end
     end
 
-    if not ConfigEnable then internal.print(':: VSDS [PLUGIN] ::', ...) end
+    if not ConfigAvailable then internal.print(':: VSDS [PLUGIN] ::', ...) end
 end
 
 return console

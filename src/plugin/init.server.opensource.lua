@@ -35,6 +35,9 @@ if not VSDS.plugin then
     return
 end
 
+print(VSDS.UI.createElement(VSDS.lib.app), VSDS.Assets.Services.CoreGui,
+      VSDS.Assets.Configuration.CoreUITitle)
+
 VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(VSDS.lib.app),
                                    VSDS.Assets.Services.CoreGui,
                                    VSDS.Assets.Configuration.CoreUITitle)
