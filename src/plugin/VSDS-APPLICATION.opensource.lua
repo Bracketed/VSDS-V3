@@ -1,4 +1,6 @@
 local Application = {}
+local VSDS = {}
+
 Application.self = getfenv().script
 Application.require = getfenv().require
 
@@ -6,6 +8,10 @@ Application.container = Application.self:FindFirstAncestor('VSDS-PLUGIN').Plugin
 Application.Assets = Application.require(Application.container['VSDS-ASSETS'])
 Application.components = Application.Assets.Plugin.UI
 Application.RoactUI = Application.require(Application.container['ROACT-UI'])
+VSDS.console = Application.require(Application.Assets.Plugin.Libraries.console)
+VSDS.vsds = Application.require(Application.Assets.Plugin.Libraries.vsds)
+VSDS.plugin = Application.require(Application.Assets.Plugin.Libraries.plugin)
+VSDS.SecondsElapsed = 0
 
 Application.RoactApplication = Application.RoactUI.Component:extend(
                                    'VSDS-Application')
@@ -15,7 +21,9 @@ Application.Notifications = Application.require(
                                 Application.Assets.Plugin.UserInterface
                                     .Notification)
 
-function Application.RoactApplication:init() self:setState({notifications = {}}) end
+function Application.RoactApplication:init()
+    self:setState({notifications = {}, plugin = self.props.plugin})
+end
 
 function Application.RoactApplication:newNotification(messageContent, callback)
     local notifications = table.clone(self.state.notifications)
@@ -36,6 +44,8 @@ function Application.RoactApplication:closeNotification(notificationIndex)
     self:setState({notifications = notifications})
 end
 function Application.RoactApplication:render()
+    Application:start()
+
     return Application.NewRoactElement(Application.RoactUI.createContext(nil)
                                            .Provider, {}, {
         Application.NewRoactElement("ScreenGui",
@@ -54,6 +64,48 @@ function Application.RoactApplication:render()
             })
         })
     })
+end
+
+function Application:start()
+    -- make sure to remember the little branding dohickey
+    self:addNotification('Hello!, Welcome to VSDS!')
+    self:addNotification('Hello!, Welcome to VSDS!',
+                         function() print('Hi hello!') end)
+
+    VSDS.console.log('VSDP initialised! [ Started plugin successfully in',
+                     string.sub(getfenv().tick() - Application.Assets.Tick, 1, 5),
+                     ' seconds! ]')
+    VSDS.console.info('VSDP initialised! [ Started plugin successfully in',
+                      string.sub(getfenv().tick() - Application.Assets.Tick, 1,
+                                 5), ' seconds! ]')
+
+    if not VSDS.vsds.RetrieveInstall() then
+        self:addNotification(
+            'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?',
+            VSDS.vsds.Install())
+    end
+
+    Application.Assets.Services.RunService.Heartbeat:Connect(function(heartbeat)
+        VSDS.SecondsElapsed = VSDS.SecondsElapsed + heartbeat
+
+        if VSDS.SecondsElapsed >= 5 * 60 then
+            VSDS.SecondsElapsed = VSDS.SecondsElapsed - 5 * 60
+            local NewerVersion = VSDS.plugin.CheckForUpdates(VSDS.Assets.Plugin
+                                                                 .Version)
+
+            if NewerVersion then
+                self:addNotification(
+                    'Attention! A newer VSDP Version is available: Version',
+                    NewerVersion)
+            end
+
+            -- save for vsds update sthing
+            self:addNotification(
+                'It seems like your VSDS loader is out of date, would you like to update to the lastest version?',
+                VSDS.lib.vsds.Update())
+        end
+    end)
+
 end
 
 return function()

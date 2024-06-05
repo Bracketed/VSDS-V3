@@ -1,4 +1,18 @@
-local VSDS = {}
+--[[
+
+__/\\\________/\\\_____/\\\\\\\\\\\____/\\\\\\\\\\\\________/\\\\\\\\\\\___        
+ _\/\\\_______\/\\\___/\\\/////////\\\_\/\\\////////\\\____/\\\/////////\\\_       
+  _\//\\\______/\\\___\//\\\______\///__\/\\\______\//\\\__\//\\\______\///__      
+   __\//\\\____/\\\_____\////\\\_________\/\\\_______\/\\\___\////\\\_________     
+    ___\//\\\__/\\\_________\////\\\______\/\\\_______\/\\\______\////\\\______    
+     ____\//\\\/\\\_____________\////\\\___\/\\\_______\/\\\_________\////\\\___   
+      _____\//\\\\\_______/\\\______\//\\\__\/\\\_______/\\\___/\\\______\//\\\__  
+       ______\//\\\_______\///\\\\\\\\\\\/___\/\\\\\\\\\\\\/___\///\\\\\\\\\\\/___ 
+        _______\///__________\///////////_____\////////////_______\///////////_____
+
+    A source management system by ninjaninja140, eledontlie and Virtua Electronics.
+
+--]] local VSDS = {}
 
 VSDS.plugin = plugin
 VSDS.self = getfenv().script
@@ -7,16 +21,9 @@ VSDS.require = getfenv().require
 VSDS.Assets = VSDS.require(VSDS.self['VSDS-ASSETS'])
 VSDS.UI = VSDS.require(VSDS.self['ROACT-UI'])
 
-VSDS.ELAPSEDCOUNT = 0
-
-VSDS.lib = {}
-VSDS.lib.console = VSDS.require(VSDS.Assets.Plugin.Libraries.console)
-VSDS.lib.ui = VSDS.require(VSDS.Assets.Plugin.Libraries.ui)
-VSDS.lib.http = VSDS.require(VSDS.Assets.Plugin.Libraries.http)
-VSDS.lib.vsds = VSDS.require(VSDS.Assets.Plugin.Libraries.vsds)
-VSDS.lib.plugin = VSDS.require(VSDS.Assets.Plugin.Libraries.plugin)
-
-VSDS.lib.app = VSDS.require(VSDS.Assets.Plugin.Application)
+VSDS = {}
+VSDS.console = VSDS.require(VSDS.Assets.Plugin.Libraries.console)
+VSDS.http = VSDS.require(VSDS.Assets.Plugin.Libraries.http)
 
 VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.ID,
@@ -24,71 +31,32 @@ VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.IMAGE,
     VSDS.Assets.Configuration.ToolBarButton.NAME)
 
-VSDS.lib.console.info('Welcome to VSDP!')
-VSDS.lib.console.info(
+VSDS.console.info('Welcome to VSDP!')
+VSDS.console.info(
     'To see other logs in your game from VSDP, create a ModuleScript in Workspace titled "VSDS_CONFIGURATION" with a key inside it called "VSDS_PLUGIN_DEBUG" and set it to true.')
-VSDS.lib.console.log('Welcome to VSDP!')
-VSDS.lib.console.log('Initialising VSDP Version',
-                     VSDS.Assets.Plugin.Version .. '...')
+VSDS.console.log('Welcome to VSDP!')
+VSDS.console.log('Initialising VSDP Version',
+                 VSDS.Assets.Plugin.Version .. '...')
 
 if not VSDS.plugin then
-    VSDS.lib.console.log('VSDP Should be ran in a plugin environment!')
+    VSDS.console.log('VSDP Should be ran in a plugin environment!')
     return
 end
 
-print("VSDS.UI:", VSDS.UI)
-print("VSDS.UI.mount:", VSDS.UI.mount)
-
-VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(VSDS.lib.app, {}),
-                                   VSDS.project:GetService('CoreGui'),
-                                   'VSDS-Plugin-UI')
-
-VSDS.httpState = VSDS.lib.http.Test()
+VSDS.httpState = VSDS.http.Test()
 
 if not VSDS.httpState then
-    VSDS.lib.ui.Notify(
-        'VSDP was unable to initalise, we were unable to find the public VSDS repository.')
-    VSDS.lib.console.log(
+    VSDS.console.log(
         'VSDP is unable to initialise, error: VSDS RELEASE UNAVAILABLE')
     return
 else
-    VSDS.lib.console.log('VSDP has found the VSDS repository successfully!')
+    VSDS.console.log('VSDP has found the VSDS repository successfully!')
 end
 
-VSDS.lib.ui.BrandingShow()
-VSDS.lib.console.log('VSDP initialised! [ Started plugin successfully in',
-                     string.sub(getfenv().tick() - VSDS.Assets.Tick, 1, 5),
-                     ' seconds! ]')
-VSDS.lib.console.info('VSDP initialised! [ Started plugin successfully in',
-                      string.sub(getfenv().tick() - VSDS.Assets.Tick, 1, 5),
-                      ' seconds! ]')
-
-VSDS.Install = VSDS.lib.vsds.RetrieveInstall()
-
-if not VSDS.Install then
-    VSDS.lib.ui.Prompt(
-        'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?', -- paraphrase this
-        VSDS.lib.vsds.Install())
-end
+VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(
+                                       VSDS.require(VSDS.self.Parent['VSDS-APPLICATION']),
+                                       {plugin = VSDS.plugin}),
+                                   VSDS.project:GetService('CoreGui'),
+                                   'VSDS-Plugin-UI')
 
 plugin.Unloading:Connect(function() VSDS.UI.unmount(VSDS.ApplicationUI) end)
-VSDS.Assets.Services.RunService.Heartbeat:Connect(function(heartbeat)
-    VSDS.ELAPSEDCOUNT = VSDS.ELAPSEDCOUNT + heartbeat
-
-    if VSDS.ELAPSEDCOUNT >= 5 * 60 then
-        VSDS.ELAPSEDCOUNT = VSDS.ELAPSEDCOUNT - 5 * 60
-        local NewerVersion = VSDS.lib.plugin.CheckForUpdates(VSDS.Assets.Plugin
-                                                                 .Version)
-
-        if NewerVersion then
-            VSDS.lib.ui.Notify(
-                'Attention! A newer VSDP Version is available: Version',
-                NewerVersion)
-        end
-
-        -- save for vsds update sthing
-        VSDS.lib.ui.Prompt(
-            'It seems like your VSDS loader is out of date, would you like to update to the lastest version?',
-            VSDS.lib.vsds.Update())
-    end
-end)
