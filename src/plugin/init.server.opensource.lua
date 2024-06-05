@@ -18,7 +18,10 @@ VSDS.lib.plugin = VSDS.Assets.Require(VSDS.Assets.Plugin.Libraries.plugin)
 VSDS.lib.app = VSDS.Assets.Require(VSDS.Assets.Plugin.Application)
 
 VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
-    VSDS.Assets.Configuration.ToolBarButton)
+    VSDS.Assets.Configuration.ToolBarButton.ID,
+    VSDS.Assets.Configuration.ToolBarButton.TOOLTIP,
+    VSDS.Assets.Configuration.ToolBarButton.IMAGE,
+    VSDS.Assets.Configuration.ToolBarButton.NAME)
 
 VSDS.lib.console.log('Welcome to VSDP!')
 VSDS.lib.console.log('Initialising VSDP Version',

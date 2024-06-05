@@ -18,8 +18,10 @@ ASSETS.OS = getfenv().os
 ASSETS.Configuration.ToolBarLogo = 'rbxassetid://17735487493'
 ASSETS.Configuration.ToolBarTitle = 'Plugins by Virtua.'
 ASSETS.Configuration.ToolBarButton = {
-    'VSDS', 'VSDS Importer Plugin by Virtua.', ASSETS.Configuration.ToolBarLogo,
-    'VSDS Importer Plugin'
+    ID = 'VSDS',
+    NAME = 'VSDS Importer Plugin by Virtua.',
+    IMAGE = ASSETS.Configuration.ToolBarLogo,
+    TOOLTIP = 'VSDS Importer Plugin'
 }
 ASSETS.Configuration.ClickableWhenViewportHidden = false
 ASSETS.Configuration.CoreUITitle = 'VSDS-Plugin-UI'
