@@ -55,5 +55,7 @@ function Application.RoactApplication:render()
     })
 end
 
-return function() return Application.NewRoactElement(Application) end
+return function()
+    return Application.NewRoactElement(Application.RoactApplication)
+end
 
