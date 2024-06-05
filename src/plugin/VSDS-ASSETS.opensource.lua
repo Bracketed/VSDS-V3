@@ -24,8 +24,6 @@ ASSETS.Configuration.ToolBarButton = {
     IMAGE = ASSETS.Configuration.ToolBarLogo,
     NAME = 'VSDS Importer Plugin'
 }
-ASSETS.Configuration.ClickableWhenViewportHidden = false
-ASSETS.Configuration.CoreUITitle = 'VSDS-Plugin-UI'
 
 -- // Plugin Assets
 ASSETS.Plugin.Project = getfenv().script.Parent

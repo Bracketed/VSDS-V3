@@ -2,6 +2,7 @@ local VSDS = {}
 
 VSDS.plugin = plugin
 VSDS.self = getfenv().script
+VSDS.project = getfenv().game
 VSDS.require = getfenv().require
 VSDS.Assets = VSDS.require(VSDS.self['VSDS-ASSETS'])
 VSDS.UI = VSDS.require(VSDS.self['ROACT-UI'])
@@ -35,9 +36,12 @@ if not VSDS.plugin then
     return
 end
 
+print("VSDS.UI:", VSDS.UI)
+print("VSDS.UI.mount:", VSDS.UI.mount)
+
 VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(VSDS.lib.app, {}),
-                                   VSDS.Assets.Services.CoreGui,
-                                   VSDS.Assets.Configuration.CoreUITitle)
+                                   VSDS.project:GetService('CoreGui'),
+                                   'VSDS-Plugin-UI')
 
 VSDS.httpState = VSDS.lib.http.Test()
 
