@@ -53,7 +53,7 @@ VSDS.lib.console.log('VSDP initialised! [ Started plugin successfully in',
 
 VSDS.Install = VSDS.lib.vsds.RetrieveInstall()
 
-if not VSDS.installState then
+if not VSDS.Install then
     VSDS.lib.ui.Prompt(
         'You do not have VSDS installed but Virtua products are in-game, would you like to install VSDS?', -- paraphrase this
         VSDS.lib.vsds.Install())
