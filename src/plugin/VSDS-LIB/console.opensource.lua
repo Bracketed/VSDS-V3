@@ -23,14 +23,15 @@ function console.log(...)
 end
 
 function console.info(...)
-    if not internal.confExistance then
-        internal.conf = internal.require(
-                            internal.workspace['VSDS_CONFIGURATION']) or nil
+    local ConfigAvailable = false
 
-        if not internal.conf['VSDS_PLUGIN_DEBUG'] then
-            internal.print(':: VSDS [PLUGIN] ::', ...)
-        end
+    if internal.confExistance then
+        internal.conf = internal.require(
+                            internal.workspace['VSDS_CONFIGURATION'])
+        if internal.conf['VSDS_PLUGIN_DEBUG'] then ConfigAvailable = true end
     end
+
+    if not ConfigEnable then internal.print(':: VSDS [PLUGIN] ::', ...) end
 end
 
 return console
