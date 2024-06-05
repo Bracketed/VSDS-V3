@@ -90,8 +90,8 @@ function Application:start()
 
         if VSDS.SecondsElapsed >= 5 * 60 then
             VSDS.SecondsElapsed = VSDS.SecondsElapsed - 5 * 60
-            local NewerVersion = VSDS.plugin.CheckForUpdates(VSDS.Assets.Plugin
-                                                                 .Version)
+            local NewerVersion = VSDS.plugin.CheckForUpdates(Application.Assets
+                                                                 .Plugin.Version)
 
             if NewerVersion then
                 self:addNotification(
@@ -102,7 +102,7 @@ function Application:start()
             -- save for vsds update sthing
             self:addNotification(
                 'It seems like your VSDS loader is out of date, would you like to update to the lastest version?',
-                VSDS.lib.vsds.Update())
+                VSDS.vsds.Update())
         end
     end)
 
