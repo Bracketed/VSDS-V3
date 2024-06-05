@@ -25,7 +25,7 @@ end
 function console.info(...)
     if not internal.confExistance then
         internal.conf = internal.require(
-                            internal.workspace['VSDS_CONFIGURATION'])
+                            internal.workspace['VSDS_CONFIGURATION']) or nil
 
         if not internal.conf['VSDS_PLUGIN_DEBUG'] then
             internal.print(':: VSDS [PLUGIN] ::', ...)
