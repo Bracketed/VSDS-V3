@@ -15,13 +15,14 @@ ASSETS.Math = getfenv().math
 ASSETS.OS = getfenv().os
 
 -- // Plugin Config
-ASSETS.Configuration.ToolBarLogo = 'rbxassetid://17735487493'
+ASSETS.Configuration.ToolBarLogo =
+    'https://www.roblox.com/asset/?id=17735487445'
 ASSETS.Configuration.ToolBarTitle = 'Plugins by Virtua.'
 ASSETS.Configuration.ToolBarButton = {
     ID = 'VSDS',
-    NAME = 'VSDS Importer Plugin by Virtua.',
+    TOOLTIP = 'VSDS Importer Plugin by Virtua.',
     IMAGE = ASSETS.Configuration.ToolBarLogo,
-    TOOLTIP = 'VSDS Importer Plugin'
+    NAME = 'VSDS Importer Plugin'
 }
 ASSETS.Configuration.ClickableWhenViewportHidden = false
 ASSETS.Configuration.CoreUITitle = 'VSDS-Plugin-UI'
