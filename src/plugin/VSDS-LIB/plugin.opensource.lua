@@ -33,7 +33,7 @@ function PLUGIN.FilterReleases(Releases)
     local PluginReleases = {}
 
     for ReleaseIndex, ReleaseContent in internal.pairs(Releases) do
-        if UTILS.StartsWith(ReleaseContent.tag_name, 'vsds-plugin') then
+        if internal.utils.StartsWith(ReleaseContent.tag_name, 'vsds-plugin') then
             internal.table.insert(PluginReleases, ReleaseContent)
         end
     end

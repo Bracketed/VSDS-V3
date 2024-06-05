@@ -14,7 +14,7 @@ function console.log(...)
 
         if internal.conf['VSDS_PLUGIN_DEBUG'] then
             if internal.conf['VSDS_PLUGIN_DEBUG'] == true then
-                console.warn(':: VSDS [PLUGIN] ::', ...)
+                internal.warn(':: VSDS [PLUGIN] ::', ...)
             end
 
         end

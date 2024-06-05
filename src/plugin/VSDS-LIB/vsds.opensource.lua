@@ -14,7 +14,7 @@ function VSDS.RetrieveInstall()
     for _, Instance in internal.pairs(internal.scriptservice:GetDecendants()) do
         if Instance.Name == "VSDS-SRC" and Instance:IsA('Folder') then
             internal.console.log('VSDS install found!')
-            return Insance.Parent
+            return Instance.Parent
         end
     end
 
