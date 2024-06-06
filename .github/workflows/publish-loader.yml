@@ -108,7 +108,7 @@ jobs:
 
                         - name: Set versioning for VSDS release.
                           working-directory: src/loader
-                          run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" sVSDS-VER.model.json
+                          run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" VSDS-VER.model.json
 
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator

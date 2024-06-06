@@ -11,7 +11,7 @@ internal.scriptservice = internal.project:GetService('ServerScriptService')
 
 function VSDS.RetrieveInstall()
     internal.console.log('Checking for VSDS install...')
-    for _, Instance in internal.pairs(internal.scriptservice:GetDecendants()) do
+    for _, Instance in internal.pairs(internal.scriptservice:GetDescendants()) do
         if Instance.Name == "VSDS-SRC" and Instance:IsA('Folder') then
             internal.console.log('VSDS install found!')
             return Instance.Parent

@@ -26,6 +26,7 @@ function PLUGIN.GetReleases()
                          Releases.Headers['x-ratelimit-remaining'],
                          'more releases for this hour.')
 
+    print(internal.http.Decode(Releases.Body))
     return internal.http.Decode(Releases.Body)
 end
 
@@ -33,11 +34,13 @@ function PLUGIN.FilterReleases(Releases)
     local PluginReleases = {}
 
     for ReleaseIndex, ReleaseContent in internal.pairs(Releases) do
+        print(ReleaseContent)
         if internal.utils.StartsWith(ReleaseContent.tag_name, 'vsds-plugin') then
             internal.table.insert(PluginReleases, ReleaseContent)
         end
     end
 
+    print(PluginReleases)
     return PluginReleases
 end
 
@@ -48,7 +51,8 @@ function PLUGIN.CheckForUpdates(CURRENT_VER)
     Releases = PLUGIN.FilterReleases(Releases)
     Releases = PLUGIN.GetLatestReleaseFromFilter(Releases)
 
-    if CURRENT_VER == Releases.tag_name then return Releases.tag_name end
+    print(Releases)
+    if CURRENT_VER == Releases.tag_name then return Releases.tag_name end -- user_vsds-plugin-development.rbxmx.VSDS-PLUGIN.VSDS-Libraries.Internal:51: attempt to index nil with 'tag_name'
     return false
 end
 

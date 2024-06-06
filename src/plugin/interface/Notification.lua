@@ -9,29 +9,34 @@ Notifications.Assets = Notifications.require(
 Notifications.components = Notifications.Assets.Plugin.Interface
 Notifications.RoactUI = Notifications.require(
                             Notifications.container['VSDS-Packages']['Roact'])
-Notifications.FlipperUI = Notifications.require(Notifications.container['VSDS-Packages']['Flipper'])
+Notifications.FlipperUI = Notifications.require(
+                              Notifications.container['VSDS-Packages']['Flipper'])
 
-Notifications.RoactApplication = Notifications.RoactUI.Component:extend(
-                                     'VSDS-Notification')
+Notifications.RoactNotification = Notifications.RoactUI.Component:extend(
+                                      'VSDS-Notification')
 Notifications.RoactNotifications = Notifications.RoactUI.Component:extend(
                                        "VSDS-Notifications")
 Notifications.NewRoactElement = Notifications.RoactUI.createElement
 
-function Notifications.RoactApplication.fromMotor(motor)
+function Notifications.RoactNotification.fromMotor(motor)
     local motorBinding, setMotorBinding =
         Notifications.RoactUI.createBinding(motor:getValue())
     motor:onStep(setMotorBinding)
+
     return motorBinding
 end
 
-function Notifications.RoactApplication:init()
+function Notifications.RoactNotification:init()
     self.motor = Notifications.FlipperUI.SingleMotor.new(0)
-    self.binding = Notifications.RoactApplication.fromMotor(self.motor)
+    self.binding = Notifications.RoactNotification.fromMotor(self.motor)
     self:setState({
         rotation = 0,
         noButtonGradientColor = ColorSequence.new(Color3.fromRGB(255, 255, 255)),
         yesButtonGradientColor = ColorSequence.new(Color3.fromRGB(255, 255, 255))
     })
+
+    self.UIGradientYes = Notifications.RoactUI.createRef()
+    self.UIGradientNo = Notifications.RoactUI.createRef()
 
     self.lifetime = self.props.timeout
 
@@ -42,14 +47,14 @@ function Notifications.RoactApplication:init()
     end)
 end
 
-function Notifications.RoactApplication:dismiss()
+function Notifications.RoactNotification:dismiss()
     self.motor:setGoal(Notifications.FlipperUI.Spring.new(0, {
         frequency = 5,
         dampingRatio = 1
     }))
 end
 
-function Notifications.RoactApplication:didMount()
+function Notifications.RoactNotification:didMount()
     self.motor:setGoal(Notifications.FlipperUI.Spring.new(1, {
         frequency = 3,
         dampingRatio = 1
@@ -86,37 +91,14 @@ function Notifications.RoactApplication:didMount()
     end)
 end
 
-function Notifications.RoactApplication:willUnmount()
+function Notifications.RoactNotification:willUnmount()
     task.cancel(self.timeout)
     self.running = false
 end
 
-function Notifications.RoactApplication:tweenButtonColor(button, toColor)
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
-    local goal = {}
-
-    if button == "no" then
-        goal = {noButtonGradientColor = toColor}
-    elseif button == "yes" then
-        goal = {yesButtonGradientColor = toColor}
-    end
-
-    local tween = Notifications.Assets.Services.TweenService:Create(self,
-                                                                    tweenInfo,
-                                                                    goal)
-    tween:Play()
-    tween.Completed:Connect(function()
-        if button == "no" then
-            self:setState({noButtonGradientColor = toColor})
-        elseif button == "yes" then
-            self:setState({yesButtonGradientColor = toColor})
-        end
-    end)
-end
-
-function Notifications.RoactApplication:render()
+function Notifications.RoactNotification:render()
     local transparency = self.binding:map(function(value) return 1 - value end)
-
+    -- set up animation with RoactAnimate
     if self.props.callback then
         return Notifications.RoactUI.createElement("Frame", {
             Name = 'VSDS-PROMPT',
@@ -155,6 +137,7 @@ function Notifications.RoactApplication:render()
                 Size = UDim2.new(0, 120, 0, 40),
                 Text = "Dismiss",
                 TextScaled = true,
+                AutoButtonColor = false,
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 Active = true,
 
@@ -164,14 +147,27 @@ function Notifications.RoactApplication:render()
 
                     self:dismiss()
                 end,
-                [Notifications.RoactUI.Event.MouseEnter] = function()
-                    self:tweenButtonColor("no", ColorSequence.new(
-                                              Color3.fromRGB(154, 154, 154),
-                                              Color3.fromRGB(255, 255, 255)))
+                [Notifications.RoactUI.Event.MouseEnter] = function(context)
+
+                    Notifications.Assets.Services.TweenService:Create(context,
+                                                                      TweenInfo.new(
+                                                                          1.5,
+                                                                          Enum.EasingStyle
+                                                                              .Linear),
+                                                                      {
+                        Color = ColorSequence.new(Color3.fromRGB(154, 154, 154),
+                                                  Color3.fromRGB(255, 255, 255))
+                    }):Play()
                 end,
-                [Notifications.RoactUI.Event.MouseLeave] = function()
-                    self:tweenButtonColor("no", ColorSequence.new(
-                                              Color3.fromRGB(255, 255, 255)))
+                [Notifications.RoactUI.Event.MouseLeave] = function(context)
+                    Notifications.Assets.Services.TweenService:Create(context,
+                                                                      TweenInfo.new(
+                                                                          1.5,
+                                                                          Enum.EasingStyle
+                                                                              .Linear),
+                                                                      {
+                        Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+                    }):Play()
                 end
             }, {
                 Notifications.RoactUI.createElement("UICorner", {
@@ -187,7 +183,9 @@ function Notifications.RoactApplication:render()
                         Offset = Vector2.new(0, 0),
                         Transparency = NumberSequence.new(0),
                         Color = self.state.noButtonGradientColor,
-                        Rotation = self.state.rotation
+                        Rotation = self.state.rotation,
+
+                        [Notifications.RoactUI.Ref] = self.UIGradientNo
                     })
                 }), Notifications.RoactUI.createElement("UIPadding", {
                     PaddingBottom = UDim.new(0.3, 0),
@@ -199,8 +197,9 @@ function Notifications.RoactApplication:render()
                 Position = UDim2.new(0, 160, 1, -54),
                 TextColor3 = Color3.fromRGB(0, 22, 58),
                 Size = UDim2.new(0, 120, 0, 40),
-                Text = "Update",
+                Text = self.props.callback.buttonTitle,
                 TextScaled = true,
+                AutoButtonColor = false,
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 Active = true,
 
@@ -208,16 +207,28 @@ function Notifications.RoactApplication:render()
                     context)
                     context.Active = false
 
-                    self.props.callback()
+                    self.props.callback.action()
                 end,
-                [Notifications.RoactUI.Event.MouseEnter] = function()
-                    self:tweenButtonColor("yes", ColorSequence.new(
-                                              Color3.fromRGB(154, 154, 154),
-                                              Color3.fromRGB(255, 255, 255)))
+                [Notifications.RoactUI.Event.MouseEnter] = function(context)
+                    Notifications.Assets.Services.TweenService:Create(context,
+                                                                      TweenInfo.new(
+                                                                          1.5,
+                                                                          Enum.EasingStyle
+                                                                              .Linear),
+                                                                      {
+                        Color = ColorSequence.new(Color3.fromRGB(154, 154, 154),
+                                                  Color3.fromRGB(255, 255, 255))
+                    }):Play()
                 end,
-                [Notifications.RoactUI.Event.MouseLeave] = function()
-                    self:tweenButtonColor("yes", ColorSequence.new(
-                                              Color3.fromRGB(255, 255, 255)))
+                [Notifications.RoactUI.Event.MouseLeave] = function(context)
+                    Notifications.Assets.Services.TweenService:Create(context,
+                                                                      TweenInfo.new(
+                                                                          1.5,
+                                                                          Enum.EasingStyle
+                                                                              .Linear),
+                                                                      {
+                        Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+                    }):Play()
                 end
             }, {
                 Notifications.RoactUI.createElement("UICorner", {
@@ -233,7 +244,9 @@ function Notifications.RoactApplication:render()
                         Offset = Vector2.new(0, 0),
                         Transparency = NumberSequence.new(0),
                         Color = self.state.yesButtonGradientColor,
-                        Rotation = self.state.rotation
+                        Rotation = self.state.rotation,
+
+                        [Notifications.RoactUI.Ref] = self.UIGradientYes
                     })
                 }), Notifications.RoactUI.createElement("UIPadding", {
                     PaddingBottom = UDim.new(0.3, 0),
@@ -290,18 +303,17 @@ function Notifications.RoactApplication:render()
     end
 end
 
-function Notifications:render()
+function Notifications.RoactNotifications:render()
     local notifs = {}
 
     for index, notif in ipairs(self.props.notifications) do
+        if notif.callback then notif.timeout = notif.timeout + 2.5 * 60 end
+
         notifs[notif] = Notifications.NewRoactElement(
-                            Notifications.RoactApplication, {
+                            Notifications.RoactNotification, {
                 message = notif.text,
-                timestamp = notif.timestamp,
                 timeout = notif.timeout,
                 callback = notif.callback,
-                layoutOrder = (notif.timestamp -
-                    DateTime.now().UnixTimestampMillis),
                 onClose = function() self.props.onClose(index) end
             })
     end
@@ -309,4 +321,4 @@ function Notifications:render()
     return Notifications.RoactUI.createFragment(notifs)
 end
 
-return Notifications
+return Notifications.RoactNotifications

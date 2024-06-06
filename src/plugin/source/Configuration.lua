@@ -9,7 +9,7 @@ ASSETS.Container = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
 
 -- // Default Built-ins for VSDS Assets
 ASSETS.Project = getfenv().game
-ASSETS.Tick = getfenv().tick
+ASSETS.Tick = getfenv().tick()
 ASSETS.Require = getfenv().require
 ASSETS.Pairs = getfenv().pairs
 ASSETS.String = getfenv().string
@@ -30,7 +30,7 @@ ASSETS.Configuration.ToolBarButton = {
 -- // Plugin Assets
 ASSETS.Plugin.Project = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
 ASSETS.Plugin.Libraries = ASSETS.Plugin.Project['VSDS-Libraries']
-ASSETS.Plugin.Interfaces = ASSETS.Plugin.Project['VSDS-Interfaces']
+ASSETS.Plugin.Interface = ASSETS.Plugin.Project['VSDS-Interface']
 ASSETS.Plugin.Packages = ASSETS.Plugin.Project['VSDS-Packages']
 
 -- // Plugin Services
