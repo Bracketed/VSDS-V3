@@ -22,8 +22,8 @@ VSDS.Assets = VSDS.require(VSDS.self['VSDS-ASSETS'])
 VSDS.UI = VSDS.require(VSDS.self['ROACT-UI'])
 
 VSDS = {}
-VSDS.console = VSDS.require(VSDS.self['VSDS-LIB'].console)
-VSDS.http = VSDS.require(VSDS.self['VSDS-LIB'].http)
+VSDS.console = VSDS.require(VSDS.Assets.Plugin.Libraries.console)
+VSDS.http = VSDS.require(VSDS.Assets.Plugin.Libraries.http)
 
 VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.ID,
