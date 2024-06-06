@@ -3,7 +3,19 @@
 	"tree": {
 		"$className": "Folder",
 		"Plugin": {
-			"$path": "src/plugin"
+			"$path": "src/plugin/source"
+		},
+		"VSDS-Libraries": {
+			"$className": "Folder",
+			"$path": "src/plugin/modules"
+		},
+		"VSDS-Interface": {
+			"$className": "Folder",
+			"$path": "src/plugin/interface"
+		},
+		"VSDS-Packages": {
+			"$className": "Folder",
+			"$path": "src/plugin/packages"
 		}
 	}
 }
