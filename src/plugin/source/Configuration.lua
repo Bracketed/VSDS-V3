@@ -4,6 +4,8 @@ local ASSETS = {}
 ASSETS.Plugin = {}
 ASSETS.Services = {}
 ASSETS.Configuration = {}
+ASSETS.Version = "VERSION_UNKNOWN"
+ASSETS.Container = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
 
 -- // Default Built-ins for VSDS Assets
 ASSETS.Project = getfenv().game
@@ -26,12 +28,10 @@ ASSETS.Configuration.ToolBarButton = {
 }
 
 -- // Plugin Assets
-ASSETS.Plugin.Project = getfenv().script.Parent
-ASSETS.Plugin.Libraries = ASSETS.Plugin.Project['VSDS-LIB']
-ASSETS.Plugin.Version = ASSETS.Plugin.Project['VSDS-VER'].Value
-ASSETS.Plugin.UserInterface = ASSETS.Plugin.Project['VSDS-UI']
-ASSETS.Plugin.Application = ASSETS.Plugin.Project['VSDS-APPLICATION']
-ASSETS.Plugin.FlipperUtil = ASSETS.Plugin.Project['FLIPPER-UI']
+ASSETS.Plugin.Project = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
+ASSETS.Plugin.Libraries = ASSETS.Plugin.Project['VSDS-Libraries']
+ASSETS.Plugin.Interfaces = ASSETS.Plugin.Project['VSDS-Interfaces']
+ASSETS.Plugin.Packages = ASSETS.Plugin.Project['VSDS-Packages']
 
 -- // Plugin Services
 ASSETS.Services.RunService = ASSETS.Project:GetService('RunService')

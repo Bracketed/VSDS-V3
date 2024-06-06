@@ -18,12 +18,12 @@ VSDS.plugin = plugin
 VSDS.self = getfenv().script
 VSDS.project = getfenv().game
 VSDS.require = getfenv().require
-VSDS.Assets = VSDS.require(VSDS.self['VSDS-ASSETS'])
-VSDS.UI = VSDS.require(VSDS.self['ROACT-UI'])
+VSDS.Assets = VSDS.require(VSDS.self.Configuration)
+VSDS.Roact = VSDS.require(VSDS.Assets.Plugin.Packages.Roact)
 
 VSDS = {}
-VSDS.console = VSDS.require(VSDS.Assets.Plugin.Project['VSDS-LIB'].console)
-VSDS.http = VSDS.require(VSDS.Assets.Plugin.Project['VSDS-LIB'].http)
+VSDS.console = VSDS.require(VSDS.Assets.Plugin.Libraries.Console)
+VSDS.http = VSDS.require(VSDS.Assets.Plugin.Libraries.HTTP)
 
 VSDS.plugin:CreateToolbar(VSDS.Assets.Configuration.ToolBarTitle):CreateButton(
     VSDS.Assets.Configuration.ToolBarButton.ID,
@@ -53,10 +53,10 @@ else
     VSDS.console.log('VSDP has found the VSDS repository successfully!')
 end
 
-VSDS.ApplicationUI = VSDS.UI.mount(VSDS.UI.createElement(
-                                       VSDS.require(VSDS.self.Parent['VSDS-APPLICATION']),
-                                       {plugin = VSDS.plugin}),
-                                   VSDS.project:GetService('CoreGui'),
-                                   'VSDS-Plugin-UI')
+VSDS.ApplicationUI = VSDS.Roact.mount(VSDS.UI.createElement(VSDS.require(
+                                                                VSDS.self['Application']),
+                                                            {
+    plugin = VSDS.plugin
+}), VSDS.project:GetService('CoreGui'), 'VSDS-Plugin-UI')
 
-plugin.Unloading:Connect(function() VSDS.UI.unmount(VSDS.ApplicationUI) end)
+plugin.Unloading:Connect(function() VSDS.Roact.unmount(VSDS.ApplicationUI) end)

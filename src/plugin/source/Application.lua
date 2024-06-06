@@ -3,14 +3,15 @@ local VSDS = {}
 
 Application.self = getfenv().script
 Application.require = getfenv().require
+Application.Assets = Application.require(Application.self.Parent.Configuration)
 
-Application.container = Application.self:FindFirstAncestor('VSDS-PLUGIN').Plugin -- fixz
-Application.Assets = Application.require(Application.container['VSDS-ASSETS'])
-Application.components = Application.container['VSDS-UI']
-Application.RoactUI = Application.require(Application.container['ROACT-UI'])
-VSDS.console = Application.require(Application.container['VSDS-LIB'].console)
-VSDS.vsds = Application.require(Application.container['VSDS-LIB'].vsds)
-VSDS.plugin = Application.require(Application.container['VSDS-LIB'].plugin)
+Application.container = Application.Assets.Container
+Application.components = Application.container['VSDS-Interface']
+Application.RoactUI = Application.require(
+                          Application.Assets.Plugin.Packages.Roact)
+VSDS.console = Application.require(Application.Assets.Plugin.Libraries.Console)
+VSDS.vsds = Application.require(Application.Assets.Plugin.Libraries.VSDS)
+VSDS.plugin = Application.require(Application.Assets.Plugin.Libraries.Internal)
 VSDS.SecondsElapsed = 0
 
 Application.RoactApplication = Application.RoactUI.Component:extend(

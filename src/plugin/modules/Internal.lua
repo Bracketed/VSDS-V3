@@ -6,9 +6,9 @@ internal.self = getfenv().script
 internal.pairs = getfenv().pairs
 internal.table = getfenv().table
 internal.lib = internal.self.Parent
-internal.http = internal.require(internal.lib['http'])
-internal.console = internal.require(internal.lib['console'])
-internal.utils = internal.require(internal.lib['utils'])
+internal.http = internal.require(internal.lib['HTTP'])
+internal.console = internal.require(internal.lib['Console'])
+internal.utils = internal.require(internal.lib['Utilities'])
 
 function PLUGIN.GetReleases()
     internal.console

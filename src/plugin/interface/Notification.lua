@@ -2,15 +2,14 @@ local Notifications = {}
 Notifications.self = getfenv().script
 Notifications.require = getfenv().require
 
+-- u need to redo these for the new structure
 Notifications.container = Notifications.self:FindFirstAncestor('VSDS-PLUGIN')
-                              .Plugin
 Notifications.Assets = Notifications.require(
-                           Notifications.container['VSDS-ASSETS'])
-Notifications.components = Notifications.Assets.Plugin.UI
+                           Notifications.container.Plugin.Configuration)
+Notifications.components = Notifications.Assets.Plugin.Interface
 Notifications.RoactUI = Notifications.require(
-                            Notifications.container['ROACT-UI'])
-Notifications.FlipperUI = Notifications.require(
-                              Notifications.container['FLIPPER-UI'])
+                            Notifications.container['VSDS-Packages']['Roact'])
+Notifications.FlipperUI = Notifications.require(Notifications.container['VSDS-Packages']['Flipper'])
 
 Notifications.RoactApplication = Notifications.RoactUI.Component:extend(
                                      'VSDS-Notification')

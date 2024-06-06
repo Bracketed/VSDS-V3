@@ -6,7 +6,7 @@ internal.require = getfenv().require
 internal.self = getfenv().script
 internal.pairs = getfenv().pairs
 internal.lib = internal.self.Parent
-internal.console = internal.require(internal.lib['console'])
+internal.console = internal.require(internal.lib['Console'])
 internal.scriptservice = internal.project:GetService('ServerScriptService')
 
 function VSDS.RetrieveInstall()
