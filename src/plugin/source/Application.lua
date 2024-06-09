@@ -13,7 +13,6 @@ Application.Dictionary = Application.require(
                              Application.Assets.Plugin.Packages.Dictionary)
 VSDS.console = Application.require(Application.Assets.Plugin.Libraries.Console)
 VSDS.vsds = Application.require(Application.Assets.Plugin.Libraries.VSDS)
-VSDS.plugin = Application.require(Application.Assets.Plugin.Libraries.Internal)
 VSDS.SecondsElapsed = 0
 
 Application.RoactApplication = Application.RoactUI.Component:extend(
@@ -24,56 +23,90 @@ Application.Notifications = Application.require(
                                 Application.components.Notification)
 
 function Application.RoactApplication:init()
+    self.notificationIndex = 0
     self:setState({notifications = {}, plugin = self.props.plugin})
 end
 
 function Application.RoactApplication:newNotification(text, callback)
-    -- callback = {function, buttonTitle}
+    self.notificationIndex = self.notificationIndex + 1
     local notifications = table.clone(self.state.notifications)
-    table.insert(notifications,
-                 {message = text, timeout = 5, callback = callback})
+
+    notifications[self.notificationIndex] = {
+        message = text,
+        timestamp = DateTime.now().UnixTimestampMillis,
+        timeout = 8,
+        callback = callback or nil
+    }
 
     self:setState({notifications = notifications})
+
+    return function() self:closeNotification(id) end
 end
 
 function Application.RoactApplication:closeNotification(notificationIndex)
+    if not self.state.notifications[notificationIndex] then return end
+
     local notifications = table.clone(self.state.notifications)
-    table.remove(notifications, notificationIndex)
+    notifications[notificationIndex] = nil
 
     self:setState({notifications = notifications})
 end
 function Application.RoactApplication:render()
-    return Application.NewRoactElement("ScreenGui",
-                                       {Name = 'VSDS-PLUGIN-NOTIFICATIONS'}, {
-        layout = Application.NewRoactElement("UIListLayout", {
+    return Application.NewRoactElement("ScreenGui", {
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        ResetOnSpawn = false,
+        DisplayOrder = 200
+    }, {
+        ['VSDS-InterfaceBoundaries'] = Application.NewRoactElement("UIPadding",
+                                                                   {
+            PaddingTop = UDim.new(0, 15),
+            PaddingBottom = UDim.new(0, 15),
+            PaddingLeft = UDim.new(0, 15),
+            PaddingRight = UDim.new(0, 15)
+        }),
+        ['VSDS-InterfaceLayout'] = Application.NewRoactElement("UIListLayout", {
             SortOrder = Enum.SortOrder.LayoutOrder,
             HorizontalAlignment = Enum.HorizontalAlignment.Right,
             VerticalAlignment = Enum.VerticalAlignment.Bottom,
             Padding = UDim.new(0, 8)
         }),
-        notifs = Application.NewRoactElement(Application.Notifications, {
-            notifications = self.state.notifications,
-            onClose = function(index) self:closeNotification(index) end
-        })
+        ['VSDS-NotificationInterface'] = Application.NewRoactElement(
+            Application.Notifications, {
+                notifications = self.state.notifications,
+                onClose = function(index)
+                    self:closeNotification(index)
+                end
+            })
+
     })
 end
 
 function Application.RoactApplication:didMount()
-    -- make sure to remember the little branding dohickey
-    self:newNotification('Hello!, Welcome to VSDS!')
-    self:newNotification('Hello!, Welcome to VSDS!', {
-        action = function() print('Hi hello!') end,
-        buttonTitle = 'Hi!'
-    })
+    local MigratableInstances = VSDS.vsds.FindMigratables(Application.Assets
+                                                              .Project:GetService(
+                                                              'Workspace'))
 
-    VSDS.console.log('VSDP initialised! [ Started plugin successfully in',
-                     string.sub(getfenv().tick() - Application.Assets.Tick, 1, 5),
-                     ' seconds! ]')
-    VSDS.console.info('VSDP initialised! [ Started plugin successfully in',
-                      string.sub(getfenv().tick() - Application.Assets.Tick, 1,
-                                 5), ' seconds! ]')
+    if (#MigratableInstances ~= 0) and VSDS.vsds.RetrieveInstall() then
+        self:newNotification(
+            'VSDP has detected old VSDS products in-game, should VSDP migrate them to the latest version?',
+            {
+                action = function()
+                    local MigrateState = VSDS.vsds.Migrate()
 
-    if not VSDS.vsds.RetrieveInstall() then
+                    if MigrateState == true then
+                        self:newNotification('VSDP Migrated ' ..
+                                                 #MigratableInstances ..
+                                                 ' scripts successfully.')
+                    else
+                        self:newNotification(
+                            'VSDP errored whilst migrating ' ..
+                                #MigratableInstances ..
+                                ' scripts, report this error or try again.')
+                    end
+                end,
+                buttonTitle = 'Migrate'
+            })
+    elseif (#MigratableInstances ~= 0) and not VSDS.vsds.RetrieveInstall() then
         self:newNotification(
             'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?',
             {
@@ -82,29 +115,105 @@ function Application.RoactApplication:didMount()
             })
     end
 
+    Application.Assets.Project:GetService('Workspace').ChildAdded:Connect(
+        function(NewInstance)
+            local MigratableInstances = VSDS.vsds.FindMigratables(NewInstance)
+
+            if (#MigratableInstances ~= 0) and VSDS.vsds.RetrieveInstall() then
+                self:newNotification(
+                    'Would you like to migrate the Virtua product you\'ve just inserted to the latest version?',
+                    {
+                        action = function()
+                            local StartingTime = getfenv().tick()
+                            local MigrateState = VSDS.vsds.Migrate()
+
+                            if MigrateState == true then
+                                self:newNotification('VSDP Migrated ' ..
+                                                         #MigratableInstances ..
+                                                         ' scripts successfully in ' ..
+                                                         string.sub(
+                                                             getfenv().tick() -
+                                                                 StartingTime,
+                                                             1, 5) ..
+                                                         ' seconds.')
+                            else
+                                self:newNotification(
+                                    'VSDP errored whilst migrating ' ..
+                                        #MigratableInstances ..
+                                        ' scripts, report this error or try again.')
+                            end
+                        end,
+                        buttonTitle = 'Migrate'
+                    })
+            elseif (#MigratableInstances ~= 0) and
+                not VSDS.vsds.RetrieveInstall() then
+                self:newNotification(
+                    'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?',
+                    {
+                        action = function()
+                            local StartingTime = getfenv().tick()
+                            local InstallState = VSDS.vsds.Install()
+
+                            if InstallState == true then
+                                self:newNotification(
+                                    'VSDP successfully installed VSDS in ' ..
+                                        string.sub(
+                                            getfenv().tick() - StartingTime, 1,
+                                            5) .. ' seconds.')
+                            else
+                                self:newNotification(
+                                    'VSDP errored whilst installing VSDS, report this error or try again.')
+                            end
+                        end,
+                        buttonTitle = 'Install'
+                    })
+            end
+        end)
+
     Application.Assets.Services.RunService.Heartbeat:Connect(function(heartbeat)
         VSDS.SecondsElapsed = VSDS.SecondsElapsed + heartbeat
 
         if VSDS.SecondsElapsed >= 5 * 60 then
             VSDS.SecondsElapsed = VSDS.SecondsElapsed - 5 * 60
-            local NewerVersion = VSDS.plugin.CheckForUpdates(Application.Assets
-                                                                 .Plugin.Version)
+            local NewerPluginVersion = VSDS.vsds.CheckForUpdates(
+                                           Application.Assets.Plugin.Version,
+                                           'vsds-plugin')
+            local VSDS_Loader = VSDS.vsds.RetrieveInstall()
 
-            if NewerVersion then
+            if NewerPluginVersion ~= nil then
                 self:newNotification(
                     'Attention! A newer VSDP Version is available: Version ' ..
-                        NewerVersion)
+                        NewerPluginVersion)
+                task.wait(1)
+                self:newNotification(
+                    'You can get the latest release from GitHub or the Studio Plug-ins manager.')
             end
 
-            -- save for vsds update sthing
-            self:newNotification(
-                'It seems like your VSDS loader is out of date, would you like to update to the lastest version?',
-                {
-                    action = function() VSDS.vsds.Update() end,
-                    buttonTitle = 'Update'
-                })
+            if VSDS_Loader ~= nil then
+                local NewerLoaderVersion =
+                    VSDS.vsds.CheckForUpdates(
+                        VSDS_Loader['VSDS-VER'].Value, 'vsds-loader')
+
+                if NewerLoaderVersion ~= nil then
+                    self:newNotification(
+                        'It seems like your VSDS loader is out of date, would you like to update to the latest version?',
+                        {
+                            action = function()
+                                VSDS.vsds.Update()
+                            end,
+                            buttonTitle = 'Update'
+                        })
+                end
+            end
         end
     end)
+
+    VSDS.console.log('VSDP initialised! [ Started plugin successfully in',
+                     string.sub(getfenv().tick() - Application.Assets.Tick, 1, 5),
+                     ' seconds! ]')
+    VSDS.console.info('VSDP initialised! [ Started plugin successfully in',
+                      string.sub(getfenv().tick() - Application.Assets.Tick, 1,
+                                 5), ' seconds! ]')
 
 end
 

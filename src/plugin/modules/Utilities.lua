@@ -28,4 +28,9 @@ function UTILS.Contains(str, substr)
     return internal.string.find(str, substr) ~= nil
 end
 
+function UTILS.Replace(str, target, replacement)
+    local result, _ = internal.string.gsub(str, target, replacement)
+    return result
+end
+
 return UTILS
