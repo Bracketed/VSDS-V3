@@ -50,7 +50,6 @@ function RippleComponent.Component:reset()
         opacity = RippleComponent.FlipperUI.Instant.new(0)
     })
 
-    -- Forces motor to update
     self.motor:step(0)
 end
 
