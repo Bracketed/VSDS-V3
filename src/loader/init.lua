@@ -1,9 +1,6 @@
 local __V3 = {}
 local __V3_INTERNAL = {}
 
-require = _G.require
-game = _G.game
-
 __V3_INTERNAL.SERVICES = {}
 __V3_INTERNAL.SERVICES.HTTPSERVICE = game:GetService('HttpService')
 __V3_INTERNAL.SERVICES.GROUPSERVICE = game:GetService('GroupService')

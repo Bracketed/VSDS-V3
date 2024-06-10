@@ -136,12 +136,8 @@ jobs:
                                   method: 'GET'
                                   timeout: 10000
 
-                        - name: Set API env variable
-                          if: success() && env.publish == 'true'
-                          run: echo "api=true" >> $GITHUB_ENV
-
                         - name: Publish Loader
-                          if: env.api == 'true'
+                          if: env.publish == 'true'
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
                                   url: 'https://roblox-apis.bracketed.co.uk/vsds/upload'
@@ -157,7 +153,7 @@ jobs:
                                   path: vsds-loader-${{ github.ref_name }}.rbxmx
 
                         - name: Create Release
-                          if: env.api == 'true'
+                          if: env.publish == 'true'
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: ${{ steps.release-data.outputs.title }}
@@ -180,7 +176,7 @@ jobs:
                                   make_latest: true
 
                         - name: Create Release [PUBLIC]
-                          if: env.api == 'true'
+                          if: env.publish == 'true'
                           uses: softprops/action-gh-release@v2
                           with:
                                   repository: Bracketed/VSDS
@@ -205,7 +201,7 @@ jobs:
                                   make_latest: true
 
                         - name: Discord Webhook Action
-                          if: env.api == 'true'
+                          if: env.publish == 'true'
                           uses: tsickert/discord-webhook@v5.3.0
                           with:
                                   username: '@Github Actions'
