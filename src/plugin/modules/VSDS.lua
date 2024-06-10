@@ -1,11 +1,11 @@
 local VSDS = {}
 local internal = {}
 
-internal.require = getfenv().require
-internal.self = getfenv().script
-internal.pairs = getfenv().pairs
-internal.project = getfenv().game
-internal.table = getfenv().table
+internal.require = require
+internal.self = script
+internal.pairs = pairs
+internal.project = game
+internal.table = table
 internal.lib = internal.self.Parent
 internal.http = internal.require(internal.lib['HTTP'])
 internal.console = internal.require(internal.lib['Console'])
@@ -77,17 +77,20 @@ function VSDS.Migrate(Instance)
     return MigrationSuccess
 end
 
-function VSDS.Download() end
+function VSDS.GetVSDSTree()
+    return internal.http.Decode(internal.http.Get(
+                                    'https://roblox-apis.bracketed.co.uk/vsds/loader'))
+end
 
 function VSDS.Update() end
 
 function VSDS.Install() end
 
-function VSDS.GetReleases()
+function VSDS.GetRelease()
     internal.console
         .log('Getting latest VSDS release from public repository...')
     local Releases = internal.http.Get(
-                         'https://api.github.com/repos/Bracketed/VSDS/releases')
+                         'https://roblox-apis.bracketed.co.uk/vsds')
 
     if Releases.Headers['x-ratelimit-remaining'] == 0 then
         internal.console.log(
@@ -102,23 +105,8 @@ function VSDS.GetReleases()
     return internal.http.Decode(Releases.Body)
 end
 
-function VSDS.FilterReleases(Releases, tagName)
-    local PluginReleases = {}
-
-    for ReleaseIndex, ReleaseContent in internal.pairs(Releases) do
-        if internal.utils.StartsWith(ReleaseContent.tag_name, tagName) then
-            internal.table.insert(PluginReleases, ReleaseContent)
-        end
-    end
-
-    return PluginReleases
-end
-
-function VSDS.GetLatestReleaseFromFilter(Releases) return Releases[0] end
-
 function VSDS.CheckForUpdates(CURRENT_VER, targetModule)
-    local Releases = VSDS.GetLatestReleaseFromFilter(
-                         VSDS.FilterReleases(VSDS.GetReleases(), targetModule))
+    local Releases = VSDS.GetRelease()
 
     if not Releases then return nil end
     if CURRENT_VER == Releases.tag_name then return Releases.tag_name end

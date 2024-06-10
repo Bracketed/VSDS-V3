@@ -1,6 +1,6 @@
 return {
     run = function(script, ...)
-        getfenv().require = _G.require
+        require = _G.require
         local function print(...) warn(':: Virtua Axua ::', ...) end
         Instance.new('Folder', script.Parent).Name = 'WeldStorage'
 
@@ -10,8 +10,12 @@ return {
         local state = 'CLOSED'
         local altsate = 'NONE'
 
-        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
-        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed, settings.Tweening.EasingStyle, settings.Tweening.EasingDirection)
+        local Tweens_OPEN = TweenInfo.new(settings.Movement.OpenSpeed,
+                                          settings.Tweening.EasingStyle,
+                                          settings.Tweening.EasingDirection)
+        local Tweens_CLOSE = TweenInfo.new(settings.Movement.CloseSpeed,
+                                           settings.Tweening.EasingStyle,
+                                           settings.Tweening.EasingDirection)
         local Tweens_DEFAULTPOS = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
 
         for _, Sensor in pairs(this.Sensors:GetChildren()) do
@@ -78,7 +82,8 @@ return {
                 end
             end
             if not ((altsate == 'HOLD') or (altsate == 'LOCKED')) then
-                task.wait(settings.Movement.OpenSpeed + settings.Movement.OpenTime)
+                task.wait(settings.Movement.OpenSpeed +
+                              settings.Movement.OpenTime)
                 DOORCLOSE()
             end
         end

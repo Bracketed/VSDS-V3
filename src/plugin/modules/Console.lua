@@ -1,10 +1,10 @@
 local console = {}
 local internal = {}
 
-internal.warn = getfenv().warn
-internal.print = getfenv().print
-internal.project = getfenv().game
-internal.require = getfenv().require
+internal.warn = warn
+internal.print = print
+internal.project = game
+internal.require = require
 internal.workspace = internal.project:GetService('Workspace')
 internal.confExistance = internal.workspace:FindFirstChild('VSDS_CONFIGURATION')
 

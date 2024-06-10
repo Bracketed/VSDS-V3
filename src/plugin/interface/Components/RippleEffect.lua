@@ -1,6 +1,6 @@
 local RippleComponent = {}
-RippleComponent.self = getfenv().script
-RippleComponent.require = getfenv().require
+RippleComponent.self = script
+RippleComponent.require = require
 
 RippleComponent.container =
     RippleComponent.self:FindFirstAncestor('VSDS-PLUGIN')

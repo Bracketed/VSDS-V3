@@ -1,6 +1,6 @@
 local Notifications = {}
-Notifications.self = getfenv().script
-Notifications.require = getfenv().require
+Notifications.self = script
+Notifications.require = require
 Notifications.clock = DateTime.now().UnixTimestampMillis
 
 Notifications.container = Notifications.self:FindFirstAncestor('VSDS-PLUGIN')

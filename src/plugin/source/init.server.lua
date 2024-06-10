@@ -1,26 +1,12 @@
---[[
-
-__/\\\________/\\\_____/\\\\\\\\\\\____/\\\\\\\\\\\\________/\\\\\\\\\\\___        
- _\/\\\_______\/\\\___/\\\/////////\\\_\/\\\////////\\\____/\\\/////////\\\_       
-  _\//\\\______/\\\___\//\\\______\///__\/\\\______\//\\\__\//\\\______\///__      
-   __\//\\\____/\\\_____\////\\\_________\/\\\_______\/\\\___\////\\\_________     
-    ___\//\\\__/\\\_________\////\\\______\/\\\_______\/\\\______\////\\\______    
-     ____\//\\\/\\\_____________\////\\\___\/\\\_______\/\\\_________\////\\\___   
-      _____\//\\\\\_______/\\\______\//\\\__\/\\\_______/\\\___/\\\______\//\\\__  
-       ______\//\\\_______\///\\\\\\\\\\\/___\/\\\\\\\\\\\\/___\///\\\\\\\\\\\/___ 
-        _______\///__________\///////////_____\////////////_______\///////////_____
-
-    A source management system by ninjaninja140, eledontlie and Virtua Electronics.
-
---]] local VSDS = {}
+local VSDS = {}
 
 VSDS.plugin = plugin
-VSDS.self = getfenv().script
-VSDS.project = getfenv().game
+VSDS.self = script
+VSDS.project = game
 assert(VSDS.plugin,
        ':: VSDS [PLUGIN] :: VSDP Should be ran in a plugin environment!')
 
-VSDS.require = getfenv().require
+VSDS.require = require
 VSDS.Assets = VSDS.require(VSDS.self.Configuration)
 VSDS.Roact = VSDS.require(VSDS.Assets.Container['VSDS-Packages']['Roact'])
 

@@ -1,9 +1,9 @@
 local UTILS = {}
 local internal = {}
 
-internal.string = getfenv().string
-internal.math = getfenv().math
-internal.os = getfenv().os
+internal.string = string
+internal.math = math
+internal.os = os
 
 function UTILS.GetRatelimitTime()
     local currentTime = internal.os.date("*t")

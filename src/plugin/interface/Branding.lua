@@ -1,6 +1,6 @@
 local Branding = {}
-Branding.self = getfenv().script
-Branding.require = getfenv().require
+Branding.self = script
+Branding.require = require
 
 Branding.container = Branding.self:FindFirstAncestor('VSDS-PLUGIN')
 Branding.Assets = Branding.require(Branding.container.Plugin.Configuration)

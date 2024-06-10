@@ -1,8 +1,8 @@
 local Application = {}
 local VSDS = {}
 
-Application.self = getfenv().script
-Application.require = getfenv().require
+Application.self = script
+Application.require = require
 Application.Assets = Application.require(Application.self.Parent.Configuration)
 
 Application.container = Application.Assets.Container
@@ -124,7 +124,7 @@ function Application.RoactApplication:didMount()
                     'Would you like to migrate the Virtua product you\'ve just inserted to the latest version?',
                     {
                         action = function()
-                            local StartingTime = getfenv().tick()
+                            local StartingTime = tick()
                             local MigrateState = VSDS.vsds.Migrate()
 
                             if MigrateState == true then
@@ -132,7 +132,7 @@ function Application.RoactApplication:didMount()
                                                          #MigratableInstances ..
                                                          ' scripts successfully in ' ..
                                                          string.sub(
-                                                             getfenv().tick() -
+                                                             tick() -
                                                                  StartingTime,
                                                              1, 5) ..
                                                          ' seconds.')
@@ -151,15 +151,14 @@ function Application.RoactApplication:didMount()
                     'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?',
                     {
                         action = function()
-                            local StartingTime = getfenv().tick()
+                            local StartingTime = tick()
                             local InstallState = VSDS.vsds.Install()
 
                             if InstallState == true then
                                 self:newNotification(
                                     'VSDP successfully installed VSDS in ' ..
-                                        string.sub(
-                                            getfenv().tick() - StartingTime, 1,
-                                            5) .. ' seconds.')
+                                        string.sub(tick() - StartingTime, 1, 5) ..
+                                        ' seconds.')
                             else
                                 self:newNotification(
                                     'VSDP errored whilst installing VSDS, report this error or try again.')
@@ -209,11 +208,11 @@ function Application.RoactApplication:didMount()
     end)
 
     VSDS.console.log('VSDP initialised! [ Started plugin successfully in',
-                     string.sub(getfenv().tick() - Application.Assets.Tick, 1, 5),
+                     string.sub(tick() - Application.Assets.Tick, 1, 5),
                      ' seconds! ]')
     VSDS.console.info('VSDP initialised! [ Started plugin successfully in',
-                      string.sub(getfenv().tick() - Application.Assets.Tick, 1,
-                                 5), ' seconds! ]')
+                      string.sub(tick() - Application.Assets.Tick, 1, 5),
+                      ' seconds! ]')
 
 end
 

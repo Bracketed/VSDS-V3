@@ -13,7 +13,7 @@ on:
         workflow_dispatch:
 
 env:
-        publish: true
+        publish: 'true'
 
 jobs:
         publish:
@@ -54,7 +54,7 @@ jobs:
                           run: rojo build -o ./vsds-plugin-${{ github.ref_name }}.rbxmx vsds.plugin.project.json
 
                         - name: Check for API uptime
-                          if: env.publish == true
+                          if: env.publish == 'true'
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
                                   url: 'https://roblox-apis.bracketed.co.uk/vsds'
@@ -66,7 +66,7 @@ jobs:
                           run: echo "api=true" >> $GITHUB_ENV
 
                         - name: Publish Plugin
-                          if: env.api == true
+                          if: env.api == 'true'
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
                                   url: 'https://roblox-apis.bracketed.co.uk/update/${{ secrets.VSDS_ASSETID }}'
@@ -82,7 +82,7 @@ jobs:
                                   path: vsds-plugin-${{ github.ref_name }}.rbxmx
 
                         - name: Create Release
-                          if: env.api == true
+                          if: env.api == 'true'
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: ${{ steps.release-data.outputs.title }}
@@ -105,7 +105,7 @@ jobs:
                                   make_latest: true
 
                         - name: Create Release [PUBLIC]
-                          if: env.api == true
+                          if: env.api == 'true'
                           uses: softprops/action-gh-release@v2
                           with:
                                   repository: Bracketed/VSDS
@@ -130,7 +130,7 @@ jobs:
                                   make_latest: true
 
                         - name: Discord Webhook Action
-                          if: env.api == true
+                          if: env.api == 'true'
                           uses: tsickert/discord-webhook@v5.3.0
                           with:
                                   username: '@Github Actions'

@@ -5,16 +5,16 @@ ASSETS.Plugin = {}
 ASSETS.Services = {}
 ASSETS.Configuration = {}
 ASSETS.Version = "VERSION_UNKNOWN"
-ASSETS.Container = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
+ASSETS.Container = script:FindFirstAncestor('VSDS-PLUGIN')
 
 -- // Default Built-ins for VSDS Assets
-ASSETS.Project = getfenv().game
-ASSETS.Tick = getfenv().tick()
-ASSETS.Require = getfenv().require
-ASSETS.Pairs = getfenv().pairs
-ASSETS.String = getfenv().string
-ASSETS.Math = getfenv().math
-ASSETS.OS = getfenv().os
+ASSETS.Project = game
+ASSETS.Tick = tick()
+ASSETS.Require = require
+ASSETS.Pairs = pairs
+ASSETS.String = string
+ASSETS.Math = math
+ASSETS.OS = os
 
 -- // Plugin Config
 ASSETS.Configuration.ToolBarLogo =
@@ -28,7 +28,7 @@ ASSETS.Configuration.ToolBarButton = {
 }
 
 -- // Plugin Assets
-ASSETS.Plugin.Project = getfenv().script:FindFirstAncestor('VSDS-PLUGIN')
+ASSETS.Plugin.Project = script:FindFirstAncestor('VSDS-PLUGIN')
 ASSETS.Plugin.Libraries = ASSETS.Plugin.Project['VSDS-Libraries']
 ASSETS.Plugin.Interface = ASSETS.Plugin.Project['VSDS-Interface']
 ASSETS.Plugin.Packages = ASSETS.Plugin.Project['VSDS-Packages']

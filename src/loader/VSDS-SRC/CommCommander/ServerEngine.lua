@@ -1,6 +1,6 @@
 return {
     run = function(script, ...)
-        getfenv().require = _G.require
+        require = _G.require
         local ReplicatedStorage = game:GetService('ReplicatedStorage')
         local TextService = game:GetService("TextService")
         local API = script.Parent.CommCommanderAPI

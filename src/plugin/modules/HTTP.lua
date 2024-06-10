@@ -1,7 +1,7 @@
 local HTTP = {}
 local internal = {}
 
-internal.project = getfenv().game
+internal.project = game
 internal.service = internal.project:GetService('HttpService')
 
 function HTTP.Get(Url, Body, Headers)

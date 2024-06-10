@@ -1,7 +1,7 @@
 local Application = {}
 
-Application.self = getfenv().script
-Application.require = getfenv().require
+Application.self = script
+Application.require = require
 Application.Assets = Application.require(Application.self.Parent.Configuration)
 
 Application.container = Application.Assets.Container
