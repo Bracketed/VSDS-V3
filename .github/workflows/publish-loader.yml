@@ -144,7 +144,7 @@ jobs:
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
                                   files: '{ "file": "vsds-loader-${{ github.ref_name }}.rbxmx" }'
-                                  customHeaders: '{ "vsds-authorisation": "${{ secrets.VSDS_COMMITKEY }}" }'
+                                  customHeaders: '{ "vsds-authorisation": "${{ secrets.VSDS_AUTH }}" }'
                                   timeout: 10000
 
                         - uses: actions/upload-artifact@v4.3.1

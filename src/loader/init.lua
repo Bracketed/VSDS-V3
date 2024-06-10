@@ -9,7 +9,7 @@ __V3_INTERNAL.script = script
 -- someone needs to redo all this and ik its still probably gonna be me in the end - eden
 
 local function print(...)
-    if (workspace:GetAttribute('VirtuaDebug')) then
+    if (workspace:GetAttribute('VSDS-Debug')) then
         warn(':: Virtua Electronics ::', ...)
     end
 end
