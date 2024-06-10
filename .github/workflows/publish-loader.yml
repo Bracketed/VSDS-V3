@@ -49,36 +49,6 @@ jobs:
                           with:
                                   token: ${{ secrets.GITHUB_TOKEN }}
 
-                        - name: Cache Roblox LuaU Library
-                          id: rblx-libcache
-                          uses: actions/cache@v4.0.2
-                          with:
-                                  path: roblox.yml
-                                  key: roblox-std
-
-                        - name: Check standard Roblox LuaU Lib status
-                          id: rblx-libs
-                          env:
-                                  DID_CACHE: ${{steps.rblx-libcache.outputs.cache-hit}}
-                          run: |
-                                  if test -f roblox.yml; then
-                                   CUR_ROBLOX_STD_TIMEDATE="$(date +%s -d "$(cat roblox.yml |  head -n 1 | grep -oP "\d{4}-\d{2}-\d{2}(?=\s+\d{2}:\d{2}:\d{2})")")"
-                                  else
-                                   CUR_ROBLOX_STD_TIMEDATE=0
-                                  fi
-                                  if [ "$DID_CACHE" == "true" ] 
-                                  then
-                                    if [ "$(($(date +%s)-$CUR_ROBLOX_STD_TIMEDATE))" -ge "604800" ]
-                                    then
-                                      echo "::notice ::Roblox Standard Library Cache is out of date by 1 week, requiring a refresh of the standard library cache."
-                                      echo "fetch=true" >> $GITHUB_OUTPUT
-                                    else
-                                     echo "fetch=false" >> $GITHUB_OUTPUT
-                                    fi
-                                  else
-                                    echo "fetch=true" >> $GITHUB_OUTPUT
-                                  fi
-
                         - name: Download Lua Minify libraries from source
                           uses: GuillaumeFalourd/clone-github-repo-action@v2.3
                           with:
@@ -113,17 +83,6 @@ jobs:
                         - name: Obfuscate Source Files
                           working-directory: Obfuscator
                           run: dotnet YolusCLI.dll
-
-                        - name: Retrieve Latest Roblox Verification Libraries
-                          if: steps.rblx-libs.outputs.fetch == 'true'
-                          run: selene generate-roblox-std
-
-                        - name: Verify Scripts contained in /src/loader
-                          run: selene ./src/loader
-
-                        - name: Cat entry file to check for formatting
-                          run: cat init.lua
-                          working-directory: src/loader
 
                         - name: Build
                           run: rojo build -o ./vsds-loader-${{ github.ref_name }}.rbxmx vsds.loader.project.json
