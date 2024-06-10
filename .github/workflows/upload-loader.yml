@@ -1,0 +1,98 @@
+name: Upload VSDS Loader
+
+on:
+        workflow_dispatch:
+        repository_dispatch:
+
+jobs:
+        publish:
+                name: Build & Upload Loader
+                runs-on: ubuntu-latest
+                permissions:
+                        contents: write
+                steps:
+                        - uses: actions/checkout@v4.1.1
+                        - uses: actions/setup-dotnet@v4
+                          with:
+                                  dotnet-version: 7.0
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
+                                  luaVersion: luajit
+
+                        - uses: leafo/gh-actions-lua@v10
+                          with:
+                                  luaVersion: 5.1
+
+                        - id: latest
+                          uses: pozetroninc/github-action-get-latest-release@master
+                          with:
+                                  owner: Bracketed
+                                  repo: VSDS
+                                  excludes: prerelease, draft
+
+                        - name: Generate release data
+                          run: echo "tag=${{ steps.latest.outputs.release }}" >> $GITHUB_OUTPUT
+                          id: release-data
+
+                        - name: Apply fix to luajit
+                          working-directory: .lua/bin
+                          run: mv luajit* luajit
+
+                        - uses: ok-nick/setup-aftman@v0.4.2
+                          with:
+                                  token: ${{ secrets.GITHUB_TOKEN }}
+
+                        - name: Download Lua Minify libraries from source
+                          uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+                          with:
+                                  owner: 'Bracketed'
+                                  repository: 'VSDS-LUA'
+                                  access-token: ${{ secrets.VSDS_PUBCOMMIT }}
+
+                        - name: Apply fix to VSDS lua binaries and minification libraries
+                          run: mv VSDS-LUA Lua
+
+                        - name: Download Yolus Obfuscator libraries from source
+                          uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+                          with:
+                                  owner: 'Bracketed'
+                                  repository: 'VSDS-OBFUSCATOR'
+                                  access-token: ${{ secrets.VSDS_PUBCOMMIT }}
+
+                        - name: Apply fix to VSDS yolus binaries and obfuscation libraries
+                          run: mv VSDS-OBFUSCATOR Yolus
+
+                        - name: Extract Font libraries
+                          run: mv Yolus/Fonts Fonts
+
+                        - name: Build Obfuscator
+                          working-directory: Yolus
+                          run: dotnet build --output ../Obfuscator
+
+                        - name: Set versioning for VSDS release.
+                          working-directory: ./src/loader
+                          run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" VSDS-VER.model.json
+
+                        - name: Obfuscate Source Files
+                          working-directory: Obfuscator
+                          run: dotnet YolusCLI.dll
+
+                        - name: Build
+                          run: rojo build -o ./vsds-loader-${{ github.ref_name }}.rbxmx vsds.loader.project.json
+
+                        - name: Check for API uptime
+                          uses: fjogeleit/http-request-action@v1.15.4
+                          with:
+                                  url: 'https://roblox-apis.bracketed.co.uk/vsds'
+                                  method: 'GET'
+                                  timeout: 10000
+
+                        - name: Publish Loader
+                          uses: fjogeleit/http-request-action@v1.15.4
+                          with:
+                                  url: 'https://roblox-apis.bracketed.co.uk/vsds/upload'
+                                  method: 'POST'
+                                  contentType: 'multipart/form-data'
+                                  files: '{ "file": "vsds-loader-${{ github.ref_name }}.rbxmx" }'
+                                  customHeaders: '{ "vsds-authorisation": "${{ secrets.VSDS_AUTH }}" }'
+                                  timeout: 10000

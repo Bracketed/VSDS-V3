@@ -104,7 +104,7 @@ jobs:
                           if: env.publish == 'true'
                           uses: softprops/action-gh-release@v2
                           with:
-                                  repository: Bracketed/VSDS
+                                  repository: Bracketed/PLUGIN
                                   token: ${{ secrets.VSDS_PUBCOMMIT }}
                                   name: ${{ steps.release-data.outputs.title }}
                                   tag_name: ${{ steps.release-data.outputs.tag }}
