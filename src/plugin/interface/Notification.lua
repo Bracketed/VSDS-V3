@@ -283,7 +283,7 @@ function Notifications.RoactNotification:render()
                     PaddingRight = UDim.new(0, 15),
                     PaddingLeft = UDim.new(0, 15)
                 })
-            }), Notifications.RoactUI.createElement("ImageLabel", {
+            }), Notifications.RoactUI.createElement("ImageButton", {
                 Name = 'VIRTUA-LOGO',
                 ImageColor3 = Color3.fromRGB(255, 255, 255),
                 Image = "rbxassetid://17698501085",
@@ -292,7 +292,11 @@ function Notifications.RoactNotification:render()
                 Size = UDim2.new(0, 25, 1, 0),
                 ScaleType = Enum.ScaleType.Fit,
                 ImageTransparency = transparency,
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+
+                [Notifications.RoactUI.Event.MouseButton1Click] = function()
+                    self:dismiss()
+                end
             })
         })
     end

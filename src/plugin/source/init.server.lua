@@ -24,9 +24,6 @@ VSDS.require = getfenv().require
 VSDS.Assets = VSDS.require(VSDS.self.Configuration)
 VSDS.Roact = VSDS.require(VSDS.Assets.Container['VSDS-Packages']['Roact'])
 
-assert(not VSDS.Services.RunService.IsRunning,
-       ':: VSDS [PLUGIN] :: VSDP Should be ran in a plugin environment!')
-
 VSDS.console = VSDS.require(VSDS.Assets.Container['VSDS-Libraries'].Console)
 VSDS.http = VSDS.require(VSDS.Assets.Container['VSDS-Libraries'].HTTP)
 

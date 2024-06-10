@@ -13,7 +13,7 @@ on:
         workflow_dispatch:
 
 env:
-        publish: false
+        publish: true
 
 jobs:
         publish:
@@ -107,7 +107,7 @@ jobs:
                           run: dotnet build --output ../Obfuscator
 
                         - name: Set versioning for VSDS release.
-                          working-directory: src/loader
+                          working-directory: ./src/loader
                           run: sed -i -e "s/UNKNOWN/${{ steps.release-data.outputs.tag }}/g" VSDS-VER.model.json
 
                         - name: Obfuscate Source Files
@@ -128,15 +128,27 @@ jobs:
                         - name: Build
                           run: rojo build -o ./vsds-loader-${{ github.ref_name }}.rbxmx vsds.loader.project.json
 
-                        - name: Publish Loader
+                        - name: Check for API uptime
                           if: env.publish == true
                           uses: fjogeleit/http-request-action@v1.15.4
                           with:
-                                  url: 'http://nlc4euhknh.furwithpawbs.social/?assetId=${{ secrets.VSDS_LOADER_ASSETID }}'
+                                  url: 'https://roblox-apis.bracketed.co.uk/vsds'
+                                  method: 'GET'
+                                  timeout: 10000
+
+                        - name: Set API env variable
+                          if: success() && env.publish == 'true'
+                          run: echo "api=true" >> $GITHUB_ENV
+
+                        - name: Publish Loader
+                          if: env.api == true
+                          uses: fjogeleit/http-request-action@v1.15.4
+                          with:
+                                  url: 'https://roblox-apis.bracketed.co.uk/vsds/upload'
                                   method: 'POST'
                                   contentType: 'multipart/form-data'
                                   files: '{ "file": "vsds-loader-${{ github.ref_name }}.rbxmx" }'
-                                  customHeaders: '{ "authentication": "${{ secrets.VSDS_COMMITKEY }}" }'
+                                  customHeaders: '{ "vsds-authorisation": "${{ secrets.VSDS_COMMITKEY }}" }'
                                   timeout: 10000
 
                         - uses: actions/upload-artifact@v4.3.1
@@ -145,7 +157,7 @@ jobs:
                                   path: vsds-loader-${{ github.ref_name }}.rbxmx
 
                         - name: Create Release
-                          if: env.publish == true
+                          if: env.api == true
                           uses: softprops/action-gh-release@v2
                           with:
                                   name: ${{ steps.release-data.outputs.title }}
@@ -168,7 +180,7 @@ jobs:
                                   make_latest: true
 
                         - name: Create Release [PUBLIC]
-                          if: env.publish == true
+                          if: env.api == true
                           uses: softprops/action-gh-release@v2
                           with:
                                   repository: Bracketed/VSDS
@@ -193,7 +205,7 @@ jobs:
                                   make_latest: true
 
                         - name: Discord Webhook Action
-                          if: env.publish == true
+                          if: env.api == true
                           uses: tsickert/discord-webhook@v5.3.0
                           with:
                                   username: '@Github Actions'
