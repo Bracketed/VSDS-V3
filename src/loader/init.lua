@@ -1,10 +1,9 @@
-local __V3 = {}
-local __V3_INTERNAL = {}
+local VSDS = {}
+local Internal = {}
 
-__V3_INTERNAL.SERVICES = {}
-__V3_INTERNAL.SERVICES.HTTPSERVICE = game:GetService('HttpService')
-__V3_INTERNAL.SERVICES.GROUPSERVICE = game:GetService('GroupService')
-__V3_INTERNAL.script = script
+Internal.Services = {}
+Internal.Services.Groups = game:GetService('GroupService')
+Internal.script = script
 
 -- someone needs to redo all this and ik its still probably gonna be me in the end - eden
 
@@ -14,7 +13,7 @@ local function print(...)
     end
 end
 
-function __V3_INTERNAL.Attach()
+function Internal.Attach()
     print('Attached Blacklist Service!')
 
     game:GetService('Players').PlayerAdded:Connect(function(plr)
@@ -40,8 +39,8 @@ function __V3_INTERNAL.Attach()
     end)
 end
 
-function __V3_INTERNAL.CheckGameOwnerBlasklist()
-    __V3_INTERNAL.Attach()
+function Internal.CheckGameOwnerBlasklist()
+    Internal.Attach()
 
     if (_G.VIRTUABLACKLIST_GAMEBLACKLISTED) then return end
 
@@ -71,8 +70,7 @@ function __V3_INTERNAL.CheckGameOwnerBlasklist()
         end
     end
 
-    local PlayerGroups = __V3_INTERNAL.SERVICES.GROUPSERVICE:GetGroupsAsync(
-                             CreatorId)
+    local PlayerGroups = Internal.Services.Groups:GetGroupsAsync(CreatorId)
     for _, Group in pairs(PlayerGroups) do
         if table.find(BlacklistedGroups, Group.Id) then
             print(
@@ -87,12 +85,12 @@ function __V3_INTERNAL.CheckGameOwnerBlasklist()
     return
 end
 
-function __V3.InstallServices()
+function VSDS.InstallServices()
     if (_G.VIRTUABLACKLIST_INSTALLED) then return true end
 
     if not (_G.VIRTUABLACKLIST_INSTALLED) then
 
-        __V3_INTERNAL.CheckGameOwnerBlasklist()
+        Internal.CheckGameOwnerBlasklist()
         _G.VIRTUABLACKLIST_INSTALLED = true
 
         if (_G.VIRTUABLACKLIST_GAMEBLACKLISTED) then
@@ -107,9 +105,9 @@ function __V3.InstallServices()
     end
 end
 
-function __V3.Deploy(script, ...)
-    if (__V3.InstallServices()) then
-        if not (require(__V3_INTERNAL.script['VSDS-DEPMAN']).Run(script, ...)) then
+function VSDS.Deploy(script, ...)
+    if (VSDS.InstallServices()) then
+        if not (require(Internal.script['VSDS-DEPMAN']).Run(script, ...)) then
             print(
                 'There was an error attempting to deploy the requested script.')
         end
@@ -121,14 +119,13 @@ function __V3.Deploy(script, ...)
     end
 end
 
-function __V3.Help()
+function VSDS.Help()
     local log = function(...) warn(':: VSDS ::', ...) end
 
     log('Welcome to VSDS!')
     log(
         'This is a system made for distributing source code for Virtua products!')
-    log('Currently serving VSDS version:',
-        __V3_INTERNAL.script['VSDS-VER'].Value)
+    log('Currently serving VSDS version:', Internal.script['VSDS-VER'].Value)
 end
 
-return __V3
+return VSDS
