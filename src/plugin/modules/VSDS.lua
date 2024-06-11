@@ -20,7 +20,8 @@ VSDS.map = {}
 function VSDS.RetrieveInstall()
     internal.console.log('Checking for VSDS install...')
     for _, Instance in internal.pairs(internal.project:GetDescendants()) do
-        if Instance.Name == "VSDS-SRC" and Instance:IsA('Folder') then
+        if (Instance.Name == "VSDS-VER" and Instance:IsA('StringValue')) and
+            (Instance.Parent:FindFirstChild('VSDS-SRC')) then
             internal.console.log('VSDS install found!')
             return Instance.Parent
         end
