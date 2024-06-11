@@ -172,6 +172,39 @@ function Application.RoactApplication:didMount()
                                     'VSDP Installed VSDS successfully in ' ..
                                         string.sub(tick() - StartingTime, 1, 5) ..
                                         ' seconds.')
+
+                                local MigratableInstances = VSDS.vsds
+                                                                .FindMigratables(
+                                                                NewInstance)
+                                if (#MigratableInstances ~= 0) then
+                                    self:newNotification(
+                                        'Would you like to migrate any Virtua products or VSDS scripts to the latest version?',
+                                        {
+                                            action = function()
+                                                local StartingTime = tick()
+                                                local MigrateState = VSDS.vsds
+                                                                         .Migrate()
+
+                                                if MigrateState == true then
+                                                    self:newNotification(
+                                                        'VSDP Migrated ' ..
+                                                            #MigratableInstances ..
+                                                            ' scripts successfully in ' ..
+                                                            string.sub(
+                                                                tick() -
+                                                                    StartingTime,
+                                                                1, 5) ..
+                                                            ' seconds.')
+                                                else
+                                                    self:newNotification(
+                                                        'VSDP errored whilst migrating ' ..
+                                                            #MigratableInstances ..
+                                                            ' scripts, report this error or try again.')
+                                                end
+                                            end,
+                                            buttonTitle = 'Migrate'
+                                        })
+                                end
                             else
                                 self:newNotification(
                                     'VSDP errored whilst installing VSDS, report this error or try again.')
