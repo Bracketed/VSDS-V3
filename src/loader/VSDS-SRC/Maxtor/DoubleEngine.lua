@@ -3,56 +3,36 @@ return {
         local Door1 = script.Parent.DoorL
         local Door2 = script.Parent.DoorR
         local DoorSettings = require(script.Parent.Settings)
-        local DoorProperties = DoorSettings.DOOR_SETTINGS
-        local State = Instance.new("StringValue", script.Parent)
         local ClickBarL = Instance.new("ClickDetector", Door1.Bar.ClickHolder)
         local ClickBarR = Instance.new("ClickDetector", Door2.Bar.ClickHolder)
         local ClickHandleL = Instance.new("ClickDetector", Door1.Pull)
         local ClickHandleR = Instance.new("ClickDetector", Door2.Pull)
         local WeldR = Instance.new("WeldConstraint", Door2.Door)
         local WeldL = Instance.new("WeldConstraint", Door1.Door)
-        local DoorL_Unlocked = Instance.new("BoolValue", script)
-        local DoorR_Unlocked = Instance.new("BoolValue", script)
-        local DoorRDisabled = Instance.new("BoolValue", script)
-        local DoorLDisabled = Instance.new("BoolValue", script)
-        local ToolCooldownR = Instance.new("BoolValue", script)
-        local ToolCooldownL = Instance.new("BoolValue", script)
+        local DoorL_Unlocked = false
+        local DoorR_Unlocked = false
+        local DoorRDisabled = false
+        local DoorLDisabled = false
+        local ToolCooldownR = false
+        local ToolCooldownL = false
 
-        WeldL.Name = "Weld_DoorL"
-        WeldR.Name = "Weld_DoorR"
         WeldL.Part0 = Door1.Door
         WeldL.Part1 = script.Parent.Frame.DoorFrame.Left
         WeldR.Part0 = Door2.Door
         WeldR.Part1 = script.Parent.Frame.DoorFrame.Right
-        State.Name = "DOORSTATE"
-        State.Value = "DOOR_UNUSED"
-        ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
-        ClickBarR.MaxActivationDistance = DoorProperties.BAR_R
+        ClickBarL.MaxActivationDistance = DoorSettings.DOOR_SETTINGS.BAR_L
+        ClickBarR.MaxActivationDistance = DoorSettings.DOOR_SETTINGS.BAR_R
         ClickHandleL.MaxActivationDistance = 0
         ClickHandleR.MaxActivationDistance = 0
-        DoorL_Unlocked.Value = false
-        DoorR_Unlocked.Value = false
-        DoorRDisabled.Value = false
-        DoorLDisabled.Value = false
-        ToolCooldownR.Value = false
-        ToolCooldownL.Value = false
-        DoorL_Unlocked.Name = "DOORL.IS-UNLOCKED"
-        DoorR_Unlocked.Name = "DOORR.IS-UNLOCKED"
-        DoorRDisabled.Name = "DOORR.IS-DISABLED"
-        DoorLDisabled.Name = "DOORL.IS-DISABLED"
-        ToolCooldownR.Name = "DOORR.ON-COOLDOWN"
-        ToolCooldownL.Name = "DOORR.ON-COOLDOWN"
 
         -- Door Stuff with making them able to be moved
         local function UnlockL()
-            State.Value = "DOOR_UNLOCKED"
             Door1.Door.DoorHinge.ActuatorType = "None"
             Door1.Door.DoorHinge.LimitsEnabled = true
             Door1.Door.DoorHinge.UpperAngle = 0
-            Door1.Door.DoorHinge.LowerAngle = DoorProperties.DOOR_L
+            Door1.Door.DoorHinge.LowerAngle = DoorSettings.DOOR_SETTINGS.DOOR_L
         end
         local function LockL()
-            State.Value = "DOOR_LOCKED"
             Door1.Door.DoorHinge.ActuatorType = "Servo"
             Door1.Door.DoorHinge.LimitsEnabled = false
             Door1.Door.DoorHinge.TargetAngle = 1
@@ -60,14 +40,12 @@ return {
             Door1.Door.DoorHinge.TargetAngle = 0
         end
         local function UnlockR()
-            State.Value = "DOOR_UNLOCKED"
             Door2.Door.DoorHinge.ActuatorType = "None"
             Door2.Door.DoorHinge.LimitsEnabled = true
-            Door2.Door.DoorHinge.UpperAngle = DoorProperties.DOOR_R
+            Door2.Door.DoorHinge.UpperAngle = DoorSettings.DOOR_SETTINGS.DOOR_R
             Door2.Door.DoorHinge.LowerAngle = 0
         end
         local function LockR()
-            State.Value = "DOOR_LOCKED"
             Door2.Door.DoorHinge.ActuatorType = "Servo"
             Door2.Door.DoorHinge.LimitsEnabled = false
             Door2.Door.DoorHinge.TargetAngle = -1
@@ -77,36 +55,38 @@ return {
         local function DoorHandleR()
             Door2.Door.DoorHinge.ActuatorType = "Servo"
             Door2.Door.DoorHinge.LimitsEnabled = false
-            Door2.Door.DoorHinge.TargetAngle = DoorProperties.DOOR_R
+            Door2.Door.DoorHinge.TargetAngle = DoorSettings.DOOR_SETTINGS.DOOR_R
             ClickHandleR.MaxActivationDistance = 0
             task.wait(3)
             Door2.Door.DoorHinge.ActuatorType = "None"
-            ClickHandleR.MaxActivationDistance = DoorProperties.HANDLE_R
+            ClickHandleR.MaxActivationDistance =
+                DoorSettings.DOOR_SETTINGS.HANDLE_R
             Door2.Door.DoorHinge.LimitsEnabled = true
-            Door2.Door.DoorHinge.UpperAngle = DoorProperties.DOOR_R
+            Door2.Door.DoorHinge.UpperAngle = DoorSettings.DOOR_SETTINGS.DOOR_R
             Door2.Door.DoorHinge.LowerAngle = 0
         end
         local function DoorHandleL()
             Door1.Door.DoorHinge.ActuatorType = "Servo"
             Door1.Door.DoorHinge.LimitsEnabled = false
-            Door1.Door.DoorHinge.TargetAngle = DoorProperties.DOOR_L
+            Door1.Door.DoorHinge.TargetAngle = DoorSettings.DOOR_SETTINGS.DOOR_L
             ClickHandleL.MaxActivationDistance = 0
             task.wait(3)
             Door1.Door.DoorHinge.ActuatorType = "None"
-            ClickHandleL.MaxActivationDistance = DoorProperties.HANDLE_L
+            ClickHandleL.MaxActivationDistance =
+                DoorSettings.DOOR_SETTINGS.HANDLE_L
             Door1.Door.DoorHinge.LimitsEnabled = true
-            Door1.Door.DoorHinge.UpperAngle = DoorProperties.DOOR_L
+            Door1.Door.DoorHinge.UpperAngle = DoorSettings.DOOR_SETTINGS.DOOR_L
             Door1.Door.DoorHinge.LowerAngle = 0
         end
         -- Main door stuff
         local function LeftDoorFunction()
-            if DoorL_Unlocked.Value == false then
-                DoorL_Unlocked.Value = true
+            if DoorL_Unlocked == false then
+                DoorL_Unlocked = true
                 Door1.Door.BarSound:Play()
                 ClickBarL.MaxActivationDistance = 0
                 Door1.Bar.MainBar.In.Transparency = 0
                 Door1.Bar.MainBar.Out.Transparency = 1
-                if DoorR_Unlocked.Value == false then
+                if DoorR_Unlocked == false then
                     Door2.Latch.LatchOut.Transparency = 1
                     Door2.Latch.LatchIn.Transparency = 0
                 end
@@ -115,10 +95,10 @@ return {
                 Door1.Bar.MainBar.Out.Transparency = 0
                 UnlockL()
                 WeldL.Enabled = false
-                ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
-            elseif DoorL_Unlocked.Value == true then
-                State.Value = "DOOR_LOCKED"
-                DoorL_Unlocked.Value = false
+                ClickBarL.MaxActivationDistance =
+                    DoorSettings.DOOR_SETTINGS.BAR_L
+            elseif DoorL_Unlocked == true then
+                DoorL_Unlocked = false
                 Door1.Door.BarSound:Play()
                 ClickBarL.MaxActivationDistance = 0
                 Door1.Bar.MainBar.In.Transparency = 0
@@ -129,21 +109,22 @@ return {
                 LockL()
                 task.wait(2.5)
                 WeldL.Enabled = true
-                ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
-                if DoorR_Unlocked.Value == false then
+                ClickBarL.MaxActivationDistance =
+                    DoorSettings.DOOR_SETTINGS.BAR_L
+                if DoorR_Unlocked == false then
                     Door2.Latch.LatchOut.Transparency = 0
                     Door2.Latch.LatchIn.Transparency = 1
                 end
             end
         end
         local function RightDoorFunction()
-            if DoorR_Unlocked.Value == false then
-                DoorR_Unlocked.Value = true
+            if DoorR_Unlocked == false then
+                DoorR_Unlocked = true
                 Door2.Door.BarSound:Play()
                 ClickBarR.MaxActivationDistance = 0
                 Door2.Bar.MainBar.In.Transparency = 0
                 Door2.Bar.MainBar.Out.Transparency = 1
-                if DoorL_Unlocked.Value == false then
+                if DoorL_Unlocked == false then
                     Door2.Latch.LatchOut.Transparency = 1
                     Door2.Latch.LatchIn.Transparency = 0
                 end
@@ -152,9 +133,10 @@ return {
                 Door2.Bar.MainBar.Out.Transparency = 0
                 UnlockR()
                 WeldR.Enabled = false
-                ClickBarR.MaxActivationDistance = DoorProperties.BAR_R
-            elseif DoorR_Unlocked.Value == true then
-                DoorR_Unlocked.Value = false
+                ClickBarR.MaxActivationDistance =
+                    DoorSettings.DOOR_SETTINGS.BAR_R
+            elseif DoorR_Unlocked == true then
+                DoorR_Unlocked = false
                 Door2.Door.BarSound:Play()
                 ClickBarR.MaxActivationDistance = 0
                 Door2.Bar.MainBar.In.Transparency = 0
@@ -167,8 +149,9 @@ return {
                 LockR()
                 task.wait(2.5)
                 WeldR.Enabled = true
-                ClickBarR.MaxActivationDistance = DoorProperties.BAR_R
-                if DoorL_Unlocked.Value == false then
+                ClickBarR.MaxActivationDistance =
+                    DoorSettings.DOOR_SETTINGS.BAR_R
+                if DoorL_Unlocked == false then
                     Door2.Latch.LatchOut.Transparency = 0
                     Door2.Latch.LatchIn.Transparency = 1
                 end
@@ -183,7 +166,7 @@ return {
             if not DoorSettings.WHITELISTENABLED then return true end
 
             for GroupID, Ranks in pairs(DoorSettings.WHITELIST.GROUP_WHITELIST) do
-                local GroupRank = plr:GetRankInGroup(tonumber(GroupID)) -- Don't worry, this most definatley works
+                local GroupRank = plr:GetRankInGroup(tonumber(GroupID))
 
                 for _, RankNumber in pairs(Ranks) do
                     if (RankNumber == GroupRank) then
@@ -202,24 +185,24 @@ return {
         -- ClickBar Stuff
 
         ClickBarL.MouseClick:Connect(function(plr)
-            if DoorLDisabled.Value == false then
+            if DoorLDisabled == false then
                 if isWhitelisted(plr) then LeftDoorFunction() end
             end
         end)
         ClickBarR.MouseClick:Connect(function(plr)
-            if DoorRDisabled.Value == false then
+            if DoorRDisabled == false then
                 if isWhitelisted(plr) then RightDoorFunction() end
             end
         end)
 
         -- Door Handles
         ClickHandleR.MouseClick:Connect(function(plr)
-            if DoorRDisabled.Value == true then
+            if DoorRDisabled == true then
                 if isWhitelisted(plr) then DoorHandleR() end
             end
         end)
         ClickHandleL.MouseClick:Connect(function(plr)
-            if DoorLDisabled.Value == true then
+            if DoorLDisabled == true then
                 if isWhitelisted(plr) then DoorHandleL() end
             end
         end)
@@ -237,47 +220,48 @@ return {
 
             if MainTool:IsA('Tool') and MainTool:FindFirstChild("MaxtorKey") then
                 -- We verify the key here to make sure its got everything we need
-                if DoorRDisabled.Value == false then
-                    if ToolCooldownR.Value == false then
-                        ToolCooldownR.Value = true
+                if DoorRDisabled == false then
+                    if ToolCooldownR == false then
+                        ToolCooldownR = true
                         -- Unlocking the door
                         WeldR.Enabled = false
                         UnlockR()
-                        DoorRDisabled.Value = true
-                        DoorR_Unlocked.Value = true
+                        DoorRDisabled = true
+                        DoorR_Unlocked = true
                         ClickBarR.MaxActivationDistance = 0
                         ClickHandleR.MaxActivationDistance =
-                            DoorProperties.HANDLE_R
+                            DoorSettings.DOOR_SETTINGS.HANDLE_R
                         Door2.Bar.MainBar.In.Transparency = 0
                         Door2.Bar.MainBar.Out.Transparency = 1
 
-                        if DoorL_Unlocked.Value == false then
+                        if DoorL_Unlocked == false then
                             Door2.Latch.LatchOut.Transparency = 1
                             Door2.Latch.LatchIn.Transparency = 0
                         end
                         task.wait(2)
-                        ToolCooldownR.Value = false
+                        ToolCooldownR = false
                     end
-                elseif DoorRDisabled.Value == true then
-                    if ToolCooldownR.Value == false then
-                        ToolCooldownR.Value = true
+                elseif DoorRDisabled == true then
+                    if ToolCooldownR == false then
+                        ToolCooldownR = true
                         -- Locking the door
                         LockR()
-                        DoorRDisabled.Value = false
-                        DoorR_Unlocked.Value = false
+                        DoorRDisabled = false
+                        DoorR_Unlocked = false
                         ClickHandleR.MaxActivationDistance = 0
                         Door2.Bar.MainBar.In.Transparency = 1
                         Door2.Bar.MainBar.Out.Transparency = 0
 
                         task.wait(3.5)
                         WeldR.Enabled = false
-                        ClickBarR.MaxActivationDistance = DoorProperties.BAR_R
-                        if DoorL_Unlocked.Value == false then
+                        ClickBarR.MaxActivationDistance =
+                            DoorSettings.DOOR_SETTINGS.BAR_R
+                        if DoorL_Unlocked == false then
                             Door2.Latch.LatchOut.Transparency = 0
                             Door2.Latch.LatchIn.Transparency = 1
                         end
                         task.wait(2)
-                        ToolCooldownR.Value = false
+                        ToolCooldownR = false
                     end
                 end
             end
@@ -294,47 +278,48 @@ return {
             if not (isWhitelisted(plr)) then return end
 
             if MainTool:IsA('Tool') and MainTool:FindFirstChild("MaxtorKey") then
-                if DoorLDisabled.Value == false then
-                    if ToolCooldownL.Value == false then
-                        ToolCooldownL.Value = true
+                if DoorLDisabled == false then
+                    if ToolCooldownL == false then
+                        ToolCooldownL = true
                         -- Unlocking the door
                         WeldL.Enabled = false
                         UnlockL()
-                        DoorLDisabled.Value = true
-                        DoorL_Unlocked.Value = true
+                        DoorLDisabled = true
+                        DoorL_Unlocked = true
                         ClickBarL.MaxActivationDistance = 0
                         ClickHandleL.MaxActivationDistance =
-                            DoorProperties.HANDLE_L
+                            DoorSettings.DOOR_SETTINGS.HANDLE_L
                         Door1.Bar.MainBar.In.Transparency = 0
                         Door1.Bar.MainBar.Out.Transparency = 1
 
-                        if DoorR_Unlocked.Value == false then
+                        if DoorR_Unlocked == false then
                             Door2.Latch.LatchOut.Transparency = 1
                             Door2.Latch.LatchIn.Transparency = 0
                         end
                         task.wait(2)
-                        ToolCooldownL.Value = false
+                        ToolCooldownL = false
                     end
-                elseif DoorLDisabled.Value == true then
-                    if ToolCooldownL.Value == false then
-                        ToolCooldownL.Value = true
+                elseif DoorLDisabled == true then
+                    if ToolCooldownL == false then
+                        ToolCooldownL = true
                         -- Locking the door
                         LockL()
-                        DoorLDisabled.Value = false
-                        DoorL_Unlocked.Value = false
+                        DoorLDisabled = false
+                        DoorL_Unlocked = false
                         Door1.Bar.MainBar.In.Transparency = 1
                         Door1.Bar.MainBar.Out.Transparency = 0
                         ClickHandleL.MaxActivationDistance = 0
 
                         task.wait(3.5)
                         WeldL.Enabled = false
-                        ClickBarL.MaxActivationDistance = DoorProperties.BAR_L
-                        if DoorR_Unlocked.Value == false then
+                        ClickBarL.MaxActivationDistance =
+                            DoorSettings.DOOR_SETTINGS.BAR_L
+                        if DoorR_Unlocked == false then
                             Door2.Latch.LatchOut.Transparency = 0
                             Door2.Latch.LatchIn.Transparency = 1
                         end
                         task.wait(2)
-                        ToolCooldownL.Value = false
+                        ToolCooldownL = false
                     end
                 end
             end

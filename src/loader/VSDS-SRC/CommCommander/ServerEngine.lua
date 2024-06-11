@@ -1,6 +1,5 @@
 return {
     run = function(script, ...)
-        require = _G.require
         local ReplicatedStorage = game:GetService('ReplicatedStorage')
         local TextService = game:GetService("TextService")
         local API = script.Parent.CommCommanderAPI
