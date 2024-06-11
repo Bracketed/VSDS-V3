@@ -15,8 +15,6 @@ internal.scriptservice = internal.project:GetService('ServerScriptService')
 internal.workspace = internal.project:GetService('Workspace')
 internal.edit = internal.project:GetService('ScriptEditorService')
 
-VSDS.map = {}
-
 function VSDS.RetrieveInstall()
     internal.console.log('Checking for VSDS install...')
     for _, Instance in internal.pairs(internal.project:GetDescendants()) do
@@ -100,9 +98,6 @@ end
 function VSDS.Install()
     local VSDSTree = VSDS.GetVSDSTree()
     if (VSDSTree['message']) then return false end
-
-    print(VSDSTree)
-
     local VSDS_SRC = internal.rblxParse(VSDSTree, internal.scriptservice)
 
     return VSDS_SRC

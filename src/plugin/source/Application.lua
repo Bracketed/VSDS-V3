@@ -210,7 +210,18 @@ function Application.RoactApplication:didMount()
                         'It seems like your VSDS loader is out of date, would you like to update to the latest version?',
                         {
                             action = function()
-                                VSDS.vsds.Update()
+                                local StartingTime = tick()
+                                local InstallState = VSDS.vsds.Update()
+
+                                if InstallState == true then
+                                    self:newNotification(
+                                        'VSDP updated VSDS successfully in ' ..
+                                            string.sub(tick() - StartingTime, 1,
+                                                       5) .. ' seconds.')
+                                else
+                                    self:newNotification(
+                                        'VSDP errored whilst updating VSDS, report this error or try again.')
+                                end
                             end,
                             buttonTitle = 'Update'
                         })
