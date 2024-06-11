@@ -10,6 +10,7 @@ internal.lib = internal.self.Parent
 internal.http = internal.require(internal.lib['HTTP'])
 internal.console = internal.require(internal.lib['Console'])
 internal.utils = internal.require(internal.lib['Utilities'])
+internal.rblxParse = internal.require(internal.lib['Parser'])
 internal.scriptservice = internal.project:GetService('ServerScriptService')
 internal.workspace = internal.project:GetService('Workspace')
 internal.edit = internal.project:GetService('ScriptEditorService')
@@ -79,39 +80,10 @@ function VSDS.Migrate(Instance)
     return MigrationSuccess
 end
 
-function VSDS.ParseRobloxInstance(AssetJSONData, isFirstAsset)
-    local ParsedAsset = Instance.new(AssetJSONData["$"]["class"])
-
-    for _, properties in ipairs(AssetJSONData["Properties"]) do
-        for propertyType, propertyArray in pairs(properties) do
-            for _, property in ipairs(propertyArray) do
-                local propertyName = property["$"]["name"]
-                local propertyValue = property["_"]
-
-                if propertyType == "string" then
-                    ParsedAsset[propertyName] = propertyValue
-                elseif propertyType == "int" then
-                    ParsedAsset[propertyName] = tonumber(propertyValue)
-                elseif propertyType == "bool" then
-                    ParsedAsset[propertyName] = propertyValue == "true"
-                elseif propertyType == "float" then
-                    ParsedAsset[propertyName] = tonumber(propertyValue)
-                end
-            end
-        end
-    end
-
-    if (isFirstAsset) then ParsedAsset.Name = "VSDS" end
-
-    local instanceId = itemData["$"]["referent"]
-    VSDS.map[instanceId] = ParsedAsset
-
-    return ParsedAsset
-end
-
 function VSDS.GetVSDSTree()
-    return internal.http.Decode(internal.http.Get(
-                                    'https://roblox-apis.bracketed.co.uk/vsds/loader'))
+    local Request = internal.http.Get(
+                        'https://roblox-apis.bracketed.co.uk/vsds/loader')
+    return internal.http.Decode(Request.Body)
 end
 
 function VSDS.Update()
@@ -125,35 +97,27 @@ function VSDS.Update()
 end
 
 function VSDS.Install()
-    VSDS.map = {}
-
     local VSDSTree = VSDS.GetVSDSTree()
     if (VSDSTree['message']) then return false end
 
-    local isFirst = true
-    for _, itemData in ipairs(data["roblox"]["Item"]) do
-        VSDS.ParseRobloxInstance(itemData, isFirst)
-        isFirst = false
-    end
+    print(VSDSTree)
 
-    for _, AssetJSONData in ipairs(data["roblox"]["Item"]) do
-        local instanceId = AssetJSONData["$"]["referent"]
-        local newInstance = instanceMap[instanceId]
+    local VSDS_SRC = internal.rblxParse(VSDSTree, internal.scriptservice)
 
-        local parentIdentifier = AssetJSONData["Properties"]["Parent"]
-        if parentIdentifier then
-            parentIdentifier = parentIdentifier[1]["Ref"]
-            newInstance.Parent = instanceMap[parentIdentifier] or
-                                     internal.scriptservice
-        else
-            newInstance.Parent = internal.scriptservice
-        end
-    end
-
-    return true
+    return VSDS_SRC
 end
 
-function VSDS.GetRelease()
+function VSDS.GetLoaderRelease()
+    internal.console
+        .log('Getting latest VSDS release from public repository...')
+    local Releases = internal.http.Get(
+                         'https://roblox-apis.bracketed.co.uk/vsds/loader')
+
+    internal.console.log('Retrieved latest release data from VSDS API.')
+    return internal.http.Decode(Releases.Body)
+end
+
+function VSDS.GetPluginRelease()
     internal.console
         .log('Getting latest VSDS release from public repository...')
     local Releases = internal.http.Get(
@@ -172,7 +136,7 @@ function VSDS.CheckForPluginUpdates(CURRENT_VER)
 end
 
 function VSDS.CheckForLoaderUpdates(CURRENT_VER)
-    local Releases = VSDS.GetRelease()
+    local Releases = VSDS.GetLoaderRelease()
 
     if not Releases then return nil end
     if CURRENT_VER == Releases.tag_name then return Releases.tag_name end

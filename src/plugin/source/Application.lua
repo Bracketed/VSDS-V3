@@ -40,7 +40,7 @@ function Application.RoactApplication:newNotification(text, callback)
 
     self:setState({notifications = notifications})
 
-    return function() self:closeNotification(id) end
+    return function() self:closeNotification(self.notificationIndex) end
 end
 
 function Application.RoactApplication:closeNotification(notificationIndex)
@@ -187,9 +187,8 @@ function Application.RoactApplication:didMount()
 
         if VSDS.SecondsElapsed >= 5 * 60 then
             VSDS.SecondsElapsed = VSDS.SecondsElapsed - 5 * 60
-            local NewerPluginVersion = VSDS.vsds.CheckForUpdates(
-                                           Application.Assets.Plugin.Version,
-                                           'vsds-plugin')
+            local NewerPluginVersion = VSDS.vsds.CheckForPluginUpdates(
+                                           Application.Assets.Plugin.Version)
             local VSDS_Loader = VSDS.vsds.RetrieveInstall()
 
             if NewerPluginVersion ~= nil then
@@ -203,8 +202,8 @@ function Application.RoactApplication:didMount()
 
             if VSDS_Loader ~= nil then
                 local NewerLoaderVersion =
-                    VSDS.vsds.CheckForUpdates(
-                        VSDS_Loader['VSDS-VER'].Value, 'vsds-loader')
+                    VSDS.vsds.CheckForLoaderUpdates(
+                        VSDS_Loader['VSDS-VER'].Value)
 
                 if NewerLoaderVersion ~= nil then
                     self:newNotification(
