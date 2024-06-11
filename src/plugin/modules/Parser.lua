@@ -7,17 +7,13 @@ return function(jsonContent, parentInstance)
         return parts
     end
 
-    local function appendLongString(newInstance, propName, value)
-        local parts = splitLongString(value, 199999)
-        newInstance[propName] = parts[1]
-        for i = 2, #parts do
-            newInstance[propName] = newInstance[propName] .. parts[i]
-        end
-    end
-
     local function createInstance(instanceData, parent)
         local className = instanceData["$"].class
-        local newInstance = Instance.new(className)
+
+        if className == "Part" or className == "MeshPart" or className ==
+            "UnionOperation" or className == "BasePart" then return end
+
+        local newInstance = Instance.new(className, parent)
 
         if instanceData.Properties then
             for _, property in ipairs(instanceData.Properties) do
@@ -26,17 +22,13 @@ return function(jsonContent, parentInstance)
                         local propName = propertyValue["$"].name
                         local value = propertyValue["_"]
 
-                        if type(value) == "string" and #value > 200000 then
-                            appendLongString(newInstance, propName, value)
-                        else
+                        pcall(function()
                             newInstance[propName] = value
-                        end
+                        end)
                     end
                 end
             end
         end
-
-        newInstance.Parent = parent
 
         if instanceData.Item then
             for _, childData in ipairs(instanceData.Item) do
