@@ -5,16 +5,6 @@ internal.string = string
 internal.math = math
 internal.os = os
 
-function UTILS.GetRatelimitTime()
-    local currentTime = internal.os.date("*t")
-    local secondsUntilNextHour = (60 - currentTime.min - 1) * 60 +
-                                     (60 - currentTime.sec)
-    local minutes = internal.math.floor(secondsUntilNextHour / 60)
-    local seconds = secondsUntilNextHour % 60
-
-    return internal.string.format("%02d:%02d", minutes, seconds)
-end
-
 function UTILS.StartsWith(str, search)
     return internal.string.sub(str, 1, internal.string.len(search)) == search
 end

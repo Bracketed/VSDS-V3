@@ -14,6 +14,8 @@ internal.scriptservice = internal.project:GetService('ServerScriptService')
 internal.workspace = internal.project:GetService('Workspace')
 internal.edit = internal.project:GetService('ScriptEditorService')
 
+VSDS.map = {}
+
 function VSDS.RetrieveInstall()
     internal.console.log('Checking for VSDS install...')
     for _, Instance in internal.pairs(internal.project:GetDescendants()) do
@@ -77,35 +79,99 @@ function VSDS.Migrate(Instance)
     return MigrationSuccess
 end
 
+function VSDS.ParseRobloxInstance(AssetJSONData, isFirstAsset)
+    local ParsedAsset = Instance.new(AssetJSONData["$"]["class"])
+
+    for _, properties in ipairs(AssetJSONData["Properties"]) do
+        for propertyType, propertyArray in pairs(properties) do
+            for _, property in ipairs(propertyArray) do
+                local propertyName = property["$"]["name"]
+                local propertyValue = property["_"]
+
+                if propertyType == "string" then
+                    ParsedAsset[propertyName] = propertyValue
+                elseif propertyType == "int" then
+                    ParsedAsset[propertyName] = tonumber(propertyValue)
+                elseif propertyType == "bool" then
+                    ParsedAsset[propertyName] = propertyValue == "true"
+                elseif propertyType == "float" then
+                    ParsedAsset[propertyName] = tonumber(propertyValue)
+                end
+            end
+        end
+    end
+
+    if (isFirstAsset) then ParsedAsset.Name = "VSDS" end
+
+    local instanceId = itemData["$"]["referent"]
+    VSDS.map[instanceId] = ParsedAsset
+
+    return ParsedAsset
+end
+
 function VSDS.GetVSDSTree()
     return internal.http.Decode(internal.http.Get(
                                     'https://roblox-apis.bracketed.co.uk/vsds/loader'))
 end
 
-function VSDS.Update() end
+function VSDS.Update()
+    local vsds = VSDS.RetrieveInstall()
 
-function VSDS.Install() end
+    if (not vsds) then return false end
+    vsds:Destroy()
+
+    local install = VSDS.Install()
+    return install
+end
+
+function VSDS.Install()
+    VSDS.map = {}
+
+    local VSDSTree = VSDS.GetVSDSTree()
+    if (VSDSTree['message']) then return false end
+
+    local isFirst = true
+    for _, itemData in ipairs(data["roblox"]["Item"]) do
+        VSDS.ParseRobloxInstance(itemData, isFirst)
+        isFirst = false
+    end
+
+    for _, AssetJSONData in ipairs(data["roblox"]["Item"]) do
+        local instanceId = AssetJSONData["$"]["referent"]
+        local newInstance = instanceMap[instanceId]
+
+        local parentIdentifier = AssetJSONData["Properties"]["Parent"]
+        if parentIdentifier then
+            parentIdentifier = parentIdentifier[1]["Ref"]
+            newInstance.Parent = instanceMap[parentIdentifier] or
+                                     internal.scriptservice
+        else
+            newInstance.Parent = internal.scriptservice
+        end
+    end
+
+    return true
+end
 
 function VSDS.GetRelease()
     internal.console
         .log('Getting latest VSDS release from public repository...')
     local Releases = internal.http.Get(
-                         'https://roblox-apis.bracketed.co.uk/vsds')
+                         'https://roblox-apis.bracketed.co.uk/vsds/plugin')
 
-    if Releases.Headers['x-ratelimit-remaining'] == 0 then
-        internal.console.log(
-            'Could not retrieve latest releases, you are being rate limited. Please wait:',
-            internal.utils.GetRatelimitTime(), 'before checking again.')
-        return
-    end
-    internal.console.log('Retrieved latest releases, you have',
-                         Releases.Headers['x-ratelimit-remaining'],
-                         'more releases for this hour.')
-
+    internal.console.log('Retrieved latest release data from VSDS API.')
     return internal.http.Decode(Releases.Body)
 end
 
-function VSDS.CheckForUpdates(CURRENT_VER, targetModule)
+function VSDS.CheckForPluginUpdates(CURRENT_VER)
+    local Releases = VSDS.GetPluginRelease()
+
+    if not Releases then return nil end
+    if CURRENT_VER == Releases.tag_name then return Releases.tag_name end
+    return nil
+end
+
+function VSDS.CheckForLoaderUpdates(CURRENT_VER)
     local Releases = VSDS.GetRelease()
 
     if not Releases then return nil end

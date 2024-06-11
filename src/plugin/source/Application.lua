@@ -110,7 +110,20 @@ function Application.RoactApplication:didMount()
         self:newNotification(
             'You haven\'t installed VSDS but Virtua products are in-game, would you like to install VSDS?',
             {
-                action = function() VSDS.vsds.Install() end,
+                action = function()
+                    local StartingTime = tick()
+                    local InstallState = VSDS.vsds.Install()
+
+                    if InstallState == true then
+                        self:newNotification(
+                            'VSDP Installed VSDS successfully in ' ..
+                                string.sub(tick() - StartingTime, 1, 5) ..
+                                ' seconds.')
+                    else
+                        self:newNotification(
+                            'VSDP errored whilst installing VSDS, report this error or try again.')
+                    end
+                end,
                 buttonTitle = 'Install'
             })
     end
@@ -156,7 +169,7 @@ function Application.RoactApplication:didMount()
 
                             if InstallState == true then
                                 self:newNotification(
-                                    'VSDP successfully installed VSDS in ' ..
+                                    'VSDP Installed VSDS successfully in ' ..
                                         string.sub(tick() - StartingTime, 1, 5) ..
                                         ' seconds.')
                             else
