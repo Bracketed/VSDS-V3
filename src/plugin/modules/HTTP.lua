@@ -30,7 +30,7 @@ function HTTP.Encode(Content) return internal.service:JSONEncode(Content) end
 
 function HTTP.Test()
     local Response = internal.service:RequestAsync({
-        Url = 'https://github.com/Bracketed/VSDS',
+        Url = 'https://roblox-apis/bracketed.co.uk/vsds',
         Method = "GET"
     })
 
