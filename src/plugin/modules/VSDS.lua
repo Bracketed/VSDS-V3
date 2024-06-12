@@ -18,8 +18,8 @@ internal.edit = internal.project:GetService('ScriptEditorService')
 function VSDS.RetrieveInstall()
     internal.console.log('Checking for VSDS install...')
     for _, Instance in internal.pairs(internal.project:GetDescendants()) do
-        if (Instance.Name == "VSDS-VER" and Instance:IsA('StringValue')) and
-            (Instance.Parent:FindFirstChild('VSDS-SRC')) then
+        if (Instance.Name == "VSDS-VERSION" and Instance:IsA('StringValue')) and
+            (Instance.Parent:FindFirstChild('VSDS-SOURCE')) then
             internal.console.log('VSDS install found!')
             return Instance.Parent
         end

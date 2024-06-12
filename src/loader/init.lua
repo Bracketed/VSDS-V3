@@ -107,7 +107,7 @@ end
 
 function VSDS.Deploy(script, ...)
     if (VSDS.InstallServices()) then
-        if not (require(Internal.script['VSDS-DEPMAN']).Run(script, ...)) then
+        if not (require(Internal.script['VSDS-MANAGER']).Run(script, ...)) then
             print(
                 'There was an error attempting to deploy the requested script.')
         end
@@ -125,7 +125,7 @@ function VSDS.Help()
     log('Welcome to VSDS!')
     log(
         'This is a system made for distributing source code for Virtua products!')
-    log('Currently serving VSDS version:', Internal.script['VSDS-VER'].Value)
+    log('Currently serving VSDS version:', Internal.script['VSDS-VERSION'].Value)
 end
 
 return VSDS

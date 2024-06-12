@@ -236,7 +236,7 @@ function Application.RoactApplication:didMount()
             if VSDS_Loader ~= nil then
                 local NewerLoaderVersion =
                     VSDS.vsds.CheckForLoaderUpdates(
-                        VSDS_Loader['VSDS-VER'].Value)
+                        VSDS_Loader['VSDS-VERSION'].Value)
 
                 if NewerLoaderVersion ~= nil then
                     self:newNotification(
