@@ -23,4 +23,14 @@ function UTILS.Replace(str, target, replacement)
     return result
 end
 
+function UTILS.FullNameFix(FullName)
+    local start, stop, toFix = string.find(FullName, "([^.]+%-[^.]+)")
+
+    if not toFix then return FullName end
+    FullName = string.sub(FullName, 1, start - 1) .. "['" .. toFix .. "']" ..
+                   string:sub(FullName, stop + 1)
+
+    return FullName
+end
+
 return UTILS
