@@ -1,0 +1,14 @@
+{
+	"recommendations": [
+		"streetsidesoftware.code-spell-checker",
+		"muoshuu.rojo-ui",
+		"evaera.vscode-rojo",
+		"kampfkarren.selene-vscode",
+		"kampfkarren.roblox-lua-autofills",
+		"dekkonot.vscode-luau",
+		"keyring.lua",
+		"github.vscode-github-actions",
+		"me-dutour-mathieu.vscode-github-actions",
+		"usernamehw.errorlens"
+	]
+}
