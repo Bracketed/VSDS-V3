@@ -40,7 +40,7 @@ return function(jsonContent, parentInstance)
     end
 
     local vsdsInstance = Instance.new("Folder", parentInstance)
-    vsdsInstance.Name = "VSDS-SRC"
+    vsdsInstance.Name = "VSDS_SRC"
 
     createInstance(jsonContent, vsdsInstance)
 

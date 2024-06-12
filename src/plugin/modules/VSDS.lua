@@ -57,17 +57,13 @@ function VSDS.Migrate(Instance)
                     internal.edit:UpdateSourceAsync(script, function(Source)
                         return internal.utils.Replace(Source, '16582923129',
                                                       'game.' ..
-                                                          internal.utils
-                                                              .FixFullName(
-                                                              VSDSInstall:GetFullName()))
+                                                          VSDSInstall:GetFullName())
 
                     end)
 
                     if not internal.utils.StartsWith(script.Source,
                                                      'require(game.' ..
-                                                         internal.utils
-                                                             .FixFullName(
-                                                             VSDSInstall:GetFullName()) ..
+                                                         VSDSInstall:GetFullName() ..
                                                          ')') then
                         error('Unable to apply changes to script: ' ..
                                   script:GetFullName())
