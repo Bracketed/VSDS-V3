@@ -436,9 +436,6 @@ return {
                     :FireServer('SetRadioChannel', {['radioChannel'] = channel})
             end)
 
-        -- HOTFIX:
-        -- add the respawn check thingr
-
         LocalPlayer.CharacterAdded:Connect(function()
             LocalPlayer.PlayerGui:WaitForChild('CommCommanderRadioUserInterface')
             if not (isUserWhitelisted(LocalPlayer)) then
