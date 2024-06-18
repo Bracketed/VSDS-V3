@@ -26,7 +26,6 @@ return {
         ClickHandleL.MaxActivationDistance = 0
         ClickHandleR.MaxActivationDistance = 0
 
-        -- Door Stuff with making them able to be moved
         local function UnlockL()
             Door1.Door.DoorHinge.ActuatorType = "None"
             Door1.Door.DoorHinge.LimitsEnabled = true
@@ -77,7 +76,6 @@ return {
             Door1.Door.DoorHinge.UpperAngle = DoorSettings.DOOR_SETTINGS.DOOR_L
             Door1.Door.DoorHinge.LowerAngle = 0
         end
-        -- Main door stuff
         local function LeftDoorFunction()
             if DoorL_Unlocked == false then
                 DoorL_Unlocked = true
@@ -161,7 +159,7 @@ return {
             if not DoorSettings.WHITELISTENABLED then return true end
 
             for GroupID, Ranks in pairs(DoorSettings.WHITELIST.GROUP_WHITELIST) do
-                local GroupRank = plr:GetRankInGroup(tonumber(GroupID)) -- Don't worry, this most definatley works
+                local GroupRank = plr:GetRankInGroup(tonumber(GroupID))
 
                 for _, RankNumber in pairs(Ranks) do
                     if (RankNumber == GroupRank) then
@@ -177,7 +175,6 @@ return {
             return false
         end
 
-        -- ClickBar Stuff
 
         ClickBarL.MouseClick:Connect(function(plr)
             if DoorLDisabled == false then
@@ -190,7 +187,6 @@ return {
             end
         end)
 
-        -- Door Handles
         ClickHandleR.MouseClick:Connect(function(plr)
             if DoorRDisabled == true then
                 if isWhitelisted(plr) then DoorHandleR() end
@@ -201,7 +197,6 @@ return {
                 if isWhitelisted(plr) then DoorHandleL() end
             end
         end)
-        -- Key Things
 
         Door2.Bar.ClickHolder.Touched:Connect(function(Tool)
             local MainTool = Tool.Parent
@@ -214,11 +209,9 @@ return {
             if not (isWhitelisted(plr)) then return end
 
             if MainTool:IsA('Tool') and MainTool:FindFirstChild("MaxtorKey") then
-                -- We verify the key here to make sure its got everything we need
                 if DoorRDisabled == false then
                     if ToolCooldownR == false then
                         ToolCooldownR = true
-                        -- Unlocking the door
                         WeldR.Enabled = false
                         UnlockR()
                         DoorRDisabled = true
@@ -239,7 +232,6 @@ return {
                 elseif DoorRDisabled == true then
                     if ToolCooldownR == false then
                         ToolCooldownR = true
-                        -- Locking the door
                         LockR()
                         DoorRDisabled = false
                         DoorR_Unlocked = false
@@ -275,7 +267,6 @@ return {
                 if DoorLDisabled == false then
                     if ToolCooldownL == false then
                         ToolCooldownL = true
-                        -- Unlocking the door
                         WeldL.Enabled = false
                         UnlockL()
                         DoorLDisabled = true
@@ -296,7 +287,6 @@ return {
                 elseif DoorLDisabled == true then
                     if ToolCooldownL == false then
                         ToolCooldownL = true
-                        -- Locking the door
                         LockL()
                         DoorLDisabled = false
                         DoorL_Unlocked = false

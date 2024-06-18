@@ -12,35 +12,20 @@ __/\\\________/\\\_____/\\\\\\\\\\\____/\\\\\\\\\\\\________/\\\\\\\\\\\___
 
     A source management system by ninjaninja140, eledontlie and Virtua Electronics.
 
---]] local VSDS = {}
-VSDS.script = script
+    The "what you can" and "what you can't" overview of the licence located in the LICENCE ModuleScript or LICENCE.lua file.
 
-local function print(...)
-    if (workspace:GetAttribute('VSDS-Debug')) then
-        warn(':: Virtua Electronics ::', ...)
-    end
-end
+    What you can do:
+        - View Source Code
+        - Use the Software
+        - Prepare for Future Licence Transition
 
-function VSDS.Deploy(script, ...)
-    local __SRC = VSDS.script['VSDS-SOURCE']
+    What you can't do:
+        - Redistribute the Software
+        - Modify the Software
+        - Commercialize (sell) or Share the Software
 
-    local arguments = {...}
-    local _G = script
-    local type = arguments[1]
-    local script = arguments[2]
+    There may be grants by the software authors (ninjaninja140 or eledontlie) 
+    handed to those on agreement of both authors which may allow bending of the restrictions of this licence.
 
-    table.remove(arguments, 1)
-    table.remove(arguments, 2)
-
-    for _, __DIST in pairs(__SRC:GetChildren()) do
-        if (string.lower(__DIST.Name) == string.lower(type)) then
-            for _, Module in pairs(__DIST:GetChildren()) do
-                if (string.lower(Module.Name) == string.lower(script)) then
-                    require(Module).run(_G, arguments)
-                end
-            end
-        end
-    end
-end
-
-return VSDS
+    Virtua Electronics 2024
+--]] return nil

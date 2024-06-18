@@ -95,7 +95,6 @@ return {
 
         end
 
-        -- Startup Stuff
         for i = 1, 5 do
             Reader.ChangeLED(Color3.fromRGB(143, 142, 144), Enum.Material.Glass)
             wait(0.5)
